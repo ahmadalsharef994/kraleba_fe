@@ -1,0 +1,48 @@
+.logobar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-left, .flex-right {
+  flex: 50%;
+}
+
+@media (max-width: 768px) {
+  .logobar {
+    flex-direction: column;
+  }
+  .flex-left, .flex-right {
+    flex: 100%;
+  }
+}
+
+
+  /* Navigation Bar */
+.navbar {
+  width: 100%;
+  /* gradient background */
+  background: linear-gradient(90deg, #d4d4b8 0%, #F5F5DC 50%, #F5F5DC 100%);
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  color: white;
+  font-size: 18px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Shadow effect */
+}
+
+/* Navigation Links */
+.navbar a {
+  color: rgb(165, 120, 47);
+  text-decoration: none;
+  margin-right: 30px;
+  margin-left: 30px;
+  font-weight: bold;
+
+}
+
+/* Change color on hover */
+.navbar a:hover {
+  color: #c46d25;
+}
