@@ -60,6 +60,7 @@ const Clients = () => {
     setSelectedClient(client);
     setEditModal(true);
   };
+
   const postClient = async (e) => {
     e.preventDefault();
     
@@ -79,6 +80,17 @@ const Clients = () => {
       console.log(error);
     });
   
+  };
+
+  const deleteClient = async (client) => {
+    
+    await axios.delete(`${process.env.REACT_APP_API_URL}clients/${client._id}/`).then((response) => {
+      return response.data.data;
+    }
+    ).catch((error) => {
+      console.log(error);
+    }
+    );
   };
 
   const closeModal = () => {
@@ -172,6 +184,14 @@ const Clients = () => {
                   onClick={()=>handleEditClient(client)}
                 >
                   Edit
+                </Button>
+
+                <Button
+                  className="btn btn-danger"
+                  size="sm"
+                  onClick={()=>deleteClient(client)}
+                >
+                  Delete
                 </Button>
 
               </Card.Header>
