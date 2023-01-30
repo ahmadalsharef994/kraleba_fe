@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Card, ListGroup, Button, Table } from "react-bootstrap";
+import { Card, Button, Table } from "react-bootstrap";
 import "./Bills.css";
 import axios from "axios";
 
@@ -46,13 +46,21 @@ const Bills = () => {
   const handleFilter = (e) => {
     e.preventDefault();
     // Form submission logic here
+    const temp = bills.filter((bill) => {
+      return (
+        bill.clientName.toLowerCase().includes(searchValue.toLowerCase()) &&
+        bill.type.toLowerCase().includes(typeValue.toLowerCase())
+      );
+    }
+    );
+    setBills(temp);
   };
   const handleFilterReset = (e) => {
     e.preventDefault();
     setSearchValue("");
     setTypeValue("");
     // setCategoryValue("");
-    // setbills(bill.current);
+    setBills(allBills.current);
   };
 
   return (
@@ -112,7 +120,10 @@ const Bills = () => {
                 <h5 className="decorated-text2"> {bill.type} </h5>
                 <h5 className="decorated-text2"> {bill.currency} </h5>
                 <h5 className="decorated-text2"> {bill.exchangeRate} </h5>
-                <h5 className="decorated-text2"> {bill.vatRate.toLocaleString("en", {style: "percent"})} </h5>
+                <h5 className="decorated-text2">
+                  {" "}
+                  {bill.vatRate.toLocaleString("en", { style: "percent" })}{" "}
+                </h5>
 
                 <Button
                   className="btn btn-secondary"
@@ -127,24 +138,58 @@ const Bills = () => {
                 <Table>
                   <thead>
                     <tr>
-                      <th>sequence</th>
-                      <th>Item</th>
-                      <th>Unit</th>
-                      <th>Quantity</th>
-                      <th>Unit Price</th>
+                      <th>index</th>
+                      <th>name</th>
+                      <th>code</th>
+                      <th>description</th>
+                      <th>unit of measurement</th>
+                      <th>quantity</th>
+
+                      <th> Price per unit / lei</th>
+                      <th> Price per unit / euro</th>
+
+                      <th> totalBeforeVAT/lei</th>
+                      <th> totalBeforeVAT/euro</th>
+                      <th>VAT/lei</th>
+                      <th>VAT/euro</th>
+                      <th>totalAfterVAT/lei</th>
+                      <th>totalAfterVAT/euro</th>
+
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>Item 1</td>
-                      <td>Unit 1</td>
-                      <td>Quantity 1</td>
-                      <td>Unit Price 1</td>
-                    </tr>
+                    {bill.items &&
+                      bill.items.map((item, index) => (
+                        <tr key={index}>
+                          <td>{index}</td>
+                          <td>{item.name}</td>
+                          <td>{item.code}</td>
+                          <td>{item.description}</td>
+                          <td>{item.um}</td>
+                          <td>{item.quantity}</td>
+                          <td>{item.lei}</td>
+                          <td>{item.euro}</td>
+                          <td>{item.totalBeforeVAT.lei}</td>
+                          <td>{item.totalBeforeVAT.euro}</td>
+                          <td>{item.VAT.lei}</td>
+                          <td>{item.VAT.euro}</td>
+                          <td>{item.totalAfterVAT.lei}</td>
+                          <td>{item.totalAfterVAT.euro}</td>
+                        </tr>
+                      ))}
                   </tbody>
                 </Table>
               </Card.Body>
+
+              <Card.Footer>
+                <h4 className="decorated-text1">Total</h4>
+                {true && <h5 className="decorated-text2"> totalBeforeVAT (lei): {bill.totalBeforeVAT.lei} </h5>}
+                {bill.totalBeforeVAT.euro && <h5 className="decorated-text2"> totalBeforeVAT (euro): {bill.totalBeforeVAT.euro} </h5>}
+                {bill.totalVAT.lei && <h5 className="decorated-text2"> totalVAT (lei): {bill.totalVAT.lei} </h5>}
+                {bill.totalVAT.euro && <h5 className="decorated-text2"> totalVAT (euro): {bill.totalVAT.euro} </h5>}
+                {bill.totalAfterVAT.lei && <h5 className="decorated-text2"> total after vat (lei): {bill.totalAfterVAT.lei} </h5>}
+                {bill.totalAfterVAT.euro && <h5 className="decorated-text2"> total after vat (euro): {bill.totalAfterVAT.euro} </h5>}
+              </Card.Footer>
             </Card>
           ))
         )}
