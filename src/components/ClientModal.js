@@ -1,5 +1,6 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import './styles.css'
 
 function ClientModal({ client, closeModal, patchClient }) {
 
@@ -24,7 +25,7 @@ function ClientModal({ client, closeModal, patchClient }) {
         <Modal.Title>Edit Client Information</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <form className="filter" onSubmit={handleSave}>
+        <form className="clientModal" onSubmit={handleSave}>
           <select name="type" placeholder="Type" defaultValue={client.type}>
             <option value="">Type</option>
             <option value="buyer">Buyer</option>

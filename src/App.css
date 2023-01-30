@@ -11,7 +11,8 @@ body {
   background: linear-gradient(to bottom, #b39d5c, #a98e44);
   background-repeat: no-repeat;
   background-size: cover;
-  font-family: Roboto;
+  font-family: 'Roboto', sans-serif;
+
 }
 
 * {

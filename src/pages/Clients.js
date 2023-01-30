@@ -60,8 +60,6 @@ const Clients = () => {
     setSelectedClient(client);
     setEditModal(true);
   };
-  
-
   const postClient = async (e) => {
     e.preventDefault();
     
@@ -90,14 +88,7 @@ const Clients = () => {
 
   const patchClient = async (clientForm) => {
     console.log(clientForm)
-    // const clientForm = {};
-    // for (let i = 0; i < e.target.children.length; i++) {
-    //   const child = e.target.children[i];
-    //   if (child.type !== "submit" && child.type !== "reset" && child.value !== "") {
-    //     clientForm[child.name] = child.value;
-    //   }
-    // }
-    // console.log(clientForm);
+
     await axios.patch(`${process.env.REACT_APP_API_URL}clients/${selectedClient._id}/`, clientForm).then((response) => {
       return response.data.data;
     }
@@ -169,17 +160,14 @@ const Clients = () => {
           clients.map((client, index) => (
             <Card key={index}>
               <Card.Header>
-                <h4>{client.name}</h4>
-                <h4> {client.code} </h4>
+                <h5 className="decorated-text">{client.name}</h5>
+                <h5 className="decorated-text"> {client.code} </h5>
 
-                <Badge bg="dark" text="primary">
-                  {client.type}
-                </Badge>
-                <Badge variant="Info">{client.category}</Badge>
+                <h5 className="decorated-text2">{client.type}</h5>
+                <h5 className="decorated-text2"> {client.category} </h5>
 
-                {/* I want a button to edit card information*/}
                 <Button
-                  variant="outline-primary"
+                  className="btn btn-secondary"
                   size="sm"
                   onClick={()=>handleEditClient(client)}
                 >
