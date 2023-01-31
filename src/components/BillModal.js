@@ -2,29 +2,30 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import './styles.css'
 
-function ClientModal({ client, closeModal, patchClient }) {
+function BillModal({ bill, closeModal, patchBill }) {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    const clientForm = {};
+    const billForm = {};
+    console.log(e.target.children)
     for (let i = 0; i < e.target.children.length; i++) {
       const child = e.target.children[i];
       if (child.type !== "submit" && child.type !== "reset" && child.value !== "") {
-        clientForm[child.name] = child.value;
+        billForm[child.name] = child.value;
       }
     }
-    await patchClient(clientForm);
+    await patchBill(billForm);
     closeModal();
   };
 
   return (
-    <Modal show={!!client}>
+    <Modal show={!!bill}>
       <Modal.Header>
-        <Modal.Title>Edit Client Information</Modal.Title>
+        <Modal.Title>Edit Bill Information</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <form className="clientModal" onSubmit={handleSave}>
-          <select name="type" placeholder="Type" defaultValue={client.type}>
+          <select name="type" placeholder="Type" defaultValue={bill.type}>
             <option value="">Type</option>
             <option value="buyer">Buyer</option>
             <option value="supplier">Supplier</option>
@@ -68,11 +69,9 @@ function ClientModal({ client, closeModal, patchClient }) {
         </Button>
         </form>
       </Modal.Body>
-      {/* <Modal.Footer>
 
-      </Modal.Footer> */}
     </Modal>
   );
 }
 
-export default ClientModal;
+export default BillModal;

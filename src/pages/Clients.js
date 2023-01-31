@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import "./Clients.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Card, ListGroup, Badge, Button } from "react-bootstrap";
+import { Card, ListGroup, Button } from "react-bootstrap";
 import ClientModal from "../components/ClientModal";
 
 const Clients = () => {
@@ -20,17 +20,18 @@ const Clients = () => {
       if (result) {
         setClients(result);
         allClients.current = result;
+        localStorage.setItem('clients', JSON.stringify(result));
       }
     };
     fetchData();
   }, []);
 
-  const [addClient, setAddClient] = useState(false);
+  const [addClientForm, setAddClientForm] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [typeValue, setTypeValue] = useState("");
   const [categoryValue, setCategoryValue] = useState("");
   const [clients, setClients] = useState([]);
-  const [editModal, setEditModal] = useState(false);
+  const [showEditModal, showSetEditModal] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
 
   const allClients = useRef([]);
@@ -48,7 +49,7 @@ const Clients = () => {
     setClients(temp);
   };
 
-  const handleFilterReset = (e) => {
+  const resetFilter = (e) => {
     e.preventDefault();
     setSearchValue("");
     setTypeValue("");
@@ -58,7 +59,7 @@ const Clients = () => {
 
   const handleEditClient = (client) => {
     setSelectedClient(client);
-    setEditModal(true);
+    showSetEditModal(true);
   };
 
   const postClient = async (e) => {
@@ -94,8 +95,8 @@ const Clients = () => {
   };
 
   const closeModal = () => {
-    setAddClient(false);
-    setEditModal(false);
+    setAddClientForm(false);
+    showSetEditModal(false);
   };
 
   const patchClient = async (clientForm) => {
@@ -150,7 +151,7 @@ const Clients = () => {
           <button
             className="resetButton"
             type="reset"
-            onClick={handleFilterReset}
+            onClick={resetFilter}
           >
             Remove Filter
           </button>
@@ -219,12 +220,12 @@ const Clients = () => {
             </Card>
           ))
         )}
-              {editModal && <ClientModal client={selectedClient} closeModal={closeModal} patchClient={patchClient}/>}
+              {showEditModal && <ClientModal client={selectedClient} closeModal={closeModal} patchClient={patchClient}/>}
 
       </div>
 
-      <button onClick={() => setAddClient(!addClient)}>ADD CLIENT</button>
-      {addClient && (
+      <button onClick={() => setAddClientForm(!addClientForm)}>ADD CLIENT</button>
+      {addClientForm && (
         <form className="filter" onSubmit={postClient}>
           <select name="type" placeholder="Type">
             <option value="">Type</option>
