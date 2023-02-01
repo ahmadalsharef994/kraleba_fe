@@ -1,13 +1,15 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import './styles.css'
+import { useState } from "react";
 
 function BillModal({ bill, closeModal, patchBill }) {
+
+  const [numberOfItems, setNumberOfItems] = useState(bill.numberOfItems);
 
   const handleSave = async (e) => {
     e.preventDefault();
     const billForm = {};
-    console.log(e.target.children)
     for (let i = 0; i < e.target.children.length; i++) {
       const child = e.target.children[i];
       if (child.type !== "submit" && child.type !== "reset" && child.value !== "") {
@@ -24,7 +26,7 @@ function BillModal({ bill, closeModal, patchBill }) {
         <Modal.Title>Edit Bill Information</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <form className="clientModal" onSubmit={handleSave}>
+        {/* <form className="clientModal" onSubmit={handleSave}>
           <select name="type" placeholder="Type" defaultValue={bill.type}>
             <option value="">Type</option>
             <option value="buyer">Buyer</option>
@@ -67,6 +69,80 @@ function BillModal({ bill, closeModal, patchBill }) {
         <Button variant="secondary" onClick={closeModal}>
           Cancel
         </Button>
+        </form> */}
+
+        <form className="filter" onSubmit={handleSave}>
+
+          <input type="text" name="code" placeholder="Code" />
+          <input type="text" name="number" placeholder="Number" />
+          <input type="date" name="date" placeholder="Date" />
+          <select name="type">
+            <option value="">Type</option>
+            <option value="invoice">Invoice</option>
+            <option value="offer">Offer</option>
+          </select>
+          <select name="currency">
+            <option value="">Currency</option>
+            <option value="lei">Lei</option>
+            <option value="euro">Euro</option>
+          </select>
+          <input
+            type="number"
+            name="exchangeRate"
+            placeholder="Exchange Rate"
+          />
+          <input type="number" name="vatRate" placeholder="VAT Rate" />
+          <input
+            type="number"
+            name="totalBeforeVAT"
+            placeholder="Total Before VAT"
+          />
+          <input type="number" name="totalVAT" placeholder="Total VAT" />
+          <input
+            type="number"
+            name="totalAfterVAT"
+            placeholder="Total After VAT"
+          />
+          <input
+            type="number"
+            placeholder="number of items"
+            onChange={(e) => setNumberOfItems(e.target.value)}
+          />
+            {/* <div>
+              {Array.from({ length: numberOfItems }, (_, i) => (
+                <form onSubmit={pushItem}>
+                  <input type="text" name="name" placeholder="Name" />
+                  <input type="text" name="code" placeholder="Code" />
+                  <input
+                    type="text"
+                    name="description"
+                    placeholder="Description"
+                  />
+                  <input
+                    type="text"
+                    name="unitOfMeasurement"
+                    placeholder="Unit of Measurement"
+                  />
+                  <input type="number" name="quantity" placeholder="Quantity" />
+                  <input type="number" name="unitPrice" placeholder="price per unit" />
+                  <input
+                    type="number"
+                    name="totalBeforeVAT"
+                    placeholder="Total Before VAT"
+                  />
+                  <input type="number" name="VAT" placeholder="VAT" />
+                  <input
+                    type="number"
+                    name="totalAfterVAT"
+                    placeholder="Total After VAT"
+                  />
+                  <input type="submit" placeholder="add" value="add" />
+                </form>
+              ))}
+            </div> */}
+
+          <input type="submit" />
+          <input type="reset" className="resetButton" />
         </form>
       </Modal.Body>
 

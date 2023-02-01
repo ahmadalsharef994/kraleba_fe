@@ -2,8 +2,8 @@ import "./App.css";
 import LogoBar from "./components/LogoBar";
 import NavBar from "./components/NavBar";
 import { Route, BrowserRouter, Routes } from "react-router-dom";
-import Clients from "./pages/Clients";
-import Bills from "./pages/Bills";
+import Clients from "./pages/Clients/Clients";
+import Bills from "./pages/Bills/Bills";
 import Prototypes from "./pages/Prototypes";
 import Products from "./pages/Products";
 

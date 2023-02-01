@@ -1,45 +1,46 @@
 import React, { useRef } from "react";
-import "./Clients.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Card, ListGroup, Button } from "react-bootstrap";
-import ClientModal from "../components/ClientModal";
+import "./Clients.css";
+
+import ClientModal from "../../components/ClientModal";
 
 const Clients = () => {
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios
-        .get(`${process.env.REACT_APP_API_URL}clients/`)
-        .then((response) => {
-          return response.data.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
 
-      if (result) {
-        setClients(result);
-        allClients.current = result;
-        localStorage.setItem('clients', JSON.stringify(result));
-      }
-    };
-    fetchData();
+
+  const [clients, setClients] = useState([]);
+  const allClients = useRef([]);
+  const fetchClientsData = async () => {
+    const result = await axios
+      .get(`${process.env.REACT_APP_API_URL}clients/`)
+      .then((response) => {
+        return response.data.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    if (result) {
+      setClients(result);
+      allClients.current = result;
+      localStorage.setItem("clients", JSON.stringify(result));
+    }
+  };
+  useEffect(() => {
+    fetchClientsData();
   }, []);
 
-  const [addClientForm, setAddClientForm] = useState(false);
+
+
   const [searchValue, setSearchValue] = useState("");
   const [typeValue, setTypeValue] = useState("");
   const [categoryValue, setCategoryValue] = useState("");
-  const [clients, setClients] = useState([]);
-  const [showEditModal, showSetEditModal] = useState(false);
-  const [selectedClient, setSelectedClient] = useState(null);
-
-  const allClients = useRef([]);
-
   const handleFilter = (e) => {
     e.preventDefault();
     // Form submission logic here
-    const temp = clients.filter((client) => {
+    let temp = [...allClients.current];
+    temp = temp.filter((client) => {
       return (
         client.name.toLowerCase().includes(searchValue.toLowerCase()) &&
         client.type.toLowerCase().includes(typeValue.toLowerCase()) &&
@@ -57,62 +58,80 @@ const Clients = () => {
     setClients(allClients.current);
   };
 
+  const [selectedClient, setSelectedClient] = useState(null);
+  const [addClientForm, setAddClientForm] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+
   const handleEditClient = (client) => {
     setSelectedClient(client);
-    showSetEditModal(true);
+    setShowEditModal(true);
   };
 
   const postClient = async (e) => {
     e.preventDefault();
-    
+
     const clientForm = {};
+
     for (let i = 0; i < e.target.children.length; i++) {
       const child = e.target.children[i];
-      if (child.type !== "submit" && child.type !== "reset" && child.value !== "") {
-        clientForm[child.name] = child.value;
+
+      if (
+        child.type === "submit" ||
+        child.type === "reset" ||
+        child.value === ""
+      ) {
+        continue;
       }
+      clientForm[child.name] = child.value;
     }
 
-     await axios
-    .post(`${process.env.REACT_APP_API_URL}clients/`, clientForm).then((response) => {
-      return response.data.data;
-    }
-    ).catch((error) => {
-      console.log(error);
-    });
-  
+    await axios
+      .post(`${process.env.REACT_APP_API_URL}clients/`, clientForm)
+      .then(async(response) => {
+        await fetchClientsData(); // <-- refetch clients after successful post
+        return response.data.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const deleteClient = async (client) => {
-    
-    await axios.delete(`${process.env.REACT_APP_API_URL}clients/${client._id}/`).then((response) => {
-      return response.data.data;
-    }
-    ).catch((error) => {
-      console.log(error);
-    }
-    );
+    await axios
+      .delete(`${process.env.REACT_APP_API_URL}clients/${client._id}/`)
+      .then(async(response) => {
+        await fetchClientsData(); // <-- refetch clients after successful delete
+
+        return response.data.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const closeModal = () => {
     setAddClientForm(false);
-    showSetEditModal(false);
+    setShowEditModal(false);
   };
 
   const patchClient = async (clientForm) => {
-    console.log(clientForm)
-
-    await axios.patch(`${process.env.REACT_APP_API_URL}clients/${selectedClient._id}/`, clientForm).then((response) => {
-      return response.data.data;
-    }
-    ).catch((error) => {
-      console.log(error);
-    });
+    await axios
+      .patch(
+        `${process.env.REACT_APP_API_URL}clients/${selectedClient._id}/`,
+        clientForm
+      )
+      .then(async(response) => {
+        await fetchClientsData(); // <-- refetch clients after successful patch
+        return response.data.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     closeModal();
   };
 
   return (
-    <div>
+    <div className="container">
       <form className="filter" onSubmit={handleFilter}>
         <input
           type="text"
@@ -129,7 +148,6 @@ const Clients = () => {
           <option value="Buyer">Buyer</option>
           <option value="Supplier">Supplier</option>
         </select>
-
         <select
           value={categoryValue}
           onChange={(e) => setCategoryValue(e.target.value)}
@@ -148,11 +166,7 @@ const Clients = () => {
           <button className="submitButton" type="submit" onClick={handleFilter}>
             Filter
           </button>
-          <button
-            className="resetButton"
-            type="reset"
-            onClick={resetFilter}
-          >
+          <button className="resetButton" type="reset" onClick={resetFilter}>
             Remove Filter
           </button>
         </div>
@@ -173,28 +187,24 @@ const Clients = () => {
           clients.map((client, index) => (
             <Card key={index}>
               <Card.Header>
-                <h5 className="decorated-text">{client.name}</h5>
-                <h5 className="decorated-text"> {client.code} </h5>
-
+                <h5 className="decorated-text2">{client.name}</h5>
+                <h5 className="decorated-text2"> {client.code} </h5>
                 <h5 className="decorated-text2">{client.type}</h5>
                 <h5 className="decorated-text2"> {client.category} </h5>
-
                 <Button
                   className="btn btn-secondary"
                   size="sm"
-                  onClick={()=>handleEditClient(client)}
+                  onClick={() => handleEditClient(client)}
                 >
                   Edit
                 </Button>
-
                 <Button
                   className="btn btn-danger"
                   size="sm"
-                  onClick={()=>deleteClient(client)}
+                  onClick={() => deleteClient(client)}
                 >
                   Delete
                 </Button>
-
               </Card.Header>
               <Card.Body>
                 <ListGroup>
@@ -216,15 +226,21 @@ const Clients = () => {
                   <ListGroup.Item>Website: {client.website}</ListGroup.Item>
                 </ListGroup>
               </Card.Body>
-
             </Card>
           ))
         )}
-              {showEditModal && <ClientModal client={selectedClient} closeModal={closeModal} patchClient={patchClient}/>}
-
+        {showEditModal && (
+          <ClientModal
+            client={selectedClient}
+            closeModal={closeModal}
+            patchClient={patchClient}
+          />
+        )}
       </div>
 
-      <button onClick={() => setAddClientForm(!addClientForm)}>ADD CLIENT</button>
+      <button onClick={() => setAddClientForm(!addClientForm)}>
+        ADD CLIENT
+      </button>
       {addClientForm && (
         <form className="filter" onSubmit={postClient}>
           <select name="type" placeholder="Type">
@@ -263,10 +279,14 @@ const Clients = () => {
           <input type="text" name="phone1" placeholder="Phone 1" />
           <input type="text" name="phone2" placeholder="Phone 2" />
           <input type="email" name="email" placeholder="E-mail" />
-          <input type="text" name="www" placeholder="WWW" />
+          <input type="text" name="website" placeholder="WWW" />
           <textarea name="notes" placeholder="Notes"></textarea>
-          <input type="submit" value="Submit" name="submit"/>
-          <input type="reset" value="Reset" name="reset" className="resetButton" />
+          <input type="submit" value="Submit"  />
+          <input
+            type="reset"
+            value="Reset"
+            className="resetButton"
+          />
         </form>
       )}
     </div>
