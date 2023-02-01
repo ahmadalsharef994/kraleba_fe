@@ -1,19 +1,18 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import './styles.css'
 
 function ClientModal({ client, closeModal, patchClient }) {
 
   const handleSave = async (e) => {
     e.preventDefault();
     const clientForm = {};
-    console.log(e.target.children)
     for (let i = 0; i < e.target.children.length; i++) {
       const child = e.target.children[i];
       if (child.type !== "submit" && child.type !== "reset" && child.value !== "") {
         clientForm[child.name] = child.value;
       }
     }
-    console.log(clientForm);
     await patchClient(clientForm);
     closeModal();
   };
@@ -24,7 +23,7 @@ function ClientModal({ client, closeModal, patchClient }) {
         <Modal.Title>Edit Client Information</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <form className="filter" onSubmit={handleSave}>
+        <form className="clientModal" onSubmit={handleSave}>
           <select name="type" placeholder="Type" defaultValue={client.type}>
             <option value="">Type</option>
             <option value="buyer">Buyer</option>

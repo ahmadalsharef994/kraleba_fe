@@ -5,12 +5,8 @@
   padding: 10px;
   border-radius: 10px;
   flex-direction: column;
-}
+  font-family: 'Roboto', sans-serif;
 
-.filter form {
-  display: flex;
-  align-items: center;
-  margin-right: 10px;
 }
 
 .filter input,
@@ -24,20 +20,7 @@
   margin-bottom: 5px;
 }
 
-.filter button {
-  background-color: #4caf50;
-  color: white;
-  padding: 10px 10px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-}
 
-.add {
-  color: #0000ff;
-  text-decoration: none;
-  margin-right: 10px;
-}
 
 .resetButton {
   box-shadow: inset 0px 1px 0px 0px #cf866c;
@@ -48,7 +31,6 @@
   display: inline-block;
   cursor: pointer;
   color: #ffffff;
-  font-family: Arial;
   font-size: 13px;
   padding: 6px 24px;
   text-decoration: none;
@@ -72,7 +54,6 @@
   display: inline-block;
   cursor: pointer;
   color: #ffffff;
-  font-family: Arial;
   font-size: 13px;
   font-weight: bold;
   padding: 6px 12px;
@@ -89,17 +70,16 @@
 }
 
 .pdfButton {
-  box-shadow: 0px 10px 14px -7px #276873;
+  box-shadow: 0px 10px 10px -7px #276873;
   background: linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
   background-color: #599bb3;
   border-radius: 8px;
   display: inline-block;
   cursor: pointer;
   color: #ffffff;
-  font-family: Arial;
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
-  padding: 13px 32px;
+  padding: 10px 22px;
   text-decoration: none;
   text-shadow: 0px 1px 0px #3d768a;
 }
@@ -114,7 +94,6 @@
 
 .card {
   display: flex;
-  flex-direction: column;
   align-items: center;
   width: 90%;
   border: 1px solid #ccc;
@@ -123,40 +102,16 @@
 }
 
 .card-header {
-  display: flex;
+
   justify-content: space-between;
   align-items: center;
   width: 100%;
 }
 
-.card-header h2 {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.card-header span {
-  font-size: 18px;
-  font-weight: bold;
-  color: #999;
-}
 
 .card-body {
-  flex-wrap: wrap;
-  align-items: center;
-  width: 50%;
-}
 
-.card-body p {
-  font-size: 18px;
-  margin-right: 20px;
-  width: 50%;
-  margin-bottom: 0px;
-  margin-top: 0px;
-}
-
-.card-body p strong {
-  font-weight: bold;
-  color: #333;
+  justify-content: center;      
 }
 
 .clients {
@@ -167,6 +122,25 @@
   align-items: center;
   width: 100%;
   margin-top: 20px;
+  font-family: 'Roboto', sans-serif;
+
+}
+
+/* .decorated-text  {
+  color: transparent;
+  background: #666666;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  text-shadow: 0px 3px 3px rgba(255,255,255,0.5);
+} */
+
+.decorated-text {
+  color: #000000;
+background: #FFFFFF;
+text-shadow: 1px 1px 0 #bcbcbc, 1px 1px 0 #9c9c9c;
+color: #000000;
+background: #FFFFFF;
 }
 
 .card-header {
@@ -174,6 +148,30 @@
   justify-content: space-evenly;
 }
 
+.list-group {
+  width: 100% !important; 
+  margin-top: 0px !important;
+  font-family: "Roboto", sans-serif;
+}
+
 .list-group-item {
   padding: 0 !important;
+}
+
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #clients * {
+    visibility: visible;
+  }
+
+
+  #clients {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
 }
