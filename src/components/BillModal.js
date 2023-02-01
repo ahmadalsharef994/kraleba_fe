@@ -1,11 +1,7 @@
-import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import './styles.css'
-import { useState } from "react";
 
 function BillModal({ bill, closeModal, patchBill }) {
-
-  const [numberOfItems, setNumberOfItems] = useState(bill.numberOfItems);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -103,43 +99,6 @@ function BillModal({ bill, closeModal, patchBill }) {
             name="totalAfterVAT"
             placeholder="Total After VAT"
           />
-          <input
-            type="number"
-            placeholder="number of items"
-            onChange={(e) => setNumberOfItems(e.target.value)}
-          />
-            {/* <div>
-              {Array.from({ length: numberOfItems }, (_, i) => (
-                <form onSubmit={pushItem}>
-                  <input type="text" name="name" placeholder="Name" />
-                  <input type="text" name="code" placeholder="Code" />
-                  <input
-                    type="text"
-                    name="description"
-                    placeholder="Description"
-                  />
-                  <input
-                    type="text"
-                    name="unitOfMeasurement"
-                    placeholder="Unit of Measurement"
-                  />
-                  <input type="number" name="quantity" placeholder="Quantity" />
-                  <input type="number" name="unitPrice" placeholder="price per unit" />
-                  <input
-                    type="number"
-                    name="totalBeforeVAT"
-                    placeholder="Total Before VAT"
-                  />
-                  <input type="number" name="VAT" placeholder="VAT" />
-                  <input
-                    type="number"
-                    name="totalAfterVAT"
-                    placeholder="Total After VAT"
-                  />
-                  <input type="submit" placeholder="add" value="add" />
-                </form>
-              ))}
-            </div> */}
 
           <input type="submit" />
           <input type="reset" className="resetButton" />

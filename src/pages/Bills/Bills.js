@@ -3,6 +3,7 @@ import { Card, Button, Table, ListGroup } from "react-bootstrap";
 import "./Bills.css";
 import axios from "axios";
 import BillModal from "../../components/BillModal";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Bills = () => {
   const allBills = useRef([]);
@@ -197,7 +198,7 @@ const Bills = () => {
         ) : (
           bills.map((bill, index) => (
             <Card key={index}>
-              <Card.Header>
+              <Card.Header style={{display: "flex"}}>
                 <ListGroup>
                   <ListGroup.Item>
                     client name: {bill.clientName}

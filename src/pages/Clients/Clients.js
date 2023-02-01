@@ -2,6 +2,8 @@ import React, { useRef } from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Card, ListGroup, Button } from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import "./Clients.css";
 
 import ClientModal from "../../components/ClientModal";
