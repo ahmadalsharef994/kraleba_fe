@@ -9,14 +9,61 @@ const Bills = () => {
   const allBills = useRef([]);
   const allClients = useRef([]);
   const billItems = useRef([]);
-
-  const [addBillForm, setAddBillForm] = useState(false);
   const [bills, setBills] = useState([]);
-  const [numberOfItems, setNumberOfItems] = useState(0);
+
+  const fetchBillsData = async () => {
+    const result = await axios
+      .get(`${process.env.REACT_APP_API_URL}bills/`)
+      .then((response) => {
+        return response.data.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    if (result) {
+      setBills(result);
+      allBills.current = result;
+      localStorage.setItem("bills", JSON.stringify(result));
+
+    }
+
+    const clientsData = localStorage.getItem("clients");
+    if (clientsData) {
+      allClients.current = JSON.parse(clientsData);
+    }
+  };
+
+  useEffect(() => {
+    fetchBillsData();
+  }, []);
+
   const [searchValue, setSearchValue] = useState("");
   const [typeValue, setTypeValue] = useState("");
-  const [showEditModal, showSetEditModal] = useState(false);
+
+  const handleFilter = (e) => {
+    e.preventDefault();
+    // Form submission logic here
+    let temp = [...allBills.current];
+    temp = temp.filter((bill) => {
+      return (
+        bill.name.toLowerCase().includes(searchValue.toLowerCase()) &&
+        bill.type.toLowerCase().includes(typeValue.toLowerCase()));
+    });
+    setBills(temp);
+  };
+  const resetFilter = (e) => {
+    e.preventDefault();
+    setSearchValue("");
+    setTypeValue("");
+    setBills(allBills.current);
+  };
+
   const [selectedBill, setSelectedBill] = useState(null);
+  const [showEditModal, showSetEditModal] = useState(false);
+
+  const [addBillForm, setAddBillForm] = useState(false);
+  const [numberOfItems, setNumberOfItems] = useState(0);
+
 
   const convertDate = (billDate) => {
     const date = new Date(billDate);
@@ -24,29 +71,7 @@ const Bills = () => {
     /* Date converted to MM-DD-YYYY format */
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios
-        .get(`${process.env.REACT_APP_API_URL}bills/`)
-        .then((response) => {
-          return response.data.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
 
-      if (result) {
-        setBills(result);
-        allBills.current = result;
-      }
-
-      const clientsData = localStorage.getItem("clients");
-      if (clientsData) {
-        allClients.current = JSON.parse(clientsData);
-      }
-    };
-    fetchData();
-  }, []);
 
   const handleEditBill = (bill) => {
     setSelectedBill(bill);
@@ -56,6 +81,22 @@ const Bills = () => {
   const closeModal = () => {
     setAddBillForm(false);
     showSetEditModal(false);
+  };
+
+  const patchBill = async (billForm) => {
+    await axios
+      .patch(
+        `${process.env.REACT_APP_API_URL}bills/${selectedBill._id}/`,
+        billForm
+      )
+      .then(async(response) => {
+        await fetchBillsData(); // <-- refetch bills after successful patch
+        return response.data.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    closeModal();
   };
 
   const postBill = async (e) => {
@@ -85,32 +126,21 @@ const Bills = () => {
 
     await axios
       .post(`${process.env.REACT_APP_API_URL}bills/`, billForm)
-      .then((response) => {
+      .then(async(response) => {
+        await fetchBillsData(); // <-- refetch bills after successful post
         return response.data.data;
       })
       .catch((error) => {
         console.log(error);
       });
   };
-  const patchBill = async (billForm) => {
-    await axios
-      .patch(
-        `${process.env.REACT_APP_API_URL}bills/${selectedBill._id}/`,
-        billForm
-      )
-      .then((response) => {
-        return response.data.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    closeModal();
-  };
+
 
   const deleteBill = async (bill) => {
     await axios
       .delete(`${process.env.REACT_APP_API_URL}bills/${bill._id}/`)
-      .then((response) => {
+      .then(async(response) => {
+        await fetchBillsData(); // <-- refetch bills after successful delete
         return response.data.data;
       })
       .catch((error) => {
@@ -131,24 +161,7 @@ const Bills = () => {
     }
   };
 
-  const handleFilter = (e) => {
-    e.preventDefault();
-    // Form submission logic here
-    const temp = bills.filter((bill) => {
-      return (
-        bill.clientName.toLowerCase().includes(searchValue.toLowerCase()) &&
-        bill.type.toLowerCase().includes(typeValue.toLowerCase())
-      );
-    });
 
-    setBills(temp);
-  };
-  const handleFilterReset = (e) => {
-    e.preventDefault();
-    setSearchValue("");
-    setTypeValue("");
-    setBills(allBills.current);
-  };
 
   return (
     <div>
@@ -177,7 +190,7 @@ const Bills = () => {
           <button
             className="resetButton"
             type="reset"
-            onClick={handleFilterReset}
+            onClick={resetFilter}
           >
             Remove Filter
           </button>

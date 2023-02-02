@@ -30,7 +30,7 @@ function ClientModal({ client, closeModal, patchClient }) {
             <option value="supplier">Supplier</option>
           </select>
 
-          <select name="category" placeholder="Category">
+          <select name="category" placeholder="Category" defaultValue={client.category}>
             <option value="">Category</option>
             <option value="fabrics">Fabrics</option>
             <option assets="assets">Assets</option>
@@ -41,27 +41,27 @@ function ClientModal({ client, closeModal, patchClient }) {
             <option value="duties">Duties</option>
             <option value="others">Others</option>
           </select>
-          <input type="text" name="name" placeholder="Name" />
-          <input type="text" name="code" placeholder="Code" />
-          <input type="text" name="address" placeholder="Address" />
-          <input type="text" name="zipCode" placeholder="Zip Code" />
-          <input type="text" name="city" placeholder="City" />
-          <select name="country">
+          <input type="text" name="name" placeholder="Name" defaultValue={client.name} readOnly/>
+          <input type="text" name="code" placeholder="Code" defaultValue={client.code} readOnly/>
+          <input type="text" name="address" placeholder="Address" defaultValue={client.address}/>
+          <input type="text" name="zipCode" placeholder="Zip Code" defaultValue={client.zipCode}/>
+          <input type="text" name="city" placeholder="City" readOnly defaultValue={client.city}/>
+          <select name="country" readOnly defaultValue={client.country}>
             <option value="">Country</option>
             <option value="Romania">Romania</option>
             <option value="EU">EU</option>
             <option value="Non-EU">Non-EU</option>
           </select>
-          <input type="text" name="cif" placeholder="CIF" />
-          <input type="text" name="ocr" placeholder="OCR" />
-          <input type="text" name="iban" placeholder="IBAN" />
-          <input type="text" name="swift" placeholder="SWIFT" />
-          <input type="text" name="bank" placeholder="BANK" />
-          <input type="text" name="phone1" placeholder="Phone 1" />
-          <input type="text" name="phone2" placeholder="Phone 2" />
-          <input type="email" name="email" placeholder="E-mail" />
-          <input type="text" name="www" placeholder="WWW" />
-          <textarea name="notes" placeholder="Notes"></textarea>
+          <input type="text" name="cif" placeholder="CIF" defaultValue={client.cif}/>
+          <input type="text" name="ocr" placeholder="OCR"  defaultValue={client.ocr}/>
+          <input type="text" name="iban" placeholder="IBAN" defaultValue={client.iban}/>
+          <input type="text" name="swift" placeholder="SWIFT" defaultValue={client.swift}/>
+          <input type="text" name="bank" placeholder="BANK" defaultValue={client.bank}/>
+          <input type="text" name="phone1" placeholder="Phone 1" defaultValue={client.phone1}/>
+          <input type="text" name="phone2" placeholder="Phone 2" defaultValue={client.phone2}/>
+          <input type="email" name="email" placeholder="E-mail" defaultValue={client.email}/>
+          <input type="text" name="www" placeholder="WWW" defaultValue={client.website}/>
+          <textarea name="notes" placeholder="Notes" defaultValue={client.notes}/>
           <input type="submit" value="Submit" />
         <Button variant="secondary" onClick={closeModal}>
           Cancel
