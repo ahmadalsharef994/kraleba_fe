@@ -10,7 +10,6 @@ import ClientModal from "../../components/ClientModal";
 
 const Clients = () => {
 
-
   const [clients, setClients] = useState([]);
   const allClients = useRef([]);
   const fetchClientsData = async () => {
@@ -30,7 +29,10 @@ const Clients = () => {
     }
   };
   useEffect(() => {
+    console.log("useEffect called");
     fetchClientsData();
+    /* why it is called twice? */ 
+
   }, []);
 
 
@@ -61,12 +63,34 @@ const Clients = () => {
   };
 
   const [selectedClient, setSelectedClient] = useState(null);
-  const [addClientForm, setAddClientForm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+
+  const [addClientForm, setAddClientForm] = useState(false);
 
   const handleEditClient = (client) => {
     setSelectedClient(client);
     setShowEditModal(true);
+  };
+
+  const closeModal = () => {
+    setAddClientForm(false);
+    setShowEditModal(false);
+  };
+
+  const patchClient = async (clientForm) => {
+    await axios
+      .patch(
+        `${process.env.REACT_APP_API_URL}clients/${selectedClient._id}/`,
+        clientForm
+      )
+      .then(async(response) => {
+        await fetchClientsData(); // <-- refetch clients after successful patch
+        return response.data.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    closeModal();
   };
 
   const postClient = async (e) => {
@@ -111,26 +135,7 @@ const Clients = () => {
       });
   };
 
-  const closeModal = () => {
-    setAddClientForm(false);
-    setShowEditModal(false);
-  };
 
-  const patchClient = async (clientForm) => {
-    await axios
-      .patch(
-        `${process.env.REACT_APP_API_URL}clients/${selectedClient._id}/`,
-        clientForm
-      )
-      .then(async(response) => {
-        await fetchClientsData(); // <-- refetch clients after successful patch
-        return response.data.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    closeModal();
-  };
 
   return (
     <div className="container">
@@ -262,12 +267,12 @@ const Clients = () => {
             <option value="duties">Duties</option>
             <option value="others">Others</option>
           </select>
-          <input type="text" name="name" placeholder="Name" />
-          <input type="text" name="code" placeholder="Code" />
+          <input type="text" name="name" placeholder="Name" required/>
+          <input type="text" name="code" placeholder="Code" required/>
           <input type="text" name="address" placeholder="Address" />
           <input type="text" name="zipCode" placeholder="Zip Code" />
-          <input type="text" name="city" placeholder="City" />
-          <select name="country">
+          <input type="text" name="city" placeholder="City" required/>
+          <select name="country" required>
             <option value="">Country</option>
             <option value="Romania">Romania</option>
             <option value="EU">EU</option>

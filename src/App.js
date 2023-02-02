@@ -16,8 +16,8 @@ function App() {
         <Routes>
         <Route path="/clients" exact element={<Clients/>} />
         <Route path="/bills" exact element={<Bills/>} />
-        <Route path="/prototypes" exact component={Prototypes} />
-        <Route path="/products" exact component={Products} />
+        <Route path="/prototypes" exact element={<Prototypes/>} />
+        <Route path="/products" exact element={<Products/>} />
         </Routes>
       </div>
     </BrowserRouter>

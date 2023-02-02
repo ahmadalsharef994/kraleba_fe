@@ -3,6 +3,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  animation: wiggle 5s linear infinite;
+
 }
 
 .flex-left, .flex-right {
@@ -45,7 +47,6 @@
   margin-right: 30px;
   margin-left: 30px;
   font-weight: bold;
-  font-family: 'Roboto', sans-serif;
 
 }
 
@@ -61,10 +62,34 @@
   justify-content: space-between;
   width: 100%;
   margin-top: 20px;
-  font-family: 'Roboto', sans-serif;
 }
 
 .clientModal * {
   border: 1px solid black;
   flex: 50%;
+}
+
+/* Keyframes */
+@keyframes wiggle {
+  0%, 7% {
+    transform: rotateZ(0);
+  }
+  15% {
+    transform: rotateZ(-10deg);
+  }
+  20% {
+    transform: rotateZ(5deg);
+  }
+  25% {
+    transform: rotateZ(-5deg);
+  }
+  30% {
+    transform: rotateZ(3deg);
+  }
+  35% {
+    transform: rotateZ(-2deg);
+  }
+  40%, 100% {
+    transform: rotateZ(0);
+  }
 }

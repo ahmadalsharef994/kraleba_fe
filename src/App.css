@@ -11,9 +11,8 @@ body {
   background: linear-gradient(to bottom, #b39d5c, #a98e44);
   background-repeat: no-repeat;
   background-size: cover;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto', sans-serif !important;
   margin: 0;
-  font-family: 'Roboto', sans-serif;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -100,7 +99,6 @@ body {
   padding: 10px;
   border-radius: 10px;
   flex-direction: column;
-  font-family: "Roboto", sans-serif;
 }
 
 .filter input,
