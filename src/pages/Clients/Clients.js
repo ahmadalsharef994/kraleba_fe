@@ -1,7 +1,8 @@
 import React, { useRef } from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Card, ListGroup, Button } from "react-bootstrap";
+import { Card, ListGroup } from "react-bootstrap";
+import ButtonExtend from "../../components/extends/ButtonExtend";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import "./Clients.css";
@@ -170,21 +171,21 @@ const Clients = () => {
           <option value="others">Others</option>
         </select>
         <div>
-          <button className="submitButton" type="submit" onClick={handleFilter}>
+          <ButtonExtend className="filterButton" type="submit" onClick={handleFilter}>
             Filter
-          </button>
-          <button className="resetButton" type="reset" onClick={resetFilter}>
+          </ButtonExtend>
+          <ButtonExtend className="resetButton" type="reset" onClick={resetFilter}>
             Remove Filter
-          </button>
+          </ButtonExtend>
         </div>
 
-        <button
+        <ButtonExtend
           type="button"
           className="pdfButton"
           onClick={() => window.print()}
         >
           Print as PDF
-        </button>
+        </ButtonExtend>
       </form>
 
       <div className="clients" id="clients">
@@ -198,20 +199,20 @@ const Clients = () => {
                 <h5 className="decorated-text2"> {client.code} </h5>
                 <h5 className="decorated-text2">{client.type}</h5>
                 <h5 className="decorated-text2"> {client.category} </h5>
-                <Button
+                <ButtonExtend
                   className="btn btn-secondary"
                   size="sm"
                   onClick={() => handleEditClient(client)}
                 >
                   Edit
-                </Button>
-                <Button
+                </ButtonExtend>
+                <ButtonExtend
                   className="btn btn-danger"
                   size="sm"
                   onClick={() => deleteClient(client)}
                 >
                   Delete
-                </Button>
+                </ButtonExtend>
               </Card.Header>
               <Card.Body>
                 <ListGroup>

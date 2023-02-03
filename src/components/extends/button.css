@@ -1,0 +1,95 @@
+  .filterButton {
+    box-shadow: 0px 10px 14px -7px #3e7327;
+    background: linear-gradient(to bottom, #77b55a 5%, #72b352 100%);
+    background-color: #77b55a;
+    border-radius: 4px;
+    border: 1px solid #4b8f29;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 6px 12px;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #5b8a3c;
+  }
+  .filterButton:hover {
+    background: linear-gradient(to bottom, #72b352 5%, #77b55a 100%);
+    background-color: #72b352;
+  }
+  .filterButton:active {
+    position: relative;
+    top: 1px;
+  }
+
+  .resetButton {
+    box-shadow: inset 0px 1px 0px 0px #cf866c;
+    background: linear-gradient(to bottom, #d0451b 5%, #bc3315 100%);
+    background-color: #d0451b;
+    border-radius: 3px;
+    border: 1px solid #942911;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 13px;
+    padding: 6px 24px;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #854629;
+  }
+  .resetButton:hover {
+    background: linear-gradient(to bottom, #bc3315 5%, #d0451b 100%);
+    background-color: #bc3315;
+  }
+  .resetButton:active {
+    position: relative;
+    top: 1px;
+  }
+  
+  .pdfButton {
+    box-shadow: 0px 10px 10px -7px #276873;
+    background: linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+    background-color: #599bb3;
+    border-radius: 8px;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 22px;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #3d768a;
+  }
+  .pdfButton:hover {
+    background: linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+    background-color: #408c99;
+  }
+  .pdfButton:active {
+    position: relative;
+    top: 1px;
+  }
+
+  .addButton {
+    box-shadow: 0px 10px 14px -7px #3e7327;
+    background: linear-gradient(to bottom, #77b55a 5%, #72b352 100%);
+    background-color: #77b55a;
+    border-radius: 4px;
+    border: 1px solid #4b8f29;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 6px 12px;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #5b8a3c;
+  }
+
+  .addButton:hover {
+    background: linear-gradient(to bottom, #72b352 5%, #77b55a 100%);
+    background-color: #72b352;
+  }
+
+  .addButton:active {
+    position: relative;
+    top: 1px;
+  }
