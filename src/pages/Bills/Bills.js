@@ -10,6 +10,13 @@ const Bills = () => {
   const allClients = useRef([]);
   const billItems = useRef([]);
   const [bills, setBills] = useState([]);
+  const [selectedClient, setSelectedClient ] = useState({});
+
+  const selectClient = (e) => {
+    const temp = e.target.value.split(',');
+    setSelectedClient({id: temp[0], name: temp[1], code: temp[2], country: temp[3]})
+  }
+
 
   const fetchBillsData = async () => {
     const result = await axios
@@ -70,8 +77,6 @@ const Bills = () => {
     return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
     /* Date converted to MM-DD-YYYY format */
   };
-
-
 
   const handleEditBill = (bill) => {
     setSelectedBill(bill);
@@ -135,7 +140,6 @@ const Bills = () => {
       });
   };
 
-
   const deleteBill = async (bill) => {
     await axios
       .delete(`${process.env.REACT_APP_API_URL}bills/${bill._id}/`)
@@ -160,8 +164,6 @@ const Bills = () => {
       billItems.current.push(item);
     }
   };
-
-
 
   return (
     <div>
@@ -328,32 +330,36 @@ const Bills = () => {
       <button onClick={() => setAddBillForm(!addBillForm)}>ADD BILL</button>
       {addBillForm && (
         <form className="filter" onSubmit={postBill}>
-          <select name="client">
+          <select name="clientDetails" required onChange={selectClient}>
             {allClients &&
               allClients.current.map((client) => (
-                <option value={client._id}>{client.name}</option>
-              ))}
+                <option value={[client._id, client.name, client.code, client.country]}>{client.name}</option>
+              ))
+              }
           </select>
 
-          <input type="text" name="code" placeholder="Code" />
-          <input type="text" name="number" placeholder="Number" />
-          <input type="date" name="date" placeholder="Date" />
-          <select name="type">
+          <input type="text" name="code" placeholder="Code" required/>
+          <input type="text" name="number" placeholder="Number" required/>
+          <input type="date" name="date" placeholder="Date" required/>
+          <select name="type" required>
             <option value="">Type</option>
             <option value="invoice">Invoice</option>
             <option value="offer">Offer</option>
           </select>
-          <select name="currency">
+          <select name="currency" required>
             <option value="">Currency</option>
-            <option value="lei">Lei</option>
-            <option value="euro">Euro</option>
+            { (selectedClient.country==="Romania") && <option value="lei">Lei</option>}
+            {(selectedClient.country!=="Romania") && <option value="euro" selected>Euro</option>}
           </select>
-          <input
+          {(selectedClient.country!=="Romania") && <input
             type="number"
             name="exchangeRate"
             placeholder="Exchange Rate"
-          />
-          <input type="number" name="vatRate" placeholder="VAT Rate" />
+            required
+          />}
+          { (selectedClient.country !=="EU") && <input type="number" name="vatRate" placeholder="VAT Rate" required/>}
+          { (selectedClient.country === "Non-EU") && <input type="number" name="customDuty" placeholder="Custom Duty" required/>}
+
           <input
             type="number"
             name="totalBeforeVAT"
@@ -396,12 +402,12 @@ const Bills = () => {
                   name="totalBeforeVAT"
                   placeholder="Total Before VAT"
                 />
-                <input type="number" name="VAT" placeholder="VAT" />
-                <input
+                { (selectedClient.country !=="EU") && <input type="number" name="VAT" placeholder="VAT" />}
+                {/* <input
                   type="number"
                   name="totalAfterVAT"
                   placeholder="Total After VAT"
-                />
+                /> */}
                 <input type="submit" placeholder="add" value="add" />
               </form>
             ))}
