@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
-import { register } from "../services/authService";
+import { register } from "../components/services/authService";
 import { useHistory } from "react-router-dom";
 
 const Register = () => {

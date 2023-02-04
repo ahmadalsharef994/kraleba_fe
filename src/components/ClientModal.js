@@ -68,9 +68,7 @@ function ClientModal({ client, closeModal, patchClient }) {
         </Button>
         </form>
       </Modal.Body>
-      {/* <Modal.Footer>
 
-      </Modal.Footer> */}
     </Modal>
   );
 }

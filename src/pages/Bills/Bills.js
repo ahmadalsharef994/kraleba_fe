@@ -1,47 +1,41 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Card, Button, Table, ListGroup } from "react-bootstrap";
+import { Card, Table, ListGroup } from "react-bootstrap";
 import "./Bills.css";
-import axios from "axios";
 import BillModal from "../../components/BillModal";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import ButtonExtend from "../../components/extends/ButtonExtend";
+import {
+  fetchBillsData,
+  patchBill,
+  postBill,
+} from "../../components/services/billDataService";
 
 const Bills = () => {
   const allBills = useRef([]);
-  const allClients = useRef([]);
+  const allClients = useRef(localStorage.getItem("clients"));
   const billItems = useRef([]);
   const [bills, setBills] = useState([]);
-  const [selectedClient, setSelectedClient ] = useState({});
+  const [selectedClient, setSelectedClient] = useState({});
 
   const selectClient = (e) => {
-    const temp = e.target.value.split(',');
-    setSelectedClient({id: temp[0], name: temp[1], code: temp[2], country: temp[3]})
-  }
-
-
-  const fetchBillsData = async () => {
-    const result = await axios
-      .get(`${process.env.REACT_APP_API_URL}bills/`)
-      .then((response) => {
-        return response.data.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    if (result) {
-      setBills(result);
-      allBills.current = result;
-      localStorage.setItem("bills", JSON.stringify(result));
-
-    }
-
-    const clientsData = localStorage.getItem("clients");
-    if (clientsData) {
-      allClients.current = JSON.parse(clientsData);
-    }
+    const temp = e.target.value.split(",");
+    setSelectedClient({
+      id: temp[0],
+      name: temp[1],
+      code: temp[2],
+      country: temp[3],
+    });
   };
 
   useEffect(() => {
-    fetchBillsData();
+    const fetchData = async () => {
+      const result = await fetchBillsData();
+      setBills(result);
+      allBills.current = result;
+      localStorage.setItem("bills", JSON.stringify(result));
+      allClients.current = JSON.parse(localStorage.getItem("clients"));
+    };
+    fetchData();
   }, []);
 
   const [searchValue, setSearchValue] = useState("");
@@ -54,7 +48,8 @@ const Bills = () => {
     temp = temp.filter((bill) => {
       return (
         bill.name.toLowerCase().includes(searchValue.toLowerCase()) &&
-        bill.type.toLowerCase().includes(typeValue.toLowerCase()));
+        bill.type.toLowerCase().includes(typeValue.toLowerCase())
+      );
     });
     setBills(temp);
   };
@@ -70,7 +65,6 @@ const Bills = () => {
 
   const [addBillForm, setAddBillForm] = useState(false);
   const [numberOfItems, setNumberOfItems] = useState(0);
-
 
   const convertDate = (billDate) => {
     const date = new Date(billDate);
@@ -88,23 +82,14 @@ const Bills = () => {
     showSetEditModal(false);
   };
 
-  const patchBill = async (billForm) => {
-    await axios
-      .patch(
-        `${process.env.REACT_APP_API_URL}bills/${selectedBill._id}/`,
-        billForm
-      )
-      .then(async(response) => {
-        await fetchBillsData(); // <-- refetch bills after successful patch
-        return response.data.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const handlePatchBill = async (billForm, billId) => {
+    await patchBill(billForm, billId);
     closeModal();
+    const temp = await fetchBillsData();
+    setBills(temp);
   };
 
-  const postBill = async (e) => {
+  const handlePostBill = async (e) => {
     e.preventDefault();
     const billForm = {};
     for (let i = 0; i < e.target.children.length; i++) {
@@ -129,27 +114,18 @@ const Bills = () => {
     billForm.totalVAT = { [billForm.currency]: totalVAT };
     billForm.totalAfterVAT = { [billForm.currency]: totalAfterVAT };
 
-    await axios
-      .post(`${process.env.REACT_APP_API_URL}bills/`, billForm)
-      .then(async(response) => {
-        await fetchBillsData(); // <-- refetch bills after successful post
-        return response.data.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    billForm["clent"] = selectedClient.country;
+
+    billForm["clientName"] = selectedClient.name;
+    billForm["clientCode"] = selectedClient.code;
+    billForm["clientCountry"] = selectedClient.country;
+
+    await postBill(billForm);
+    fetchBillsData();
   };
 
   const deleteBill = async (bill) => {
-    await axios
-      .delete(`${process.env.REACT_APP_API_URL}bills/${bill._id}/`)
-      .then(async(response) => {
-        await fetchBillsData(); // <-- refetch bills after successful delete
-        return response.data.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    await deleteBill(bill._id);
   };
 
   const pushItem = async (itemForm) => {
@@ -186,25 +162,29 @@ const Bills = () => {
         </select>
 
         <div>
-          <button className="submitButton" type="submit" onClick={handleFilter}>
+          <ButtonExtend
+            className="filterButton"
+            type="submit"
+            onClick={handleFilter}
+          >
             Filter
-          </button>
-          <button
+          </ButtonExtend>
+          <ButtonExtend
             className="resetButton"
             type="reset"
             onClick={resetFilter}
           >
             Remove Filter
-          </button>
+          </ButtonExtend>
         </div>
 
-        <button
+        <ButtonExtend
           type="button"
           className="pdfButton"
           onClick={() => window.print()}
         >
           Print as PDF
-        </button>
+        </ButtonExtend>
       </form>
 
       <div className="bills" id="bills">
@@ -213,7 +193,7 @@ const Bills = () => {
         ) : (
           bills.map((bill, index) => (
             <Card key={index}>
-              <Card.Header style={{display: "flex"}}>
+              <Card.Header style={{ display: "flex" }}>
                 <ListGroup>
                   <ListGroup.Item>
                     client name: {bill.clientName}
@@ -255,21 +235,21 @@ const Bills = () => {
                   </ListGroup.Item>
                 </ListGroup>
 
-                <Button
+                <ButtonExtend
                   className="btn btn-secondary"
                   size="sm"
                   onClick={() => handleEditBill(bill)}
                 >
                   Edit
-                </Button>
+                </ButtonExtend>
 
-                <Button
+                <ButtonExtend
                   className="btn btn-danger"
                   size="sm"
                   onClick={() => deleteBill(bill)}
                 >
                   Delete
-                </Button>
+                </ButtonExtend>
               </Card.Header>
               <Card.Body>
                 {/* React Table having the items */}
@@ -322,25 +302,33 @@ const Bills = () => {
           <BillModal
             bill={selectedBill}
             closeModal={closeModal}
-            patchBill={patchBill}
+            patchBill={(form) => handlePatchBill(form, selectedBill._id)}
           />
         )}
       </div>
 
-      <button onClick={() => setAddBillForm(!addBillForm)}>ADD BILL</button>
+      <ButtonExtend
+        className="addButton"
+        onClick={() => setAddBillForm(!addBillForm)}
+      >
+        ADD BILL
+      </ButtonExtend>
       {addBillForm && (
-        <form className="filter" onSubmit={postBill}>
+        <form className="filter" onSubmit={handlePostBill}>
           <select name="clientDetails" required onChange={selectClient}>
             {allClients &&
               allClients.current.map((client) => (
-                <option value={[client._id, client.name, client.code, client.country]}>{client.name}</option>
-              ))
-              }
+                <option
+                  value={[client._id, client.name, client.code, client.country]}
+                >
+                  {client.name}
+                </option>
+              ))}
           </select>
 
-          <input type="text" name="code" placeholder="Code" required/>
-          <input type="text" name="number" placeholder="Number" required/>
-          <input type="date" name="date" placeholder="Date" required/>
+          <input type="text" name="code" placeholder="Code" required />
+          <input type="text" name="number" placeholder="Number" required />
+          <input type="date" name="date" placeholder="Date" required />
           <select name="type" required>
             <option value="">Type</option>
             <option value="invoice">Invoice</option>
@@ -348,17 +336,37 @@ const Bills = () => {
           </select>
           <select name="currency" required>
             <option value="">Currency</option>
-            { (selectedClient.country==="Romania") && <option value="lei">Lei</option>}
-            {(selectedClient.country!=="Romania") && <option value="euro" selected>Euro</option>}
+            {selectedClient.country === "Romania" && (
+              <option value="lei">Lei</option>
+            )}
+            {selectedClient.country !== "Romania" && (
+              <option value="euro">Euro</option>
+            )}
           </select>
-          {(selectedClient.country!=="Romania") && <input
-            type="number"
-            name="exchangeRate"
-            placeholder="Exchange Rate"
-            required
-          />}
-          { (selectedClient.country !=="EU") && <input type="number" name="vatRate" placeholder="VAT Rate" required/>}
-          { (selectedClient.country === "Non-EU") && <input type="number" name="customDuty" placeholder="Custom Duty" required/>}
+          {selectedClient.country !== "Romania" && (
+            <input
+              type="number"
+              name="exchangeRate"
+              placeholder="Exchange Rate"
+              required
+            />
+          )}
+          {selectedClient.country !== "EU" && (
+            <input
+              type="number"
+              name="vatRate"
+              placeholder="VAT Rate"
+              required
+            />
+          )}
+          {selectedClient.country === "Non-EU" && (
+            <input
+              type="number"
+              name="customDuty"
+              placeholder="Custom Duty"
+              required
+            />
+          )}
 
           <input
             type="number"
@@ -375,43 +383,44 @@ const Bills = () => {
             type="number"
             placeholder="number of items"
             onChange={(e) => setNumberOfItems(e.target.value)}
+            name="numberOfItems"
           />
-          <div>
-            {Array.from({ length: numberOfItems }, (_, i) => (
-              <form onSubmit={pushItem}>
-                <input type="text" name="name" placeholder="Name" />
-                <input type="text" name="code" placeholder="Code" />
-                <input
-                  type="text"
-                  name="description"
-                  placeholder="Description"
-                />
-                <input
-                  type="text"
-                  name="unitOfMeasurement"
-                  placeholder="Unit of Measurement"
-                />
-                <input type="number" name="quantity" placeholder="Quantity" />
-                <input
-                  type="number"
-                  name="unitPrice"
-                  placeholder="price per unit"
-                />
-                <input
-                  type="number"
-                  name="totalBeforeVAT"
-                  placeholder="Total Before VAT"
-                />
-                { (selectedClient.country !=="EU") && <input type="number" name="VAT" placeholder="VAT" />}
-                {/* <input
-                  type="number"
-                  name="totalAfterVAT"
-                  placeholder="Total After VAT"
-                /> */}
-                <input type="submit" placeholder="add" value="add" />
-              </form>
-            ))}
-          </div>
+          {Array.from({ length: numberOfItems }, (_, i) => (
+            <div key={i}>
+              <input type="text" name={`name`} placeholder="Name" />
+              <input type="text" name={`code`} placeholder="Code" />
+              <input
+                type="text"
+                name={`description`}
+                placeholder="Description"
+              />
+              <input
+                type="text"
+                name={`unitOfMeasurement`}
+                placeholder="Unit of Measurement"
+              />
+              <input
+                type="number"
+                name={`quantity`}
+                placeholder="Quantity"
+              />
+              <input
+                type="number"
+                name={`unitPrice`}
+                placeholder="price per unit"
+              />
+              <input
+                type="number"
+                name={`totalBeforeVAT`}
+                placeholder="Total Before VAT"
+              />
+              {selectedClient.country !== "EU" && (
+                <input type="number" name={`VAT`} placeholder="VAT" />
+              )}
+              {/* <input type="number" name={`totalAfterVAT-${i}`} placeholder="Total After VAT" /> */}
+              <button onClick={() => pushItem(i)}>Add</button>
+            </div>
+          ))}
 
           <input type="submit" />
           <input type="reset" className="resetButton" />

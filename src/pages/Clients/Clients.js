@@ -1,46 +1,71 @@
 import React, { useRef } from "react";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { Card, ListGroup } from "react-bootstrap";
 import ButtonExtend from "../../components/extends/ButtonExtend";
-import 'bootstrap/dist/css/bootstrap.min.css';
-
+import "bootstrap/dist/css/bootstrap.min.css";
+import {
+  fetchClientsData,
+  patchClient,
+  postClient,
+  deleteClient,
+} from "../../components/services/clientDataService";
 import "./Clients.css";
 
 import ClientModal from "../../components/ClientModal";
 
 const Clients = () => {
-
   const [clients, setClients] = useState([]);
   const allClients = useRef([]);
-  const fetchClientsData = async () => {
-    const result = await axios
-      .get(`${process.env.REACT_APP_API_URL}clients/`)
-      .then((response) => {
-        return response.data.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
 
-    if (result) {
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetchClientsData();
       setClients(result);
       allClients.current = result;
       localStorage.setItem("clients", JSON.stringify(result));
-    }
-  };
-  useEffect(() => {
-    console.log("useEffect called");
-    fetchClientsData();
-    /* why it is called twice? */ 
-
+    };
+    fetchData();
   }, []);
 
+  const handlePatchClient = async (clientForm, clientId) => {
+    await patchClient(clientForm, clientId);
+    closeModal();
+    const temp = await fetchClientsData();
+    setClients(temp);
+  };
 
+  const handlePostClient = async (e) => {
+    e.preventDefault();
+
+    const clientForm = {};
+
+    for (let i = 0; i < e.target.children.length; i++) {
+      const child = e.target.children[i];
+
+      if (
+        child.type === "submit" ||
+        child.type === "reset" ||
+        child.value === ""
+      ) {
+        continue;
+      }
+      clientForm[child.name] = child.value;
+    }
+    await postClient(clientForm);
+    const temp = await fetchClientsData();
+    setClients(temp);
+  };
+
+  const handleDeleteClient = async(client) => {
+    await deleteClient(client._id);
+    const clients = await fetchClientsData();
+    setClients(clients);
+  };
 
   const [searchValue, setSearchValue] = useState("");
   const [typeValue, setTypeValue] = useState("");
   const [categoryValue, setCategoryValue] = useState("");
+
   const handleFilter = (e) => {
     e.preventDefault();
     // Form submission logic here
@@ -78,66 +103,6 @@ const Clients = () => {
     setShowEditModal(false);
   };
 
-  const patchClient = async (clientForm) => {
-    await axios
-      .patch(
-        `${process.env.REACT_APP_API_URL}clients/${selectedClient._id}/`,
-        clientForm
-      )
-      .then(async(response) => {
-        await fetchClientsData(); // <-- refetch clients after successful patch
-        return response.data.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    closeModal();
-  };
-
-  const postClient = async (e) => {
-    e.preventDefault();
-
-    const clientForm = {};
-
-    for (let i = 0; i < e.target.children.length; i++) {
-      const child = e.target.children[i];
-
-      if (
-        child.type === "submit" ||
-        child.type === "reset" ||
-        child.value === ""
-      ) {
-        continue;
-      }
-      clientForm[child.name] = child.value;
-    }
-
-    await axios
-      .post(`${process.env.REACT_APP_API_URL}clients/`, clientForm)
-      .then(async(response) => {
-        await fetchClientsData(); // <-- refetch clients after successful post
-        return response.data.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const deleteClient = async (client) => {
-    await axios
-      .delete(`${process.env.REACT_APP_API_URL}clients/${client._id}/`)
-      .then(async(response) => {
-        await fetchClientsData(); // <-- refetch clients after successful delete
-
-        return response.data.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-
-
   return (
     <div className="container">
       <form className="filter" onSubmit={handleFilter}>
@@ -171,10 +136,18 @@ const Clients = () => {
           <option value="others">Others</option>
         </select>
         <div>
-          <ButtonExtend className="filterButton" type="submit" onClick={handleFilter}>
+          <ButtonExtend
+            className="filterButton"
+            type="submit"
+            onClick={handleFilter}
+          >
             Filter
           </ButtonExtend>
-          <ButtonExtend className="resetButton" type="reset" onClick={resetFilter}>
+          <ButtonExtend
+            className="resetButton"
+            type="reset"
+            onClick={resetFilter}
+          >
             Remove Filter
           </ButtonExtend>
         </div>
@@ -209,7 +182,7 @@ const Clients = () => {
                 <ButtonExtend
                   className="btn btn-danger"
                   size="sm"
-                  onClick={() => deleteClient(client)}
+                  onClick={() => handleDeleteClient(client)}
                 >
                   Delete
                 </ButtonExtend>
@@ -241,16 +214,19 @@ const Clients = () => {
           <ClientModal
             client={selectedClient}
             closeModal={closeModal}
-            patchClient={patchClient}
+            patchClient={(form) => handlePatchClient(form, selectedClient._id)}
           />
         )}
       </div>
 
-      <button onClick={() => setAddClientForm(!addClientForm)}>
+      <ButtonExtend
+        className="addButton"
+        onClick={() => setAddClientForm(!addClientForm)}
+      >
         ADD CLIENT
-      </button>
+      </ButtonExtend>
       {addClientForm && (
-        <form className="filter" onSubmit={postClient}>
+        <form className="filter" onSubmit={handlePostClient}>
           <select name="type" placeholder="Type">
             <option value="">Type</option>
             <option value="buyer">Buyer</option>
@@ -268,11 +244,11 @@ const Clients = () => {
             <option value="duties">Duties</option>
             <option value="others">Others</option>
           </select>
-          <input type="text" name="name" placeholder="Name" required/>
-          <input type="text" name="code" placeholder="Code" required/>
+          <input type="text" name="name" placeholder="Name" required />
+          <input type="text" name="code" placeholder="Code" required />
           <input type="text" name="address" placeholder="Address" />
           <input type="text" name="zipCode" placeholder="Zip Code" />
-          <input type="text" name="city" placeholder="City" required/>
+          <input type="text" name="city" placeholder="City" required />
           <select name="country" required>
             <option value="">Country</option>
             <option value="Romania">Romania</option>
@@ -289,12 +265,8 @@ const Clients = () => {
           <input type="email" name="email" placeholder="E-mail" />
           <input type="text" name="website" placeholder="WWW" />
           <textarea name="notes" placeholder="Notes"></textarea>
-          <input type="submit" value="Submit"  />
-          <input
-            type="reset"
-            value="Reset"
-            className="resetButton"
-          />
+          <input type="submit" value="Submit" />
+          <input type="reset" value="Reset" className="resetButton" />
         </form>
       )}
     </div>
