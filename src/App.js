@@ -4,8 +4,9 @@ import NavBar from "./components/NavBar";
 import { Route, BrowserRouter, Routes } from "react-router-dom";
 import Clients from "./pages/Clients/Clients";
 import Bills from "./pages/Bills/Bills";
-import Prototypes from "./pages/Prototypes";
-import Products from "./pages/Products";
+import Prototypes from "./pages/Prototypes/Prototypes";
+import Products from "./pages/Products/Products";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/prototypes" exact element={<Prototypes/>} />
         <Route path="/products" exact element={<Products/>} />
         </Routes>
+        <Footer />
       </div>
     </BrowserRouter>
   );
