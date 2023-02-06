@@ -117,3 +117,18 @@ table, th, td {
       content: "total+vat/eur";
     }
   }
+
+
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    #bills * {
+      visibility: visible;
+    }
+    #bills {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+  }

@@ -7,6 +7,7 @@ import Bills from "./pages/Bills/Bills";
 import Prototypes from "./pages/Prototypes/Prototypes";
 import Products from "./pages/Products/Products";
 import Footer from "./components/Footer";
+import Login from "./pages/Login/Login";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <LogoBar />
         <NavBar />
         <Routes>
+          <Route path="/" exact element={<Login/>} />
         <Route path="/clients" exact element={<Clients/>} />
         <Route path="/bills" exact element={<Bills/>} />
         <Route path="/prototypes" exact element={<Prototypes/>} />

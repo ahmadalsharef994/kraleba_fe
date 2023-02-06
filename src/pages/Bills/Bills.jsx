@@ -8,12 +8,13 @@ import {
   fetchBillsData,
   patchBill,
   postBill,
+  deleteBill,
 } from "../../components/services/billDataService";
 
 const Bills = () => {
   const allBills = useRef([]);
   const allClients = useRef(localStorage.getItem("clients"));
-  const billItems = useRef([]);
+  // const billItems = useRef([]);
   const [bills, setBills] = useState([]);
   const [selectedClient, setSelectedClient] = useState({});
 
@@ -47,7 +48,7 @@ const Bills = () => {
     let temp = [...allBills.current];
     temp = temp.filter((bill) => {
       return (
-        bill.name.toLowerCase().includes(searchValue.toLowerCase()) &&
+        bill.clientName.toLowerCase().includes(searchValue.toLowerCase()) &&
         bill.type.toLowerCase().includes(typeValue.toLowerCase())
       );
     });
@@ -105,41 +106,66 @@ const Bills = () => {
       if (child.name === "clientName") {
         billForm.client = child.value;
       } else if (child.name === "date") {
-        billForm[child.name] = new Date(child.value);
+        billForm.date = new Date(child.value);
       } else billForm[child.name] = child.value;
+
+      if (child.name === "items") {
+        const items = [];
+        for (let j = 0; j < child.children.length; j++) {
+          const item = {};
+          for (let k = 0; k < child.children[j].children.length; k++) {
+            const itemChild = child.children[j].children[k];
+            if (itemChild.type !== "submit" && itemChild.value !== "") {
+              item[itemChild.name] = itemChild.value;
+            }
+          }
+          items.push(item);
+        }
+        billForm.items = items;
+      }
     }
-    const { totalBeforeVAT, totalVAT, totalAfterVAT } = billForm;
-    // whether billForm.currency is lei or euro
-    billForm.totalBeforeVAT = { [billForm.currency]: totalBeforeVAT };
-    billForm.totalVAT = { [billForm.currency]: totalVAT };
-    billForm.totalAfterVAT = { [billForm.currency]: totalAfterVAT };
+    const items = [];
+    for (let i = 0; i < numberOfItems; i++) {
+      items.push({
+        name: e.target[`name-${i}`].value,
+        code: e.target[`code-${i}`].value,
+        description: e.target[`description-${i}`].value,
+        unitOfMeasurement: e.target[`unitOfMeasurement-${i}`].value,
+        quantity: e.target[`quantity-${i}`].value,
+        unitPrice: e.target[`unitPrice-${i}`].value,
+        // VAT: e.target[`VAT-${i}`].value, In case of VAT for each item???
+      });
+    }
+    billForm.items = items;
 
-    billForm["clent"] = selectedClient.country;
-
+    billForm["client"] = selectedClient.id;
     billForm["clientName"] = selectedClient.name;
     billForm["clientCode"] = selectedClient.code;
     billForm["clientCountry"] = selectedClient.country;
 
     await postBill(billForm);
-    fetchBillsData();
+    const bills = await fetchBillsData();
+    setBills(bills);
   };
 
-  const deleteBill = async (bill) => {
+  const handleDeleteBill = async (bill) => {
     await deleteBill(bill._id);
+    const bills = await fetchBillsData();
+    setBills(bills);
   };
 
-  const pushItem = async (itemForm) => {
-    for (let i = 0; i < itemForm.length; i++) {
-      const item = {};
-      for (let j = 0; j < itemForm[i].children.length; j++) {
-        const child = itemForm[i].children[j];
-        if (child.type !== "submit" && child.value !== "") {
-          item[child.name] = child.value;
-        }
-      }
-      billItems.current.push(item);
-    }
-  };
+  // const pushItem = async (itemForm) => {
+  //   for (let i = 0; i < itemForm.length; i++) {
+  //     const item = {};
+  //     for (let j = 0; j < itemForm[i].children.length; j++) {
+  //       const child = itemForm[i].children[j];
+  //       if (child.type !== "submit" && child.value !== "") {
+  //         item[child.name] = child.value;
+  //       }
+  //     }
+  //     billItems.current.push(item);
+  //   }
+  // };
 
   return (
     <div>
@@ -147,7 +173,7 @@ const Bills = () => {
         <input
           type="text"
           value={searchValue}
-          placeholder="Search By Name"
+          placeholder="Search By Client Name"
           onChange={(e) => setSearchValue(e.target.value)}
         />
         <select
@@ -188,7 +214,7 @@ const Bills = () => {
       </form>
 
       <div className="bills" id="bills">
-        {bills.length === 0 ? (
+        {!bills || !bills.length ? (
           <p>No bills found</p>
         ) : (
           bills.map((bill, index) => (
@@ -208,6 +234,7 @@ const Bills = () => {
                   <ListGroup.Item>
                     exchangeRate: {bill.exchangeRate}
                   </ListGroup.Item>
+                  <ListGroup.Item>customDuty: {bill.customDuty}</ListGroup.Item>
                 </ListGroup>
 
                 <ListGroup>
@@ -217,10 +244,7 @@ const Bills = () => {
                   <ListGroup.Item>
                     total (euro):{bill.totalBeforeVAT.euro}
                   </ListGroup.Item>
-                  <ListGroup.Item>
-                    VAT rate:{" "}
-                    {bill.vatRate.toLocaleString("en", { style: "percent" })}
-                  </ListGroup.Item>
+                  <ListGroup.Item>VAT percentage:{bill.vatRate}</ListGroup.Item>
                   <ListGroup.Item>
                     VAT (lei): {bill.totalVAT.lei}
                   </ListGroup.Item>
@@ -246,7 +270,7 @@ const Bills = () => {
                 <ButtonExtend
                   className="btn btn-danger"
                   size="sm"
-                  onClick={() => deleteBill(bill)}
+                  onClick={() => handleDeleteBill(bill)}
                 >
                   Delete
                 </ButtonExtend>
@@ -317,9 +341,10 @@ const Bills = () => {
         <form className="filter" onSubmit={handlePostBill}>
           <select name="clientDetails" required onChange={selectClient}>
             {allClients &&
-              allClients.current.map((client) => (
+              allClients.current.map((client, index) => (
                 <option
                   value={[client._id, client.name, client.code, client.country]}
+                  key={index}
                 >
                   {client.name}
                 </option>
@@ -343,14 +368,14 @@ const Bills = () => {
               <option value="euro">Euro</option>
             )}
           </select>
-          {selectedClient.country !== "Romania" && (
-            <input
-              type="number"
-              name="exchangeRate"
-              placeholder="Exchange Rate"
-              required
-            />
-          )}
+          {/* {selectedClient.country !== "Romania" && ( */}
+          <input
+            type="number"
+            name="exchangeRate"
+            placeholder="Exchange Rate"
+            required
+          />
+          {/* )} */}
           {selectedClient.country !== "EU" && (
             <input
               type="number"
@@ -368,17 +393,17 @@ const Bills = () => {
             />
           )}
 
-          <input
+          {/* <input
             type="number"
             name="totalBeforeVAT"
             placeholder="Total Before VAT"
           />
-          <input type="number" name="totalVAT" placeholder="Total VAT" />
-          <input
+          <input type="number" name="totalVAT" placeholder="Total VAT" /> */}
+          {/* <input
             type="number"
             name="totalAfterVAT"
             placeholder="Total After VAT"
-          />
+          /> */}
           <input
             type="number"
             placeholder="number of items"
@@ -387,38 +412,31 @@ const Bills = () => {
           />
           {Array.from({ length: numberOfItems }, (_, i) => (
             <div key={i}>
-              <input type="text" name={`name`} placeholder="Name" />
-              <input type="text" name={`code`} placeholder="Code" />
+              <input type="text" name={`name-${i}`} placeholder="Name" />
+              <input type="text" name={`code-${i}`} placeholder="Code" />
               <input
                 type="text"
-                name={`description`}
+                name={`description-${i}`}
                 placeholder="Description"
               />
               <input
                 type="text"
-                name={`unitOfMeasurement`}
+                name={`unitOfMeasurement-${i}`}
                 placeholder="Unit of Measurement"
               />
               <input
                 type="number"
-                name={`quantity`}
+                name={`quantity-${i}`}
                 placeholder="Quantity"
               />
               <input
                 type="number"
-                name={`unitPrice`}
+                name={`unitPrice-${i}`}
                 placeholder="price per unit"
               />
-              <input
-                type="number"
-                name={`totalBeforeVAT`}
-                placeholder="Total Before VAT"
-              />
-              {selectedClient.country !== "EU" && (
-                <input type="number" name={`VAT`} placeholder="VAT" />
-              )}
-              {/* <input type="number" name={`totalAfterVAT-${i}`} placeholder="Total After VAT" /> */}
-              <button onClick={() => pushItem(i)}>Add</button>
+              {/* {selectedClient.country !== "EU" && (
+      <input type="number" name={`VAT-${i}`} placeholder="VAT" />
+    )} */}
             </div>
           ))}
 
