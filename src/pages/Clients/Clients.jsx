@@ -24,8 +24,16 @@ const Clients = () => {
       allClients.current = result;
       localStorage.setItem("clients", JSON.stringify(result));
     };
-    fetchData();
+    try {
+      fetchData();
+    }
+    catch (err) {
+      console.log(err);
+    }
+
   }, []);
+
+  
 
   const handlePatchClient = async (clientForm, clientId) => {
     await patchClient(clientForm, clientId);
@@ -103,6 +111,7 @@ const Clients = () => {
     setShowEditModal(false);
   };
 
+
   return (
     <div className="container">
       <form className="filter" onSubmit={handleFilter}>
@@ -126,14 +135,14 @@ const Clients = () => {
           onChange={(e) => setCategoryValue(e.target.value)}
         >
           <option value="">Select Category</option>
-          <option value="fabrics">Fabrics</option>
-          <option assets="assets">Assets</option>
-          <option value="auxiliary">Auxiliary</option>
-          <option value="manufacturing">Manufacturing</option>
-          <option value="delivery">Delivery</option>
-          <option value="banking">Banking</option>
-          <option value="duties">Duties</option>
-          <option value="others">Others</option>
+          <option value="fabrics">fabrics</option>
+          <option assets="assets">assets</option>
+          <option value="auxiliary">auxiliary</option>
+          <option value="manufacturing">manufacturing</option>
+          <option value="delivery">delivery</option>
+          <option value="banking">banking</option>
+          <option value="duties">duties</option>
+          <option value="others">others</option>
         </select>
         <div>
           <ButtonExtend
@@ -162,7 +171,7 @@ const Clients = () => {
       </form>
 
       <div className="clients" id="clients">
-        {clients.length === 0 ? (
+        {!clients || !clients.length ? (
           <p>No clients found</p>
         ) : (
           clients.map((client, index) => (
@@ -235,14 +244,14 @@ const Clients = () => {
 
           <select name="category" placeholder="Category">
             <option value="">Category</option>
-            <option value="fabrics">Fabrics</option>
-            <option assets="assets">Assets</option>
-            <option value="auxiliary">Auxiliary</option>
-            <option value="manufacturing">Manufacturing</option>
-            <option value="delivery">Delivery</option>
-            <option value="banking">Banking</option>
-            <option value="duties">Duties</option>
-            <option value="others">Others</option>
+            <option value="fabrics">fabrics</option>
+            <option value="assets">assets</option>
+            <option value="auxiliary">auxiliary</option>
+            <option value="manufacturing">manufacturing</option>
+            <option value="delivery">delivery</option>
+            <option value="banking">banking</option>
+            <option value="duties">duties</option>
+            <option value="others">others</option>
           </select>
           <input type="text" name="name" placeholder="Name" required />
           <input type="text" name="code" placeholder="Code" required />
@@ -262,7 +271,7 @@ const Clients = () => {
           <input type="text" name="bank" placeholder="BANK" />
           <input type="text" name="phone1" placeholder="Phone 1" />
           <input type="text" name="phone2" placeholder="Phone 2" />
-          <input type="email" name="email" placeholder="E-mail" />
+          <input type="text" name="email" placeholder="E-mail" />
           <input type="text" name="website" placeholder="WWW" />
           <textarea name="notes" placeholder="Notes"></textarea>
           <input type="submit" value="Submit" />

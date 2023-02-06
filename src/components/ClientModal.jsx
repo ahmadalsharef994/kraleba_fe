@@ -32,14 +32,14 @@ function ClientModal({ client, closeModal, patchClient }) {
 
           <select name="category" placeholder="Category" defaultValue={client.category}>
             <option value="">Category</option>
-            <option value="fabrics">Fabrics</option>
-            <option assets="assets">Assets</option>
-            <option value="auxiliary">Auxiliary</option>
-            <option value="manufacturing">Manufacturing</option>
-            <option value="delivery">Delivery</option>
-            <option value="banking">Banking</option>
-            <option value="duties">Duties</option>
-            <option value="others">Others</option>
+            <option value="fabrics">fabrics</option>
+            <option value="assets">assets</option>
+            <option value="auxiliary">auxiliary</option>
+            <option value="manufacturing">manufacturing</option>
+            <option value="delivery">delivery</option>
+            <option value="banking">banking</option>
+            <option value="duties">duties</option>
+            <option value="others">others</option>
           </select>
           <input type="text" name="name" placeholder="Name" defaultValue={client.name} readOnly/>
           <input type="text" name="code" placeholder="Code" defaultValue={client.code} readOnly/>
@@ -59,7 +59,7 @@ function ClientModal({ client, closeModal, patchClient }) {
           <input type="text" name="bank" placeholder="BANK" defaultValue={client.bank}/>
           <input type="text" name="phone1" placeholder="Phone 1" defaultValue={client.phone1}/>
           <input type="text" name="phone2" placeholder="Phone 2" defaultValue={client.phone2}/>
-          <input type="email" name="email" placeholder="E-mail" defaultValue={client.email}/>
+          <input type="text" name="email" placeholder="E-mail" defaultValue={client.email}/>
           <input type="text" name="www" placeholder="WWW" defaultValue={client.website}/>
           <textarea name="notes" placeholder="Notes" defaultValue={client.notes}/>
           <input type="submit" value="Submit" />
