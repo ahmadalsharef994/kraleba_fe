@@ -60,6 +60,7 @@ function ClientModal({ client, closeModal, patchClient }) {
           <input type="text" name="phone1" placeholder="Phone 1" defaultValue={client.phone1}/>
           <input type="text" name="phone2" placeholder="Phone 2" defaultValue={client.phone2}/>
           <input type="text" name="email" placeholder="E-mail" defaultValue={client.email}/>
+          <input type="text" name="email" placeholder="E-mail" defaultValue={client.email}/>
           <input type="text" name="www" placeholder="WWW" defaultValue={client.website}/>
           <textarea name="notes" placeholder="Notes" defaultValue={client.notes}/>
           <input type="submit" value="Submit" />

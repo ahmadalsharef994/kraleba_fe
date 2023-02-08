@@ -131,4 +131,9 @@ table, th, td {
       left: 0;
       top: 0;
     }
+
+    .btn-secondary, .btn-danger {
+      display: none;
+    }
+
   }

@@ -28,7 +28,7 @@ function BillModal({ bill, closeModal, patchBill }) {
         <form className="filter" onSubmit={handleSave}>
 
           <input type="text" name="code" placeholder="Code" />
-          <input type="text" name="number" placeholder="Number" />
+          {/* <input type="text" name="number" placeholder="Number" /> */}
           <input type="date" name="date" placeholder="Date" />
           <select name="type">
             <option value="">Type</option>

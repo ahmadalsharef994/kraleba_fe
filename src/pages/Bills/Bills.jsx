@@ -154,18 +154,6 @@ const Bills = () => {
     setBills(bills);
   };
 
-  // const pushItem = async (itemForm) => {
-  //   for (let i = 0; i < itemForm.length; i++) {
-  //     const item = {};
-  //     for (let j = 0; j < itemForm[i].children.length; j++) {
-  //       const child = itemForm[i].children[j];
-  //       if (child.type !== "submit" && child.value !== "") {
-  //         item[child.name] = child.value;
-  //       }
-  //     }
-  //     billItems.current.push(item);
-  //   }
-  // };
 
   return (
     <div>
@@ -225,7 +213,7 @@ const Bills = () => {
                     client name: {bill.clientName}
                   </ListGroup.Item>
                   <ListGroup.Item>bill code: {bill.code}</ListGroup.Item>
-                  <ListGroup.Item>bill number: {bill.number}</ListGroup.Item>
+                  {/* <ListGroup.Item>bill number: {bill.number}</ListGroup.Item> */}
                   <ListGroup.Item>
                     bill date: {convertDate(bill.date)}
                   </ListGroup.Item>
@@ -352,7 +340,7 @@ const Bills = () => {
           </select>
 
           <input type="text" name="code" placeholder="Code" required />
-          <input type="text" name="number" placeholder="Number" required />
+          {/* <input type="text" name="number" placeholder="Number" required /> */}
           <input type="date" name="date" placeholder="Date" required />
           <select name="type" required>
             <option value="">Type</option>
