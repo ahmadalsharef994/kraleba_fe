@@ -39,9 +39,10 @@ body {
   padding: 5px;
   border-radius: 5px;
   border: none;
-  width: 200px;
+  width: calc(33.33% - 20px);
   margin-top: 5px;
   margin-bottom: 5px;
+  
 }
 
 
