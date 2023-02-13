@@ -280,7 +280,7 @@ const Prototypes = () => {
                           <strong>Images:</strong>
                           <ul>
                             {prototype.images.map((image, index) => (
-                              <li key={index}>{<img src={image} />}</li>
+                              <li key={index}>{<img src={image} alt="prototype"/>}</li>
                             ))}
                           </ul>
                         </ListGroup.Item>

@@ -1,8 +1,6 @@
-import React, { useRef } from "react";
-import { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect  } from "react";
 import { Card, ListGroup } from "react-bootstrap";
 import ButtonExtend from "../../components/extends/ButtonExtend";
-import "bootstrap/dist/css/bootstrap.min.css";
 import {
   fetchClientsData,
   patchClient,
@@ -66,23 +64,34 @@ const Clients = () => {
 
   const handleDeleteClient = async(client) => {
     await deleteClient(client._id);
-    const clients = await fetchClientsData();
-    setClients(clients);
+    // const clients = await fetchClientsData();
+    // setClients(clients);
+
+    try {
+      setClients(clients.filter((c) => c._id !== client._id));
+      alert("Client deleted successfully");
+    } catch (error) {
+      alert("error: Could not delete client");
+    }
+    
   };
 
-  const [searchValue, setSearchValue] = useState("");
-  const [typeValue, setTypeValue] = useState("");
-  const [categoryValue, setCategoryValue] = useState("");
+  const [filter, setFilter] = useState({
+    searchValue: "",
+    typeValue: "",
+    categoryValue: "",
+  })
 
   const handleFilter = (e) => {
     e.preventDefault();
+
     // Form submission logic here
     let temp = [...allClients.current];
     temp = temp.filter((client) => {
       return (
-        client.name.toLowerCase().includes(searchValue.toLowerCase()) &&
-        client.type.toLowerCase().includes(typeValue.toLowerCase()) &&
-        client.category.toLowerCase().includes(categoryValue.toLowerCase())
+        client.name.toLowerCase().includes(filter.searchValue.toLowerCase()) &&
+        client.type.toLowerCase().includes(filter.typeValue.toLowerCase()) &&
+        client.category.toLowerCase().includes(filter.categoryValue.toLowerCase())
       );
     });
     setClients(temp);
@@ -90,9 +99,11 @@ const Clients = () => {
 
   const resetFilter = (e) => {
     e.preventDefault();
-    setSearchValue("");
-    setTypeValue("");
-    setCategoryValue("");
+    setFilter({
+      searchValue: "",
+      typeValue: "",
+      categoryValue: "",
+    })
     setClients(allClients.current);
   };
 
@@ -114,16 +125,16 @@ const Clients = () => {
 
   return (
     <div className="container">
-      <form className="filter" onSubmit={handleFilter}>
+      <form className="filter" onSubmit={handleFilter} >
         <input
           type="text"
-          value={searchValue}
+          value={filter.searchValue}
           placeholder="Search By Name"
-          onChange={(e) => setSearchValue(e.target.value)}
-        />
+          onChange={(e) => setFilter({ ...filter, searchValue: e.target.value })}
+          />
         <select
-          value={typeValue}
-          onChange={(e) => setTypeValue(e.target.value)}
+          value={filter.typeValue}
+          onChange={(e) => setFilter({ ...filter, typeValue: e.target.value })}
           placeholder="Type"
         >
           <option value="">Select Type</option>
@@ -131,8 +142,8 @@ const Clients = () => {
           <option value="Supplier">Supplier</option>
         </select>
         <select
-          value={categoryValue}
-          onChange={(e) => setCategoryValue(e.target.value)}
+          value={filter.categoryValue}
+          onChange={(e) => setFilter({ ...filter, categoryValue: e.target.value })}
         >
           <option value="">Select Category</option>
           <option value="fabrics">fabrics</option>
@@ -283,3 +294,6 @@ const Clients = () => {
 };
 
 export default Clients;
+
+
+// useCallback for filter and resetfilter
