@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect  } from "react";
-import { Card, ListGroup } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import ButtonExtend from "../../components/extends/ButtonExtend";
 import {
   fetchClientsData,
@@ -30,8 +30,6 @@ const Clients = () => {
     }
 
   }, []);
-
-  
 
   const handlePatchClient = async (clientForm, clientId) => {
     await patchClient(clientForm, clientId);
@@ -76,6 +74,7 @@ const Clients = () => {
     
   };
 
+
   const [filter, setFilter] = useState({
     searchValue: "",
     typeValue: "",
@@ -110,6 +109,8 @@ const Clients = () => {
   const [selectedClient, setSelectedClient] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
 
+  const [selectClientForm, setSelectClientForm] = useState(false);
+
   const [addClientForm, setAddClientForm] = useState(false);
 
   const handleEditClient = (client) => {
@@ -125,7 +126,29 @@ const Clients = () => {
 
   return (
     <div className="container">
-      <form className="filter" onSubmit={handleFilter} >
+      <ButtonExtend
+        className="addButton"
+        onClick={() => setSelectClientForm(!selectClientForm)}
+      >
+        SELECT CLIENT
+      </ButtonExtend>
+
+      <ButtonExtend
+        className="addButton"
+        onClick={() => setAddClientForm(!addClientForm)}
+      >
+        ADD CLIENT
+      </ButtonExtend>
+
+      <ButtonExtend
+          type="button"
+          className="pdfButton"
+          onClick={() => window.print()}
+        >
+          Print as PDF
+        </ButtonExtend>
+
+      {selectClientForm && (<form className="filter" onSubmit={handleFilter} >
         <input
           type="text"
           value={filter.searchValue}
@@ -172,79 +195,9 @@ const Clients = () => {
           </ButtonExtend>
         </div>
 
-        <ButtonExtend
-          type="button"
-          className="pdfButton"
-          onClick={() => window.print()}
-        >
-          Print as PDF
-        </ButtonExtend>
-      </form>
 
-      <div className="clients" id="clients">
-        {!clients || !clients.length ? (
-          <p>No clients found</p>
-        ) : (
-          clients.map((client, index) => (
-            <Card key={index}>
-              <Card.Header>
-                <h5 className="decorated-text2">{client.name}</h5>
-                <h5 className="decorated-text2"> {client.code} </h5>
-                <h5 className="decorated-text2">{client.type}</h5>
-                <h5 className="decorated-text2"> {client.category} </h5>
-                <ButtonExtend
-                  className="btn btn-secondary"
-                  size="sm"
-                  onClick={() => handleEditClient(client)}
-                >
-                  Edit
-                </ButtonExtend>
-                <ButtonExtend
-                  className="btn btn-danger"
-                  size="sm"
-                  onClick={() => handleDeleteClient(client)}
-                >
-                  Delete
-                </ButtonExtend>
-              </Card.Header>
-              <Card.Body>
-                <ListGroup>
-                  <ListGroup.Item>CIF: {client.cif}</ListGroup.Item>
-                  <ListGroup.Item>OCR: {client.ocr}</ListGroup.Item>
-                  <ListGroup.Item>IBAN: {client.iban}</ListGroup.Item>
-                  <ListGroup.Item>SWIFT: {client.swift}</ListGroup.Item>
-                  <ListGroup.Item>Bank: {client.bank}</ListGroup.Item>
-                  <ListGroup.Item>Address: {client.address}</ListGroup.Item>
-                  <ListGroup.Item>City: {client.city}</ListGroup.Item>
-                  <ListGroup.Item>Zip: {client.zipCode}</ListGroup.Item>
-                  <ListGroup.Item>Country: {client.country}</ListGroup.Item>
-                  <ListGroup.Item>Phone 1: {client.phone1}</ListGroup.Item>
-                  <ListGroup.Item>Phone 2: {client.phone2}</ListGroup.Item>
-                  <ListGroup.Item>
-                    Email: <a href={"mailto:" + client.email}>{client.email}</a>
-                  </ListGroup.Item>
-                  <ListGroup.Item>Notes: {client.notes}</ListGroup.Item>
-                  <ListGroup.Item>Website: {client.website}</ListGroup.Item>
-                </ListGroup>
-              </Card.Body>
-            </Card>
-          ))
-        )}
-        {showEditModal && (
-          <ClientModal
-            client={selectedClient}
-            closeModal={closeModal}
-            patchClient={(form) => handlePatchClient(form, selectedClient._id)}
-          />
-        )}
-      </div>
+      </form>)}
 
-      <ButtonExtend
-        className="addButton"
-        onClick={() => setAddClientForm(!addClientForm)}
-      >
-        ADD CLIENT
-      </ButtonExtend>
       {addClientForm && (
         <form className="filter" onSubmit={handlePostClient}>
           <select name="type" placeholder="Type">
@@ -264,12 +217,15 @@ const Clients = () => {
             <option value="duties">duties</option>
             <option value="others">others</option>
           </select>
-          <input type="text" name="name" placeholder="Name" required />
-          <input type="text" name="code" placeholder="Code" required />
+
+          <input type="text" name="subCategory" placeholder="Sub-Category" />
+
+          <input type="text" name="name" placeholder="Name *" required />
+          <input type="text" name="code" placeholder="Code *" required />
           <input type="text" name="address" placeholder="Address" />
           <input type="text" name="zipCode" placeholder="Zip Code" />
-          <input type="text" name="city" placeholder="City" required />
-          <select name="country" required>
+          <input type="text" name="city" placeholder="City *" required />
+          <select name="country *" required>
             <option value="">Country</option>
             <option value="Romania">Romania</option>
             <option value="EU">EU</option>
@@ -289,6 +245,67 @@ const Clients = () => {
           <input type="reset" value="Reset" className="resetButton" />
         </form>
       )}
+
+
+      <div className="clients" id="clients">
+      <h5 className="decorated-text2" style={{backgroundColor: 'rgba(0, 0, 0, 0)', padding: '10px'}}>{Object.values(filter).join('/')}</h5>
+
+        {!clients || !clients.length ? (
+          <p>No clients found</p>
+        ) : (
+          clients.map((client, index) => (
+            <Card key={index}>
+              <Card.Header>
+                <h5 className="decorated-text2">{client.name}</h5>
+                <h5 className="decorated-text2"> {client.code} </h5>
+                <h5 className="decorated-text2">{client.type}</h5>
+                <h5 className="decorated-text2"> {client.category} </h5>
+                <h5 className="decorated-text2"> {client.subCategory} </h5>
+
+                <ButtonExtend
+                  className="btn btn-secondary"
+                  size="sm"
+                  onClick={() => handleEditClient(client)}
+                >
+                  Edit
+                </ButtonExtend>
+
+              </Card.Header>
+              <Card.Body>
+                <div className="client-group">
+                  <div>CIF: {client.cif}</div>
+                  <div>OCR: {client.ocr}</div>
+                  <div>IBAN: {client.iban}</div>
+                  <div>SWIFT: {client.swift}</div>
+                  <div>Bank: {client.bank}</div>
+                  <div>Address: {client.address}</div>
+                  <div>City: {client.city}</div>
+                  <div>Zip: {client.zipCode}</div>
+                  <div>Country: {client.country}</div>
+                  <div>Phone 1: {client.phone1}</div>
+                  <div>Phone 2: {client.phone2}</div>
+                  <div>
+                    Email: <a href={"mailto:" + client.email}>{client.email}</a>
+                  </div>
+                  <div>Notes: {client.notes}</div>
+                  <div>Website: {client.website}</div>
+                </div>
+              </Card.Body>
+            </Card>
+          ))
+        )}
+        {showEditModal && (
+          <ClientModal
+            client={selectedClient}
+            closeModal={closeModal}
+            patchClient={(form) => handlePatchClient(form, selectedClient._id)}
+            deleteClient={() => handleDeleteClient(selectedClient)}
+          />
+        )}
+      </div>
+
+
+
     </div>
   );
 };

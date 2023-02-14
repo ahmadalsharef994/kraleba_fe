@@ -12,6 +12,20 @@
   margin-top: 20px;
 }
 
+.client-group {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row !important;
+}
+.client-group div {
+  width: calc(50% - 10px);
+  border-style: dotted;
+  border-width: 1px;
+}
+
+
+
 .decorated-text2 {
   color: #000000;
 background: #FFFFFF;

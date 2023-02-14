@@ -1,8 +1,9 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import './styles.css'
+import ButtonExtend from "./extends/ButtonExtend";
 
-function ClientModal({ client, closeModal, patchClient }) {
+function ClientModal({ client, closeModal, patchClient, deleteClient }) {
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -16,6 +17,13 @@ function ClientModal({ client, closeModal, patchClient }) {
     await patchClient(clientForm);
     closeModal();
   };
+
+  const handleDelete = async (e) => {
+    await deleteClient();
+    closeModal();
+  };
+
+
 
   return (
     <Modal show={!!client}>
@@ -41,12 +49,13 @@ function ClientModal({ client, closeModal, patchClient }) {
             <option value="duties">duties</option>
             <option value="others">others</option>
           </select>
-          <input type="text" name="name" placeholder="Name" defaultValue={client.name} readOnly/>
-          <input type="text" name="code" placeholder="Code" defaultValue={client.code} readOnly/>
+          <input type="text" name="subCategory" placeholder="Sub-Category" defaultValue={client.subCategory}/>
+          <input type="text" name="name" placeholder="Name" defaultValue={client.name} readOnly style={{backgroundColor: "lightgrey"}}/>
+          <input type="text" name="code" placeholder="Code" defaultValue={client.code} readOnly style={{backgroundColor: "lightgrey"}}/>
           <input type="text" name="address" placeholder="Address" defaultValue={client.address}/>
           <input type="text" name="zipCode" placeholder="Zip Code" defaultValue={client.zipCode}/>
-          <input type="text" name="city" placeholder="City" readOnly defaultValue={client.city}/>
-          <select name="country" readOnly defaultValue={client.country}>
+          <input type="text" name="city" placeholder="City" readOnly defaultValue={client.city} style={{backgroundColor: "lightgrey"}}/>
+          <select name="country" readOnly defaultValue={client.country} style={{backgroundColor: "lightgrey"}}>
             <option value="">Country</option>
             <option value="Romania">Romania</option>
             <option value="EU">EU</option>
@@ -67,6 +76,14 @@ function ClientModal({ client, closeModal, patchClient }) {
         <Button variant="secondary" onClick={closeModal}>
           Cancel
         </Button>
+
+        <ButtonExtend
+                  className="btn btn-danger"
+                  size="sm"
+                  onClick={() => handleDelete()}
+                >
+                  Delete
+                </ButtonExtend>
         </form>
       </Modal.Body>
 

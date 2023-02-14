@@ -16,6 +16,9 @@ const Bills = () => {
   // const billItems = useRef([]);
   const [bills, setBills] = useState([]);
   const [selectedClient, setSelectedClient] = useState({});
+  const [selectBillForm, setSelectBillForm] = useState(false);
+
+  
 
   const selectClient = (e) => {
     const temp = e.target.value.split(",");
@@ -38,25 +41,38 @@ const Bills = () => {
     fetchData();
   }, []);
 
-  const [searchValue, setSearchValue] = useState("");
-  const [typeValue, setTypeValue] = useState("");
+  const [filter, setFilter] = useState({
+    clientName: "",
+    type: "",
+    category: "",
+    subCategory: "",
+  });
 
   const handleFilter = (e) => {
     e.preventDefault();
     // Form submission logic here
     let temp = [...allBills.current];
     temp = temp.filter((bill) => {
+
       return (
-        bill.clientName.toLowerCase().includes(searchValue.toLowerCase()) &&
-        bill.type.toLowerCase().includes(typeValue.toLowerCase())
+        bill.clientName
+          .toLowerCase()
+          .includes(filter.clientName.toLowerCase()) &&
+        bill.type.toLowerCase().includes(filter.type.toLowerCase()) &&
+        JSON.stringify(bill.items).toLowerCase().includes(filter.category) &&
+        JSON.stringify(bill.items).toLowerCase().includes(filter.subCategory)
       );
     });
     setBills(temp);
   };
   const resetFilter = (e) => {
     e.preventDefault();
-    setSearchValue("");
-    setTypeValue("");
+    setFilter({
+      clientName: "",
+      type: "",
+      category: "",
+      subCategory: "",
+    });
     setBills(allBills.current);
   };
 
@@ -106,7 +122,6 @@ const Bills = () => {
         continue;
       }
       billForm[child.name] = child.value;
-
     }
     const items = [];
     for (let i = 0; i < numberOfItems; i++) {
@@ -124,8 +139,6 @@ const Bills = () => {
     billForm["clientName"] = selectedClient.name;
     billForm["clientCode"] = selectedClient.code;
     billForm["clientCountry"] = selectedClient.country;
-
-    // console.log(billForm);
 
     await postBill(billForm);
     const bills = await fetchBillsData();
@@ -145,165 +158,12 @@ const Bills = () => {
 
   return (
     <div>
-      <form className="filter" onSubmit={handleFilter}>
-        <input
-          type="text"
-          value={searchValue}
-          placeholder="Search By Client Name"
-          onChange={(e) => setSearchValue(e.target.value)}
-        />
-        <select
-          value={typeValue}
-          onChange={(e) => setTypeValue(e.target.value)}
-          placeholder="Type"
-        >
-          <option value="">Select Type</option>
-          <option value="Offer">Offer</option>
-          <option value="Invoice">Invoice</option>
-          <option value="Items">Items</option>
-        </select>
-
-        <div>
-          <ButtonExtend
-            className="filterButton"
-            type="submit"
-            onClick={handleFilter}
-          >
-            Filter
-          </ButtonExtend>
-          <ButtonExtend
-            className="resetButton"
-            type="reset"
-            onClick={resetFilter}
-          >
-            Remove Filter
-          </ButtonExtend>
-        </div>
-
-        <ButtonExtend
-          type="button"
-          className="pdfButton"
-          onClick={() => window.print()}
-        >
-          Print as PDF
-        </ButtonExtend>
-      </form>
-
-      <div className="bills" id="bills">
-        {!bills || !bills.length ? (
-          <p>No bills found</p>
-        ) : (
-          bills.map((bill, index) => (
-            <Card key={index}>
-              <Card.Header style={{ display: "flex" }}>
-                <ListGroup>
-                  <ListGroup.Item>
-                    client name: {bill.clientName}
-                  </ListGroup.Item>
-                  <ListGroup.Item>bill code: {bill.code}</ListGroup.Item>
-                  <ListGroup.Item>
-                    bill date: {convertDate(bill.date)}
-                  </ListGroup.Item>
-                  <ListGroup.Item>bill type: {bill.type}</ListGroup.Item>
-                  <ListGroup.Item>currency: {bill.currency}</ListGroup.Item>
-                  <ListGroup.Item>
-                    exchangeRate: {bill.exchangeRate}
-                  </ListGroup.Item>
-                  <ListGroup.Item>customDuty: {bill.customDuty}</ListGroup.Item>
-                </ListGroup>
-
-                <ListGroup>
-                  <ListGroup.Item>
-                    total (lei): {bill.totalBeforeVAT.lei}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    total (euro):{bill.totalBeforeVAT.euro}
-                  </ListGroup.Item>
-                  <ListGroup.Item>VAT percentage:{bill.vatRate}</ListGroup.Item>
-                  <ListGroup.Item>
-                    VAT (lei): {bill.totalVAT.lei}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    VAT (euro): {bill.totalVAT.euro}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    total + VAT (lei):{bill.totalAfterVAT.lei}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    total + VAT (euro): {bill.totalAfterVAT.euro}
-                  </ListGroup.Item>
-                </ListGroup>
-
-                <ButtonExtend
-                  className="btn btn-secondary"
-                  size="sm"
-                  onClick={() => handleEditBill(bill)}
-                >
-                  Edit
-                </ButtonExtend>
-
-                <ButtonExtend
-                  className="btn btn-danger"
-                  size="sm"
-                  onClick={() => handleDeleteBill(bill)}
-                >
-                  Delete
-                </ButtonExtend>
-              </Card.Header>
-              <Card.Body>
-                {/* React Table having the items */}
-                <Table>
-                  <thead>
-                    <tr>
-                      <th>index</th>
-                      <th>code</th>
-                      <th>description</th>
-                      <th>Unit</th>
-                      <th>quantity</th>
-                      <th> Price per unit (lei)</th>
-                      <th> Price per unit (euro)</th>
-                      <th> total (lei)</th>
-                      <th> total (euro)</th>
-                      <th>VAT (lei)</th>
-                      <th>VAT (euro)</th>
-                      <th>total + VAT (lei)</th>
-                      <th>total + VAT (euro)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {bill.items &&
-                      bill.items.map((item, index) => (
-                        <tr key={index}>
-                          <td>{index}</td>
-                          {/* <td>{item.name}</td> */}
-                          <td>{item.code}</td>
-                          <td>{item.description}</td>
-                          <td>{item.unitOfMeasurement}</td>
-                          <td>{item.quantity}</td>
-                          <td>{item.lei}</td>
-                          <td>{item.euro}</td>
-                          <td>{item.totalBeforeVAT.lei}</td>
-                          <td>{item.totalBeforeVAT.euro}</td>
-                          <td>{item.VAT.lei}</td>
-                          <td>{item.VAT.euro}</td>
-                          <td>{item.totalAfterVAT.lei}</td>
-                          <td>{item.totalAfterVAT.euro}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </Table>
-              </Card.Body>
-            </Card>
-          ))
-        )}
-        {showEditModal && (
-          <BillModal
-            bill={selectedBill}
-            closeModal={closeModal}
-            patchBill={(form) => handlePatchBill(form, selectedBill._id)}
-          />
-        )}
-      </div>
+      <ButtonExtend
+        className="addButton"
+        onClick={() => setSelectBillForm(!selectBillForm)}
+      >
+        SELECT BILL
+      </ButtonExtend>
 
       <ButtonExtend
         className="addButton"
@@ -311,6 +171,67 @@ const Bills = () => {
       >
         ADD BILL
       </ButtonExtend>
+      <ButtonExtend
+        type="button"
+        className="pdfButton"
+        onClick={() => window.print()}
+      >
+        Print as PDF
+      </ButtonExtend>
+
+      {selectBillForm && (
+        <form className="filter" onSubmit={handleFilter}>
+          <input
+            type="text"
+            value={filter.clientName}
+            placeholder="Search By Client Name"
+            onChange={(e) =>
+              setFilter({ ...filter, clientName: e.target.value })
+            }
+          />
+          <select
+            value={filter.type}
+            onChange={(e) => setFilter({ ...filter, type: e.target.value })}
+            placeholder="Type"
+          >
+            <option value="">Select Type</option>
+            <option value="Offer">Offer</option>
+            <option value="Invoice">Invoice</option>
+            <option value="Items">Items</option>
+          </select>
+
+          <input
+            value={filter.category}
+            onChange={(e) => setFilter({ ...filter, category: e.target.value })}
+            placeholder="Category"
+          />
+
+          <input
+            value={filter.subCategory}
+            onChange={(e) =>
+              setFilter({ ...filter, subCategory: e.target.value })
+            }
+            placeholder="Sub Category"
+          />
+
+          <div>
+            <ButtonExtend
+              className="filterButton"
+              type="submit"
+              onClick={handleFilter}
+            >
+              Filter
+            </ButtonExtend>
+            <ButtonExtend
+              className="resetButton"
+              type="reset"
+              onClick={resetFilter}
+            >
+              Remove Filter
+            </ButtonExtend>
+          </div>
+        </form>
+      )}
       {addBillForm && (
         <form className="filter" onSubmit={handlePostBill}>
           <select name="clientDetails" required onChange={selectClient}>
@@ -401,6 +322,128 @@ const Bills = () => {
           <input type="reset" className="resetButton" />
         </form>
       )}
+
+<h5 className="decorated-text2" style={{backgroundColor: 'rgba(0, 0, 0, 0)', padding: '10px'}}>{Object.values(filter).join('/')}</h5>
+
+
+      <div className="bills" id="bills">
+        {!bills || !bills.length ? (
+          <p>No bills found</p>
+        ) : (
+          bills.map((bill, index) => (
+            <Card key={index}>
+              <Card.Header style={{ display: "flex" }}>
+                <ListGroup>
+                  <ListGroup.Item>
+                    client name: {bill.clientName}
+                  </ListGroup.Item>
+                  <ListGroup.Item>bill code: {bill.code}</ListGroup.Item>
+                  <ListGroup.Item>
+                    bill date: {convertDate(bill.date)}
+                  </ListGroup.Item>
+                  <ListGroup.Item>bill type: {bill.type}</ListGroup.Item>
+                  <ListGroup.Item>currency: {bill.currency}</ListGroup.Item>
+                  <ListGroup.Item>
+                    exchangeRate: {bill.exchangeRate}
+                  </ListGroup.Item>
+                  <ListGroup.Item>customDuty: {bill.customDuty}</ListGroup.Item>
+                </ListGroup>
+
+                <ListGroup>
+                  <ListGroup.Item>
+                    total (lei): {bill.totalBeforeVAT.lei}
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    total (euro):{bill.totalBeforeVAT.euro}
+                  </ListGroup.Item>
+                  <ListGroup.Item>VAT percentage:{bill.vatRate}</ListGroup.Item>
+                  <ListGroup.Item>
+                    VAT (lei): {bill.totalVAT.lei}
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    VAT (euro): {bill.totalVAT.euro}
+                  </ListGroup.Item>
+                  {/* <ListGroup.Item>totalCustomDuty (lei): {bill.totalCustomDuty.lei}</ListGroup.Item>
+                  <ListGroup.Item>totalCustomDuty (euro): {bill.totalCustomDuty.euro}</ListGroup.Item> */}
+
+                  <ListGroup.Item>
+                    total + VAT (lei):{bill.totalAfterVAT.lei}
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    total + VAT (euro): {bill.totalAfterVAT.euro}
+                  </ListGroup.Item>
+                </ListGroup>
+
+                <ButtonExtend
+                  className="btn btn-secondary"
+                  size="sm"
+                  onClick={() => handleEditBill(bill)}
+                >
+                  Edit
+                </ButtonExtend>
+
+                <ButtonExtend
+                  className="btn btn-danger"
+                  size="sm"
+                  onClick={() => handleDeleteBill(bill)}
+                >
+                  Delete
+                </ButtonExtend>
+              </Card.Header>
+              <Card.Body>
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>index</th>
+                      <th>name</th>
+                      <th>code</th>
+                      <th>description</th>
+                      <th>Unit</th>
+                      <th>quantity</th>
+                      <th> Price per unit (lei)</th>
+                      <th> Price per unit (euro)</th>
+                      <th> total (lei)</th>
+                      <th> total (euro)</th>
+                      <th>VAT (lei)</th>
+                      <th>VAT (euro)</th>
+                      <th>total + VAT (lei)</th>
+                      <th>total + VAT (euro)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bill.items &&
+                      bill.items.map((item, index) => (
+                        <tr key={index}>
+                          <td>{index}</td>
+                          <td>{item.name}</td>
+                          <td>{item.code}</td>
+                          <td>{item.description}</td>
+                          <td>{item.unitOfMeasurement}</td>
+                          <td>{item.quantity}</td>
+                          <td>{item.lei}</td>
+                          <td>{item.euro}</td>
+                          <td>{item.totalBeforeVAT.lei}</td>
+                          <td>{item.totalBeforeVAT.euro}</td>
+                          <td>{item.VAT.lei}</td>
+                          <td>{item.VAT.euro}</td>
+                          <td>{item.totalAfterVAT.lei}</td>
+                          <td>{item.totalAfterVAT.euro}</td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </Table>
+              </Card.Body>
+            </Card>
+          ))
+        )}
+        {showEditModal && (
+          <BillModal
+            bill={selectedBill}
+            closeModal={closeModal}
+            patchBill={(form) => handlePatchBill(form, selectedBill._id)}
+          />
+        )}
+      </div>
     </div>
   );
 };
