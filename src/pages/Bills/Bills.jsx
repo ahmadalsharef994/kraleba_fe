@@ -18,8 +18,6 @@ const Bills = () => {
   const [selectedClient, setSelectedClient] = useState({});
   const [selectBillForm, setSelectBillForm] = useState(false);
 
-  
-
   const selectClient = (e) => {
     const temp = e.target.value.split(",");
     setSelectedClient({
@@ -46,6 +44,8 @@ const Bills = () => {
     type: "",
     category: "",
     subCategory: "",
+    startDate: "",
+    endDate: "",
   });
 
   const handleFilter = (e) => {
@@ -53,14 +53,15 @@ const Bills = () => {
     // Form submission logic here
     let temp = [...allBills.current];
     temp = temp.filter((bill) => {
-
       return (
         bill.clientName
           .toLowerCase()
           .includes(filter.clientName.toLowerCase()) &&
         bill.type.toLowerCase().includes(filter.type.toLowerCase()) &&
         JSON.stringify(bill.items).toLowerCase().includes(filter.category) &&
-        JSON.stringify(bill.items).toLowerCase().includes(filter.subCategory)
+        JSON.stringify(bill.items).toLowerCase().includes(filter.subCategory) &&
+        bill.date >= filter.startDate &&
+        bill.date <= filter.endDate
       );
     });
     setBills(temp);
@@ -72,6 +73,8 @@ const Bills = () => {
       type: "",
       category: "",
       subCategory: "",
+      startDate: "",
+      endDate: "",
     });
     setBills(allBills.current);
   };
@@ -112,7 +115,7 @@ const Bills = () => {
       const child = e.target.children[i];
 
       if (child.name === "vatRate") billForm.vatRate = child.value;
-      if (child.name === "customDuty") billForm.customDuty = child.value;
+      if (child.name === "customDutyVAT") billForm.customDutyVAT = child.value;
 
       if (
         child.type === "submit" ||
@@ -126,12 +129,20 @@ const Bills = () => {
     const items = [];
     for (let i = 0; i < numberOfItems; i++) {
       items.push({
-        // name: e.target[`name-${i}`].value,
+        name: e.target[`name-${i}`].value,
         code: e.target[`code-${i}`].value,
         description: e.target[`description-${i}`].value,
         unitOfMeasurement: e.target[`unitOfMeasurement-${i}`].value,
         quantity: e.target[`quantity-${i}`].value,
         unitPrice: e.target[`unitPrice-${i}`].value,
+        // composition material structure design weaving color finishing
+        composition: e.target[`composition-${i}`].value,
+        material: e.target[`material-${i}`].value,
+        structure: e.target[`structure-${i}`].value,
+        design: e.target[`design-${i}`].value,
+        weaving: e.target[`weaving-${i}`].value,
+        color: e.target[`color-${i}`].value,
+        finishing: e.target[`finishing-${i}`].value,
       });
     }
     billForm.items = items;
@@ -214,6 +225,19 @@ const Bills = () => {
             placeholder="Sub Category"
           />
 
+          <input
+            type="date"
+            value={filter.startDate}
+            onChange={(e) =>
+              setFilter({ ...filter, startDate: e.target.value })
+            }
+          />
+          <input
+            type="date"
+            value={filter.endDate}
+            onChange={(e) => setFilter({ ...filter, endDate: e.target.value })}
+          />
+
           <div>
             <ButtonExtend
               className="filterButton"
@@ -235,6 +259,8 @@ const Bills = () => {
       {addBillForm && (
         <form className="filter" onSubmit={handlePostBill}>
           <select name="clientDetails" required onChange={selectClient}>
+            <option value="">Select Client</option>
+
             {allClients &&
               allClients.current.map((client, index) => (
                 <option
@@ -279,8 +305,8 @@ const Bills = () => {
           {selectedClient.country === "Non-EU" && (
             <input
               type="number"
-              name="customDuty"
-              placeholder="Custom Duty"
+              name="customDutyVAT"
+              placeholder="Custom Duty VAT"
               required
             />
           )}
@@ -292,9 +318,9 @@ const Bills = () => {
             name="numberOfItems"
           />
           {Array.from({ length: numberOfItems }, (_, i) => (
-            <div key={i}>
-              {/* <input type="text" name={`name-${i}`} placeholder="Name" /> */}
+            <div key={i} className="item-input">
               <input type="text" name={`code-${i}`} placeholder="Code" />
+              <input type="text" name={`name-${i}`} placeholder="Name" />
               <input
                 type="text"
                 name={`description-${i}`}
@@ -315,6 +341,30 @@ const Bills = () => {
                 name={`unitPrice-${i}`}
                 placeholder="price per unit"
               />
+              {/* composition material structure design weaving color finishing */}
+              <input
+                type="text"
+                name={`composition-${i}`}
+                placeholder="Composition"
+              />
+              <input
+                type="text"
+                name={`material-${i}`}
+                placeholder="Material"
+              />
+              <input
+                type="text"
+                name={`structure-${i}`}
+                placeholder="Structure"
+              />
+              <input type="text" name={`design-${i}`} placeholder="Design" />
+              <input type="text" name={`weaving-${i}`} placeholder="Weaving" />
+              <input type="text" name={`color-${i}`} placeholder="Color" />
+              <input
+                type="text"
+                name={`finishing-${i}`}
+                placeholder="Finishing"
+              />
             </div>
           ))}
 
@@ -323,8 +373,12 @@ const Bills = () => {
         </form>
       )}
 
-<h5 className="decorated-text2" style={{backgroundColor: 'rgba(0, 0, 0, 0)', padding: '10px'}}>{Object.values(filter).join('/')}</h5>
-
+      <h5
+        className="decorated-text2"
+        style={{ backgroundColor: "rgba(0, 0, 0, 0)", padding: "10px" }}
+      >
+        {Object.values(filter).join("/")}
+      </h5>
 
       <div className="bills" id="bills">
         {!bills || !bills.length ? (
@@ -346,7 +400,9 @@ const Bills = () => {
                   <ListGroup.Item>
                     exchangeRate: {bill.exchangeRate}
                   </ListGroup.Item>
-                  <ListGroup.Item>customDuty: {bill.customDuty}</ListGroup.Item>
+                  <ListGroup.Item>
+                    customDutyVAT: {bill.customDutyVAT}
+                  </ListGroup.Item>
                 </ListGroup>
 
                 <ListGroup>

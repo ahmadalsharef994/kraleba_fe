@@ -8,7 +8,6 @@ import {
   deleteClient,
 } from "../../components/services/clientDataService";
 import "./Clients.css";
-
 import ClientModal from "../../components/ClientModal";
 
 const Clients = () => {
@@ -40,12 +39,9 @@ const Clients = () => {
 
   const handlePostClient = async (e) => {
     e.preventDefault();
-
     const clientForm = {};
-
     for (let i = 0; i < e.target.children.length; i++) {
       const child = e.target.children[i];
-
       if (
         child.type === "submit" ||
         child.type === "reset" ||
@@ -62,28 +58,21 @@ const Clients = () => {
 
   const handleDeleteClient = async(client) => {
     await deleteClient(client._id);
-    // const clients = await fetchClientsData();
-    // setClients(clients);
-
     try {
       setClients(clients.filter((c) => c._id !== client._id));
       alert("Client deleted successfully");
     } catch (error) {
       alert("error: Could not delete client");
     }
-    
   };
-
 
   const [filter, setFilter] = useState({
     searchValue: "",
     typeValue: "",
     categoryValue: "",
   })
-
   const handleFilter = (e) => {
     e.preventDefault();
-
     // Form submission logic here
     let temp = [...allClients.current];
     temp = temp.filter((client) => {
@@ -95,7 +84,6 @@ const Clients = () => {
     });
     setClients(temp);
   };
-
   const resetFilter = (e) => {
     e.preventDefault();
     setFilter({
@@ -105,12 +93,10 @@ const Clients = () => {
     })
     setClients(allClients.current);
   };
-
+  
   const [selectedClient, setSelectedClient] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
-
   const [selectClientForm, setSelectClientForm] = useState(false);
-
   const [addClientForm, setAddClientForm] = useState(false);
 
   const handleEditClient = (client) => {
@@ -122,7 +108,6 @@ const Clients = () => {
     setAddClientForm(false);
     setShowEditModal(false);
   };
-
 
   return (
     <div className="container">
@@ -225,8 +210,8 @@ const Clients = () => {
           <input type="text" name="address" placeholder="Address" />
           <input type="text" name="zipCode" placeholder="Zip Code" />
           <input type="text" name="city" placeholder="City *" required />
-          <select name="country *" required>
-            <option value="">Country</option>
+          <select name="country" required>
+            <option value="">Country *</option>
             <option value="Romania">Romania</option>
             <option value="EU">EU</option>
             <option value="Non-EU">Non-EU</option>
@@ -245,7 +230,6 @@ const Clients = () => {
           <input type="reset" value="Reset" className="resetButton" />
         </form>
       )}
-
 
       <div className="clients" id="clients">
       <h5 className="decorated-text2" style={{backgroundColor: 'rgba(0, 0, 0, 0)', padding: '10px'}}>{Object.values(filter).join('/')}</h5>
@@ -304,13 +288,8 @@ const Clients = () => {
         )}
       </div>
 
-
-
     </div>
   );
 };
 
 export default Clients;
-
-
-// useCallback for filter and resetfilter
