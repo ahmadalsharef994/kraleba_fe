@@ -1,7 +1,7 @@
 /* register page functional component*/
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Form, FormGroup, Label, Input } from "reactstrap";
+import { Button, Form, FormGroup, Label, Input } from "react-bootstrap";
 import { register } from "../components/services/authService";
 import { useHistory } from "react-router-dom";
 

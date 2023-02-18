@@ -13,19 +13,15 @@ import {
 const Bills = () => {
   const allBills = useRef([]);
   const allClients = useRef(localStorage.getItem("clients"));
-  // const billItems = useRef([]);
   const [bills, setBills] = useState([]);
   const [selectedClient, setSelectedClient] = useState({});
   const [selectBillForm, setSelectBillForm] = useState(false);
 
+  const [expandBill, setExpandBill] = useState(new Array(false));
+
   const selectClient = (e) => {
-    const temp = e.target.value.split(",");
-    setSelectedClient({
-      id: temp[0],
-      name: temp[1],
-      code: temp[2],
-      country: temp[3],
-    });
+    const [id, name, code, country] = e.target.value.split(",");
+    setSelectedClient({ id, name, code, country });
   };
 
   useEffect(() => {
@@ -50,7 +46,6 @@ const Bills = () => {
 
   const handleFilter = (e) => {
     e.preventDefault();
-    // Form submission logic here
     let temp = [...allBills.current];
     temp = temp.filter((bill) => {
       return (
@@ -156,16 +151,16 @@ const Bills = () => {
     setBills(bills);
   };
 
-  const handleDeleteBill = async (bill) => {
-    await deleteBill(bill._id);
+  // const handleDeleteBill = async (bill) => {
+  //   await deleteBill(bill._id);
 
-    try {
-      setBills(bills.filter((b) => b._id !== bill._id));
-      alert("bill deleted successfully");
-    } catch (error) {
-      alert("error: Could not delete bill");
-    }
-  };
+  //   try {
+  //     setBills(bills.filter((b) => b._id !== bill._id));
+  //     alert("bill deleted successfully");
+  //   } catch (error) {
+  //     alert("error: Could not delete bill");
+  //   }
+  // };
 
   return (
     <div>
@@ -395,7 +390,7 @@ const Bills = () => {
                   <ListGroup.Item>
                     bill date: {convertDate(bill.date)}
                   </ListGroup.Item>
-                  <ListGroup.Item>bill type: {bill.type}</ListGroup.Item>
+                  <ListGroup.Item>bill type: <b>{bill.type}</b></ListGroup.Item>
                   <ListGroup.Item>currency: {bill.currency}</ListGroup.Item>
                   <ListGroup.Item>
                     exchangeRate: {bill.exchangeRate}
@@ -429,66 +424,83 @@ const Bills = () => {
                     total + VAT (euro): {bill.totalAfterVAT.euro}
                   </ListGroup.Item>
                 </ListGroup>
+                {bill.type === "offer" && (
+                  <ButtonExtend
+                    className="btn btn-secondary"
+                    size="sm"
+                    onClick={() => handleEditBill(bill)}
+                  >
+                    Edit
+                  </ButtonExtend>
+                )}
 
-                <ButtonExtend
-                  className="btn btn-secondary"
-                  size="sm"
-                  onClick={() => handleEditBill(bill)}
-                >
-                  Edit
-                </ButtonExtend>
-
-                <ButtonExtend
+                {/* <ButtonExtend
                   className="btn btn-danger"
                   size="sm"
                   onClick={() => handleDeleteBill(bill)}
                 >
                   Delete
+                </ButtonExtend> */}
+
+                <ButtonExtend
+                  className="btn btn-secondary"
+                  size="sm"
+                  onClick={() =>
+                    setExpandBill({
+                      ...expandBill,
+                      [index]: !expandBill[index],
+                    })
+                  }
+                >
+                  {/* {expandBill[index] ? "Hide" : "Show"} items */}
+                  ...
                 </ButtonExtend>
               </Card.Header>
-              <Card.Body>
-                <Table>
-                  <thead>
-                    <tr>
-                      <th>index</th>
-                      <th>name</th>
-                      <th>code</th>
-                      <th>description</th>
-                      <th>Unit</th>
-                      <th>quantity</th>
-                      <th> Price per unit (lei)</th>
-                      <th> Price per unit (euro)</th>
-                      <th> total (lei)</th>
-                      <th> total (euro)</th>
-                      <th>VAT (lei)</th>
-                      <th>VAT (euro)</th>
-                      <th>total + VAT (lei)</th>
-                      <th>total + VAT (euro)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {bill.items &&
-                      bill.items.map((item, index) => (
-                        <tr key={index}>
-                          <td>{index}</td>
-                          <td>{item.name}</td>
-                          <td>{item.code}</td>
-                          <td>{item.description}</td>
-                          <td>{item.unitOfMeasurement}</td>
-                          <td>{item.quantity}</td>
-                          <td>{item.lei}</td>
-                          <td>{item.euro}</td>
-                          <td>{item.totalBeforeVAT.lei}</td>
-                          <td>{item.totalBeforeVAT.euro}</td>
-                          <td>{item.VAT.lei}</td>
-                          <td>{item.VAT.euro}</td>
-                          <td>{item.totalAfterVAT.lei}</td>
-                          <td>{item.totalAfterVAT.euro}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </Table>
-              </Card.Body>
+              {expandBill[index] && (
+                <Card.Body>
+                  <Table>
+                    <thead>
+                      <tr>
+                        <th>index</th>
+                        <th>name</th>
+                        <th>code</th>
+                        <th>description</th>
+                        <th>Unit</th>
+                        <th>quantity</th>
+                        <th> Price per unit (lei)</th>
+                        <th> Price per unit (euro)</th>
+                        <th> total (lei)</th>
+                        <th> total (euro)</th>
+                        <th>VAT (lei)</th>
+                        <th>VAT (euro)</th>
+                        <th>total + VAT (lei)</th>
+                        <th>total + VAT (euro)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {bill.items &&
+                        bill.items.map((item, index) => (
+                          <tr key={index}>
+                            <td>{index}</td>
+                            <td>{item.name}</td>
+                            <td>{item.code}</td>
+                            <td>{item.description}</td>
+                            <td>{item.unitOfMeasurement}</td>
+                            <td>{item.quantity}</td>
+                            <td>{item.lei}</td>
+                            <td>{item.euro}</td>
+                            <td>{item.totalBeforeVAT.lei}</td>
+                            <td>{item.totalBeforeVAT.euro}</td>
+                            <td>{item.VAT.lei}</td>
+                            <td>{item.VAT.euro}</td>
+                            <td>{item.totalAfterVAT.lei}</td>
+                            <td>{item.totalAfterVAT.euro}</td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </Table>
+                </Card.Body>
+              )}
             </Card>
           ))
         )}
