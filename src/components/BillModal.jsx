@@ -46,17 +46,13 @@ function BillModal({ bill, closeModal, patchBill }) {
             placeholder="Exchange Rate"
           />
           <input type="number" name="vatRate" placeholder="VAT Rate" />
-          {/* <input
-            type="number"
-            name="totalBeforeVAT"
-            placeholder="Total Before VAT"
-          />
-          <input type="number" name="totalVAT" placeholder="Total VAT" />
-          <input
-            type="number"
-            name="totalAfterVAT"
-            placeholder="Total After VAT"
-          /> */}
+
+            <input
+              type="number"
+              name="customDutyVAT"
+              placeholder="Custom Duty VAT"
+              required
+            />
 
           <input type="submit" />
           <input type="reset" className="resetButton" />

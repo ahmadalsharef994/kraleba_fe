@@ -12,6 +12,7 @@ import {
 import "./Prototypes.css";
 
 import PrototypeModal from "../../components/PrototypeModal";
+// import UploadImage from "../../components/UploadImage";
 
 const Prototypes = () => {
   const [prototypes, setPrototypes] = useState([]);
@@ -70,7 +71,6 @@ const Prototypes = () => {
 
       if (child.name.includes("marketing") || child.name.includes("forming")) {
         const names = child.name.split("-");
-        console.log(names);
         prototypeForm[names[0]][names[1]] = child.value;
         continue;
       }
@@ -97,7 +97,7 @@ const Prototypes = () => {
     temp = temp.filter((prototype) => {
       return (
         prototype.name.toLowerCase().includes(searchValue.toLowerCase()) &&
-        prototype.type.toLowerCase().includes(typeValue.toLowerCase()) 
+        prototype.type.toLowerCase().includes(typeValue.toLowerCase())
       );
     });
     setPrototypes(temp);
@@ -126,13 +126,14 @@ const Prototypes = () => {
   };
 
   const handleFileUpload = (e) => {
-    const uploadData = new FormData();
-    uploadData.append("imageUrl", e.target.files[0]);
-    console.log(uploadData);
+    // const uploadData = new FormData();
+    // uploadData.append("imageUrl", e.target.files[0]);
+    
   };
 
   return (
     <div className="container">
+      {/* <UploadImage /> */}
       <form className="filter" onSubmit={handleFilter}>
         <input
           type="text"
@@ -199,92 +200,74 @@ const Prototypes = () => {
                 </ButtonExtend>
               </Card.Header>
               <Card.Body>
-                      <ListGroup>
-                        <ListGroup.Item>Type: {prototype.type}</ListGroup.Item>
-                        <ListGroup.Item>Bill: {prototype.bill}</ListGroup.Item>
-                        <ListGroup.Item>
-                          Bill Code: {prototype.billCode}
-                        </ListGroup.Item>
-                        <ListGroup.Item>
-                          Fabrics:
-                          <ul>
-                            <li>Supplier: {prototype.fabrics.supplier}</li>
-                            <li>
-                              Product Name: {prototype.fabrics.productName}
-                            </li>
-                            <li>
-                              Supplier Code: {prototype.fabrics.supplierCode}
-                            </li>
-                            <li>
-                              Date of Invoice: {prototype.fabrics.dateOfInvoice}
-                            </li>
-                            <li>
-                              Invoice Number: {prototype.fabrics.invoiceNumber}
-                            </li>
-                          </ul>
-                        </ListGroup.Item>
-                        <ListGroup.Item>
-                          Assets:
-                          <ul>
-                            <li>Supplier: {prototype.assets.supplier}</li>
-                            <li>
-                              Product Name: {prototype.assets.productName}
-                            </li>
-                            <li>
-                              Supplier Code: {prototype.assets.supplierCode}
-                            </li>
-                            <li>
-                              Date of Invoice: {prototype.assets.dateOfInvoice}
-                            </li>
-                            <li>
-                              Invoice Number: {prototype.assets.invoiceNumber}
-                            </li>
-                          </ul>
-                        </ListGroup.Item>
-                        <ListGroup.Item>Code: {prototype.code}</ListGroup.Item>
-                        <ListGroup.Item>
-                          Tailoring: {prototype.tailoring}
-                        </ListGroup.Item>
-                        <ListGroup.Item>
-                          Marketing:
-                          <ul>
-                            <li>Category: {prototype.marketing.category}</li>
-                            <li>Theme: {prototype.marketing.theme}</li>
-                            <li>Styles: {prototype.marketing.styles}</li>
-                            <li>Occasion: {prototype.marketing.occasion}</li>
-                            <li>
-                              Seasonality: {prototype.marketing.seasonality}
-                            </li>
-                            <li>Author: {prototype.marketing.author}</li>
-                            <li>
-                              Collection: {prototype.marketing.collection}
-                            </li>
-                          </ul>
-                        </ListGroup.Item>
-                        <ListGroup.Item>
-                          Forming:
-                          <ul>
-                            <li>Cuffs: {prototype.forming.cuffs}</li>
-                            <li>Slits: {prototype.forming.slits}</li>
-                            <li>Pockets: {prototype.forming.pockets}</li>
-                            <li>Stitching: {prototype.forming.stitching}</li>
-                            <li>Seams Color: {prototype.forming.seamsColor}</li>
-                            <li>Buttons: {prototype.forming.buttons}</li>
-                            <li>Sleeves: {prototype.forming.sleeves}</li>
-                            <li>
-                              Interlining: {prototype.forming.interlining}
-                            </li>
-                          </ul>
-                        </ListGroup.Item>
-                        <ListGroup.Item>
-                          <strong>Images:</strong>
-                          <ul>
-                            {prototype.images.map((image, index) => (
-                              <li key={index}>{<img src={image} alt="prototype"/>}</li>
-                            ))}
-                          </ul>
-                        </ListGroup.Item>
-                      </ListGroup>
+                <ListGroup>
+                  <ListGroup.Item>Type: {prototype.type}</ListGroup.Item>
+                  <ListGroup.Item>Bill: {prototype.bill}</ListGroup.Item>
+                  <ListGroup.Item>
+                    Bill Code: {prototype.billCode}
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    Fabrics:
+                    <ul>
+                      <li>Supplier: {prototype.fabrics.supplier}</li>
+                      <li>Product Name: {prototype.fabrics.productName}</li>
+                      <li>Supplier Code: {prototype.fabrics.supplierCode}</li>
+                      <li>
+                        Date of Invoice: {prototype.fabrics.dateOfInvoice}
+                      </li>
+                      <li>Invoice Number: {prototype.fabrics.invoiceNumber}</li>
+                    </ul>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    Assets:
+                    <ul>
+                      <li>Supplier: {prototype.assets.supplier}</li>
+                      <li>Product Name: {prototype.assets.productName}</li>
+                      <li>Supplier Code: {prototype.assets.supplierCode}</li>
+                      <li>Date of Invoice: {prototype.assets.dateOfInvoice}</li>
+                      <li>Invoice Number: {prototype.assets.invoiceNumber}</li>
+                    </ul>
+                  </ListGroup.Item>
+                  <ListGroup.Item>Code: {prototype.code}</ListGroup.Item>
+                  <ListGroup.Item>
+                    Tailoring: {prototype.tailoring}
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    Marketing:
+                    <ul>
+                      <li>Category: {prototype.marketing.category}</li>
+                      <li>Theme: {prototype.marketing.theme}</li>
+                      <li>Styles: {prototype.marketing.styles}</li>
+                      <li>Occasion: {prototype.marketing.occasion}</li>
+                      <li>Seasonality: {prototype.marketing.seasonality}</li>
+                      <li>Author: {prototype.marketing.author}</li>
+                      <li>Collection: {prototype.marketing.collection}</li>
+                    </ul>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    Forming:
+                    <ul>
+                      <li>Cuffs: {prototype.forming.cuffs}</li>
+                      <li>Slits: {prototype.forming.slits}</li>
+                      <li>Pockets: {prototype.forming.pockets}</li>
+                      <li>Stitching: {prototype.forming.stitching}</li>
+                      <li>Seams Color: {prototype.forming.seamsColor}</li>
+                      <li>Buttons: {prototype.forming.buttons}</li>
+                      <li>Sleeves: {prototype.forming.sleeves}</li>
+                      <li>Interlining: {prototype.forming.interlining}</li>
+                    </ul>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <strong>Images:</strong>
+                    <ul>
+                      {prototype.images.map((image, index) => (
+                        <li key={index}>
+                          {<img src={image} alt="prototype" />}
+                        </li>
+                      ))}
+                    </ul>
+                  </ListGroup.Item>
+                </ListGroup>
               </Card.Body>
             </Card>
           ))
@@ -313,31 +296,38 @@ const Prototypes = () => {
             <option value="abelard">abelard</option>
             <option value="heloise">heloise</option>
           </select>
-          
-          <select name="fabrics-billCode" placeholder="Fabrics BillCode" >
+
+          <select name="fabrics-billCode" placeholder="Fabrics BillCode">
             <option value="">Fabrics BillCode</option>
-            {allBills && allBills.current.map((bill) => (
-              <option value={bill.code}>{bill.code}</option>
-            ))}
+            {allBills &&
+              allBills.current.map((bill) => (
+                <option value={bill.code}>{bill.code}</option>
+              ))}
           </select>
-          <select name="fabrics-supplierCode" placeholder="Fabrics Supplier Name">
+          <select
+            name="fabrics-supplierCode"
+            placeholder="Fabrics Supplier Name"
+          >
             <option value="">Fabrics Supplier Name</option>
-            {allClients && allClients.current.map((client) => (
-              <option value={client.code}>{client.name}</option>
-            ))}
+            {allClients &&
+              allClients.current.map((client) => (
+                <option value={client.code}>{client.name}</option>
+              ))}
           </select>
 
-          <select name="assets-billCode" placeholder="Assets BillCode" >
+          <select name="assets-billCode" placeholder="Assets BillCode">
             <option value="">Assets BillCode</option>
-            {allBills && allBills.current.map((bill) => (
-              <option value={bill.code}>{bill.code}</option>
-            ))}
+            {allBills &&
+              allBills.current.map((bill) => (
+                <option value={bill.code}>{bill.code}</option>
+              ))}
           </select>
           <select name="assets-supplierCode" placeholder="Assets Supplier Name">
             <option value="">Assets Supplier Name</option>
-            {allClients && allClients.current.map((client) => (
-              <option value={client.code}>{client.name}</option>
-            ))}
+            {allClients &&
+              allClients.current.map((client) => (
+                <option value={client.code}>{client.name}</option>
+              ))}
           </select>
 
           <input type="text" name="code" placeholder="Code" required />
@@ -353,33 +343,81 @@ const Prototypes = () => {
             <option value="no category">no category</option>
           </select>
 
-
-          <input type="text" name="marketing-category" placeholder="marketing Category" />
-          <input type="text" name="marketing-theme" placeholder="marketing Theme" />
-          <input type="text" name="marketing-styles" placeholder="marketing Styles" />
-          <input type="text" name="marketing-occasion" placeholder="marketing Occasion" />
-          <input type="text" name="marketing-seasonality" placeholder="marketing Seasonality" />
-          <input type="text" name="marketing-author" placeholder="marketing Author" />
-          <input type="text" name="marketing-collection" placeholder="marketing Collection" />
+          <input
+            type="text"
+            name="marketing-category"
+            placeholder="marketing Category"
+          />
+          <input
+            type="text"
+            name="marketing-theme"
+            placeholder="marketing Theme"
+          />
+          <input
+            type="text"
+            name="marketing-styles"
+            placeholder="marketing Styles"
+          />
+          <input
+            type="text"
+            name="marketing-occasion"
+            placeholder="marketing Occasion"
+          />
+          <input
+            type="text"
+            name="marketing-seasonality"
+            placeholder="marketing Seasonality"
+          />
+          <input
+            type="text"
+            name="marketing-author"
+            placeholder="marketing Author"
+          />
+          <input
+            type="text"
+            name="marketing-collection"
+            placeholder="marketing Collection"
+          />
 
           <input type="text" name="forming-cuffs" placeholder="forming Cuffs" />
           <input type="text" name="forming-slits" placeholder="forming Slits" />
-          <input type="text" name="forming-pockets" placeholder="forming Pockets" />
-          <input type="text" name="forming-stitching" placeholder="forming Stitching" />
-          <input type="text" name="forming-seamsColor" placeholder="forming Seams Color" />
-          <input type="text" name="forming-buttons" placeholder="forming Buttons" />
-          <input type="text" name="forming-sleeves" placeholder="forming Sleeves" />
-          <input type="text" name="forming-interlining" placeholder="forming Interlining" />
-          {/* images input and upload*/}
           <input
-            type="file"
-            name="images"
-            multiple
-            onChange={handleFileUpload}
+            type="text"
+            name="forming-pockets"
+            placeholder="forming Pockets"
           />
-          
-      
-          
+          <input
+            type="text"
+            name="forming-stitching"
+            placeholder="forming Stitching"
+          />
+          <input
+            type="text"
+            name="forming-seamsColor"
+            placeholder="forming Seams Color"
+          />
+          <input
+            type="text"
+            name="forming-buttons"
+            placeholder="forming Buttons"
+          />
+          <input
+            type="text"
+            name="forming-sleeves"
+            placeholder="forming Sleeves"
+          />
+          <input
+            type="text"
+            name="forming-interlining"
+            placeholder="forming Interlining"
+          />
+          {/* images input and upload*/}
+          <input type="file" name="image1" onChange={handleFileUpload} />
+          <input type="file" name="image2" onChange={handleFileUpload} />
+          <input type="file" name="image3" onChange={handleFileUpload} />
+          <input type="file" name="image4" onChange={handleFileUpload} />
+
+
           <textarea name="notes" placeholder="Notes"></textarea>
           <input type="submit" value="Submit" />
           <input type="reset" value="Reset" className="resetButton" />
