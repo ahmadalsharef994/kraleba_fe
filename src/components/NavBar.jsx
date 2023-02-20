@@ -1,36 +1,62 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import "./styles.css";
 
 const NavBar = () => {
+  const activeLinkStyle = {
+    fontWeight: "bold",
+    // highlight with bright color
+    // highlight with underline
+    textDecorationColor: "white",
+    textDecorationThickness: "2px",
+    textDecorationStyle: "double",
+  };
+
   return (
     <div className="navbar">
-      <Link className="navbar-item" to="/clients">
+      <NavLink
+        className="navbar-item"
+        to="/clients"
+        style={({ isActive }) => (isActive ? activeLinkStyle : null)}
+      >
         Clients
-      </Link>
-      <Link className="navbar-item" to="/bills">
+      </NavLink>
+      <NavLink
+        className="navbar-item"
+        to="/bills"
+        style={({ isActive }) => (isActive ? activeLinkStyle : null)}
+      >
         Costs
-      </Link>
-      <Link className="navbar-item" to="/prototypes">
+      </NavLink>
+      <NavLink
+        className="navbar-item"
+        to="/prototypes"
+        style={({ isActive }) => (isActive ? activeLinkStyle : null)}
+      >
         Prototype
-      </Link>
-      <Link className="navbar-item" to="#">
+      </NavLink>
+      <NavLink className="navbar-item" to="#">
         Production
-      </Link>
-      <Link className="navbar-item" to="#">
-        Overhears
-      </Link>
-      <Link className="navbar-item" to="/products">
+      </NavLink>
+      <NavLink className="navbar-item" to="#">
+        Overheads
+      </NavLink>
+      <NavLink
+        className="navbar-item"
+        to="/products"
+        style={({ isActive }) => (isActive ? activeLinkStyle : null)}
+      >
         Products
-      </Link>
-      <Link className="navbar-item" to="/#">
+      </NavLink>
+      <NavLink className="navbar-item" to="/#">
         Stock
-      </Link>
-      <Link className="navbar-item" to="/#">
+      </NavLink>
+      <NavLink className="navbar-item" to="/#">
         Retailers
-      </Link>
-      <Link className="navbar-item" to="/#">
+      </NavLink>
+      <NavLink className="navbar-item" to="/#">
         Relations
-      </Link>
+      </NavLink>
     </div>
   );
 };

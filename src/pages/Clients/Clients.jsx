@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect  } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Card } from "react-bootstrap";
 import ButtonExtend from "../../components/extends/ButtonExtend";
 import {
@@ -23,11 +23,9 @@ const Clients = () => {
     };
     try {
       fetchData();
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err);
     }
-
   }, []);
 
   const handlePatchClient = async (clientForm, clientId) => {
@@ -56,7 +54,7 @@ const Clients = () => {
     setClients(temp);
   };
 
-  const handleDeleteClient = async(client) => {
+  const handleDeleteClient = async (client) => {
     await deleteClient(client._id);
     try {
       setClients(clients.filter((c) => c._id !== client._id));
@@ -70,7 +68,7 @@ const Clients = () => {
     searchValue: "",
     typeValue: "",
     categoryValue: "",
-  })
+  });
   const handleFilter = (e) => {
     e.preventDefault();
     // Form submission logic here
@@ -79,7 +77,9 @@ const Clients = () => {
       return (
         client.name.toLowerCase().includes(filter.searchValue.toLowerCase()) &&
         client.type.toLowerCase().includes(filter.typeValue.toLowerCase()) &&
-        client.category.toLowerCase().includes(filter.categoryValue.toLowerCase())
+        client.category
+          .toLowerCase()
+          .includes(filter.categoryValue.toLowerCase())
       );
     });
     setClients(temp);
@@ -90,10 +90,10 @@ const Clients = () => {
       searchValue: "",
       typeValue: "",
       categoryValue: "",
-    })
+    });
     setClients(allClients.current);
   };
-  
+
   const [selectedClient, setSelectedClient] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectClientForm, setSelectClientForm] = useState(false);
@@ -115,73 +115,79 @@ const Clients = () => {
         className="addButton"
         onClick={() => setSelectClientForm(!selectClientForm)}
       >
-        SELECT CLIENT
+        SELECT
       </ButtonExtend>
 
       <ButtonExtend
         className="addButton"
         onClick={() => setAddClientForm(!addClientForm)}
       >
-        ADD CLIENT
+        ADD
       </ButtonExtend>
 
       <ButtonExtend
-          type="button"
-          className="pdfButton"
-          onClick={() => window.print()}
-        >
-          Print as PDF
-        </ButtonExtend>
+        type="button"
+        className="pdfButton"
+        onClick={() => window.print()}
+      >
+        Print as PDF
+      </ButtonExtend>
 
-      {selectClientForm && (<form className="filter" onSubmit={handleFilter} >
-        <input
-          type="text"
-          value={filter.searchValue}
-          placeholder="Search By Name"
-          onChange={(e) => setFilter({ ...filter, searchValue: e.target.value })}
+      {selectClientForm && (
+        <form className="search-filter" onSubmit={handleFilter}>
+          <input
+            type="text"
+            value={filter.searchValue}
+            placeholder="Search By Name"
+            onChange={(e) =>
+              setFilter({ ...filter, searchValue: e.target.value })
+            }
           />
-        <select
-          value={filter.typeValue}
-          onChange={(e) => setFilter({ ...filter, typeValue: e.target.value })}
-          placeholder="Type"
-        >
-          <option value="">Select Type</option>
-          <option value="Buyer">Buyer</option>
-          <option value="Supplier">Supplier</option>
-        </select>
-        <select
-          value={filter.categoryValue}
-          onChange={(e) => setFilter({ ...filter, categoryValue: e.target.value })}
-        >
-          <option value="">Select Category</option>
-          <option value="fabrics">fabrics</option>
-          <option assets="assets">assets</option>
-          <option value="auxiliary">auxiliary</option>
-          <option value="manufacturing">manufacturing</option>
-          <option value="delivery">delivery</option>
-          <option value="banking">banking</option>
-          <option value="duties">duties</option>
-          <option value="others">others</option>
-        </select>
-        <div>
-          <ButtonExtend
-            className="filterButton"
-            type="submit"
-            onClick={handleFilter}
+          <select
+            value={filter.typeValue}
+            onChange={(e) =>
+              setFilter({ ...filter, typeValue: e.target.value })
+            }
+            placeholder="Type"
           >
-            Filter
-          </ButtonExtend>
-          <ButtonExtend
-            className="resetButton"
-            type="reset"
-            onClick={resetFilter}
+            <option value="">Select Type</option>
+            <option value="Buyer">Buyer</option>
+            <option value="Supplier">Supplier</option>
+          </select>
+          <select
+            value={filter.categoryValue}
+            onChange={(e) =>
+              setFilter({ ...filter, categoryValue: e.target.value })
+            }
           >
-            Remove Filter
-          </ButtonExtend>
-        </div>
-
-
-      </form>)}
+            <option value="">Select Category</option>
+            <option value="fabrics">fabrics</option>
+            <option assets="assets">assets</option>
+            <option value="auxiliary">auxiliary</option>
+            <option value="manufacturing">manufacturing</option>
+            <option value="delivery">delivery</option>
+            <option value="banking">banking</option>
+            <option value="duties">duties</option>
+            <option value="others">others</option>
+          </select>
+          <div>
+            <ButtonExtend
+              className="filterButton"
+              type="submit"
+              onClick={handleFilter}
+            >
+              Filter
+            </ButtonExtend>
+            <ButtonExtend
+              className="resetButton"
+              type="reset"
+              onClick={resetFilter}
+            >
+              Remove Filter
+            </ButtonExtend>
+          </div>
+        </form>
+      )}
 
       {addClientForm && (
         <form className="filter" onSubmit={handlePostClient}>
@@ -232,7 +238,12 @@ const Clients = () => {
       )}
 
       <div className="clients" id="clients">
-      <h5 className="decorated-text2" style={{backgroundColor: 'rgba(0, 0, 0, 0)', padding: '10px'}}>{Object.values(filter).join('/')}</h5>
+        <h5
+          className="decorated-text2"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0)", padding: "10px" }}
+        >
+          {Object.values(filter).join("/")}
+        </h5>
 
         {!clients || !clients.length ? (
           <p>No clients found</p>
@@ -253,7 +264,6 @@ const Clients = () => {
                 >
                   Edit
                 </ButtonExtend>
-
               </Card.Header>
               <Card.Body>
                 <div className="client-group">
@@ -287,7 +297,6 @@ const Clients = () => {
           />
         )}
       </div>
-
     </div>
   );
 };
