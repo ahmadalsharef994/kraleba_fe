@@ -17,9 +17,10 @@
   display: flex;
   flex-wrap: wrap;
   flex-direction: row !important;
+  justify-content: center;
 }
 .client-group div {
-  width: calc(50% - 10px);
+  width: calc(16% - 1px);
   border-style: dotted;
   border-width: 1px;
 }

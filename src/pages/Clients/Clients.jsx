@@ -47,8 +47,19 @@ const Clients = () => {
       ) {
         continue;
       }
+      if (child.type === "select-multiple") {
+        const options = [];
+        for (let j = 0; j < child.options.length; j++) {
+          if (child.options[j].selected) {
+            options.push(child.options[j].value);
+          }
+        }
+        clientForm[child.name] = options;
+        continue;
+      }
       clientForm[child.name] = child.value;
     }
+    console.log(clientForm);
     await postClient(clientForm);
     const temp = await fetchClientsData();
     setClients(temp);
@@ -113,14 +124,21 @@ const Clients = () => {
     <div className="container">
       <ButtonExtend
         className="addButton"
-        onClick={() => setSelectClientForm(!selectClientForm)}
+        onClick={() => {
+          setAddClientForm(false);
+          setSelectClientForm(!selectClientForm);
+        }}
       >
         SELECT
       </ButtonExtend>
 
       <ButtonExtend
         className="addButton"
-        onClick={() => setAddClientForm(!addClientForm)}
+        onClick={() => {
+          setSelectClientForm(false);
+
+          setAddClientForm(!addClientForm);
+        }}
       >
         ADD
       </ButtonExtend>
@@ -149,6 +167,7 @@ const Clients = () => {
               setFilter({ ...filter, typeValue: e.target.value })
             }
             placeholder="Type"
+            required
           >
             <option value="">Select Type</option>
             <option value="Buyer">Buyer</option>
@@ -159,6 +178,7 @@ const Clients = () => {
             onChange={(e) =>
               setFilter({ ...filter, categoryValue: e.target.value })
             }
+            required
           >
             <option value="">Select Category</option>
             <option value="fabrics">fabrics</option>
@@ -197,8 +217,7 @@ const Clients = () => {
             <option value="supplier">Supplier</option>
           </select>
 
-          <select name="category" placeholder="Category">
-            <option value="">Category</option>
+          <select name="category" placeholder="Category" multiple>
             <option value="fabrics">fabrics</option>
             <option value="assets">assets</option>
             <option value="auxiliary">auxiliary</option>
@@ -208,8 +227,6 @@ const Clients = () => {
             <option value="duties">duties</option>
             <option value="others">others</option>
           </select>
-
-          <input type="text" name="subCategory" placeholder="Sub-Category" />
 
           <input type="text" name="name" placeholder="Name *" required />
           <input type="text" name="code" placeholder="Code *" required />
@@ -227,6 +244,8 @@ const Clients = () => {
           <input type="text" name="iban" placeholder="IBAN" />
           <input type="text" name="swift" placeholder="SWIFT" />
           <input type="text" name="bank" placeholder="BANK" />
+          <input type="text" name="contact" placeholder="contact" />
+
           <input type="text" name="phone1" placeholder="Phone 1" />
           <input type="text" name="phone2" placeholder="Phone 2" />
           <input type="text" name="email" placeholder="E-mail" />
@@ -251,11 +270,13 @@ const Clients = () => {
           clients.map((client, index) => (
             <Card key={index}>
               <Card.Header>
-                <h5 className="decorated-text2">{client.name}</h5>
-                <h5 className="decorated-text2"> {client.code} </h5>
-                <h5 className="decorated-text2">{client.type}</h5>
-                <h5 className="decorated-text2"> {client.category} </h5>
-                <h5 className="decorated-text2"> {client.subCategory} </h5>
+                <div className="decorated-text2">{client.type}</div>
+                <div className="decorated-text2">
+                  {Array.isArray(client.category)
+                    ? client.category.join(", ")
+                    : client.category}
+                </div>
+                <div className="decorated-text2"> {client.subCategory} </div>
 
                 <ButtonExtend
                   className="btn btn-secondary"
@@ -267,22 +288,29 @@ const Clients = () => {
               </Card.Header>
               <Card.Body>
                 <div className="client-group">
-                  <div>CIF: {client.cif}</div>
-                  <div>OCR: {client.ocr}</div>
-                  <div>IBAN: {client.iban}</div>
-                  <div>SWIFT: {client.swift}</div>
-                  <div>Bank: {client.bank}</div>
-                  <div>Address: {client.address}</div>
-                  <div>City: {client.city}</div>
-                  <div>Zip: {client.zipCode}</div>
-                  <div>Country: {client.country}</div>
-                  <div>Phone 1: {client.phone1}</div>
-                  <div>Phone 2: {client.phone2}</div>
+                  <div className="decorated-text2">{client.name}</div>
+                  <div className="decorated-text2"> {client.code} </div>
+                  <div>{client.address}</div>
+                  <div>{client.zipCode}</div>
+                  <div>{client.city}</div>
+                  <div>{client.country}</div>
+
+                  <div>{client.cif}</div>
+                  <div>{client.ocr}</div>
+                  <div>{client.iban}</div>
+                  <div>{client.swift}</div>
+                  <div>{client.bank}</div>
+                  <div></div>
+                  <div>{client.contact}</div>
+                  <div>{client.phone1}</div>
+                  <div>{client.phone2}</div>
                   <div>
-                    Email: <a href={"mailto:" + client.email}>{client.email}</a>
+                    <a href={"mailto:" + client.email}>{client.email}</a>
                   </div>
-                  <div>Notes: {client.notes}</div>
-                  <div>Website: {client.website}</div>
+                  <div>
+                    <a href={client.website}>{client.website}</a>
+                  </div>
+                  <div>{client.notes}</div>
                 </div>
               </Card.Body>
             </Card>
