@@ -166,14 +166,20 @@ const Bills = () => {
     <div>
       <ButtonExtend
         className="addButton"
-        onClick={() => setSelectBillForm(!selectBillForm)}
+        onClick={() => {
+          setAddBillForm(false);
+          setSelectBillForm(!selectBillForm);
+        }}
       >
         SELECT BILL
       </ButtonExtend>
 
       <ButtonExtend
         className="addButton"
-        onClick={() => setAddBillForm(!addBillForm)}
+        onClick={() => {
+          setSelectBillForm(false);
+          setAddBillForm(!addBillForm);
+        }}
       >
         ADD BILL
       </ButtonExtend>
@@ -363,6 +369,10 @@ const Bills = () => {
             </div>
           ))}
 
+        
+          <input type="text" name="notes" placeholder="Notes" />
+          <input type="text" name="categoris" placeholder="categoris" />
+          <input type="text" name="subcategoris" placeholder="subcategoris" />
           <input type="submit" />
           <input type="reset" className="resetButton" />
         </form>
@@ -390,23 +400,31 @@ const Bills = () => {
                   <ListGroup.Item>
                     bill date: {convertDate(bill.date)}
                   </ListGroup.Item>
-                  <ListGroup.Item>bill type: <b>{bill.type}</b></ListGroup.Item>
+                  <ListGroup.Item>
+                    bill type: <b>{bill.type}</b>
+                  </ListGroup.Item>
                   <ListGroup.Item>currency: {bill.currency}</ListGroup.Item>
+                </ListGroup>
+
+                <ListGroup>
                   <ListGroup.Item>
                     exchangeRate: {bill.exchangeRate}
                   </ListGroup.Item>
                   <ListGroup.Item>
                     customDutyVAT: {bill.customDutyVAT}
                   </ListGroup.Item>
-                </ListGroup>
-
-                <ListGroup>
                   <ListGroup.Item>
                     total (lei): {bill.totalBeforeVAT.lei}
                   </ListGroup.Item>
                   <ListGroup.Item>
                     total (euro):{bill.totalBeforeVAT.euro}
                   </ListGroup.Item>
+                </ListGroup>
+
+                <ListGroup>
+                  {/* <ListGroup.Item>totalCustomDuty (lei): {bill.totalCustomDuty.lei}</ListGroup.Item>
+                  <ListGroup.Item>totalCustomDuty (euro): {bill.totalCustomDuty.euro}</ListGroup.Item> */}
+
                   <ListGroup.Item>VAT percentage:{bill.vatRate}</ListGroup.Item>
                   <ListGroup.Item>
                     VAT (lei): {bill.totalVAT.lei}
@@ -414,8 +432,6 @@ const Bills = () => {
                   <ListGroup.Item>
                     VAT (euro): {bill.totalVAT.euro}
                   </ListGroup.Item>
-                  {/* <ListGroup.Item>totalCustomDuty (lei): {bill.totalCustomDuty.lei}</ListGroup.Item>
-                  <ListGroup.Item>totalCustomDuty (euro): {bill.totalCustomDuty.euro}</ListGroup.Item> */}
 
                   <ListGroup.Item>
                     total + VAT (lei):{bill.totalAfterVAT.lei}
@@ -459,24 +475,31 @@ const Bills = () => {
               {expandBill[index] && (
                 <Card.Body>
                   <Table>
-                    <thead>
-                      <tr>
-                        <th>index</th>
-                        <th>name</th>
-                        <th>code</th>
-                        <th>description</th>
-                        <th>Unit</th>
-                        <th>quantity</th>
-                        <th> Price per unit (lei)</th>
-                        <th> Price per unit (euro)</th>
-                        <th> total (lei)</th>
-                        <th> total (euro)</th>
-                        <th>VAT (lei)</th>
-                        <th>VAT (euro)</th>
-                        <th>total + VAT (lei)</th>
-                        <th>total + VAT (euro)</th>
-                      </tr>
-                    </thead>
+                  <thead>
+  <tr>
+    <th rowspan="2">index</th>
+    <th rowspan="2">name</th>
+    <th rowspan="2">code</th>
+    <th rowspan="2">description</th>
+    <th colspan="4">buc/um</th>
+    <th colspan="2">total fara TVA</th>
+    <th colspan="2">TVA</th>
+    <th colspan="2">total incl. TVA</th>
+  </tr>
+  <tr>
+    <th>Unit</th>
+    <th>quantity</th>
+    <th>buc (lei)</th>
+    <th>buc (euro)</th>
+    <th>lei</th>
+    <th>euro</th>
+    <th>lei</th>
+    <th>euro</th>
+    <th>lei</th>
+    <th>euro</th>
+  </tr>
+</thead>
+
                     <tbody>
                       {bill.items &&
                         bill.items.map((item, index) => (
@@ -501,6 +524,16 @@ const Bills = () => {
                   </Table>
                 </Card.Body>
               )}
+                              <Card.Footer>
+                  <ListGroup>
+                    <ListGroup.Item>
+                      total (lei): {bill.totalBeforeVAT.lei}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      total (euro):{bill.totalBeforeVAT.euro}
+                    </ListGroup.Item>
+                  </ListGroup>
+                </Card.Footer>
             </Card>
           ))
         )}

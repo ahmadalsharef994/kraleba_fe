@@ -12,13 +12,18 @@ import {
 import "./Prototypes.css";
 
 import PrototypeModal from "../../components/PrototypeModal";
-// import UploadImage from "../../components/UploadImage";
+import UploadImage from "./UploadImage";
 
 const Prototypes = () => {
   const [prototypes, setPrototypes] = useState([]);
   const allPrototypes = useRef([]);
   const allBills = useRef([]);
   const allClients = useRef([]);
+
+  const [images, setImages] = useState([]);
+  const handleSetImages = (images) => {
+    setImages(images);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,6 +81,8 @@ const Prototypes = () => {
       }
       prototypeForm[child.name] = child.value;
     }
+    prototypeForm["images"] = images;
+    console.log(prototypeForm);
     await postPrototype(prototypeForm);
     const temp = await fetchPrototypesData();
     setPrototypes(temp);
@@ -123,12 +130,6 @@ const Prototypes = () => {
   const closeModal = () => {
     setAddPrototypeForm(false);
     setShowEditModal(false);
-  };
-
-  const handleFileUpload = (e) => {
-    // const uploadData = new FormData();
-    // uploadData.append("imageUrl", e.target.files[0]);
-    
   };
 
   return (
@@ -411,11 +412,7 @@ const Prototypes = () => {
             name="forming-interlining"
             placeholder="forming Interlining"
           />
-          {/* images input and upload*/}
-          <input type="file" name="image1" onChange={handleFileUpload} />
-          <input type="file" name="image2" onChange={handleFileUpload} />
-          <input type="file" name="image3" onChange={handleFileUpload} />
-          <input type="file" name="image4" onChange={handleFileUpload} />
+
 
 
           <textarea name="notes" placeholder="Notes"></textarea>
@@ -423,6 +420,11 @@ const Prototypes = () => {
           <input type="reset" value="Reset" className="resetButton" />
         </form>
       )}
+                <UploadImage
+            images={images}
+            setImages={handleSetImages}
+            name="images"
+          />
     </div>
   );
 };
