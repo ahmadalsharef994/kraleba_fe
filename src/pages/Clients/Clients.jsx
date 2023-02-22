@@ -59,7 +59,6 @@ const Clients = () => {
       }
       clientForm[child.name] = child.value;
     }
-    console.log(clientForm);
     await postClient(clientForm);
     const temp = await fetchClientsData();
     setClients(temp);
@@ -76,9 +75,9 @@ const Clients = () => {
   };
 
   const [filter, setFilter] = useState({
-    searchValue: "",
-    typeValue: "",
-    categoryValue: "",
+    name: "",
+    type: "",
+    category: "",
   });
   const handleFilter = (e) => {
     e.preventDefault();
@@ -86,11 +85,9 @@ const Clients = () => {
     let temp = [...allClients.current];
     temp = temp.filter((client) => {
       return (
-        client.name.toLowerCase().includes(filter.searchValue.toLowerCase()) &&
-        client.type.toLowerCase().includes(filter.typeValue.toLowerCase()) &&
-        client.category
-          .toLowerCase()
-          .includes(filter.categoryValue.toLowerCase())
+        client.name.toLowerCase().includes(filter.name.toLowerCase()) &&
+        client.type.toLowerCase().includes(filter.type.toLowerCase()) &&
+        client.category.includes(filter.category.toLowerCase())
       );
     });
     setClients(temp);
@@ -98,9 +95,9 @@ const Clients = () => {
   const resetFilter = (e) => {
     e.preventDefault();
     setFilter({
-      searchValue: "",
-      typeValue: "",
-      categoryValue: "",
+      name: "",
+      type: "",
+      category: "",
     });
     setClients(allClients.current);
   };
@@ -155,31 +152,22 @@ const Clients = () => {
         <form className="search-filter" onSubmit={handleFilter}>
           <input
             type="text"
-            value={filter.searchValue}
+            value={filter.name}
             placeholder="Search By Name"
-            onChange={(e) =>
-              setFilter({ ...filter, searchValue: e.target.value })
-            }
+            onChange={(e) => setFilter({ ...filter, name: e.target.value })}
           />
 
           <select
-            value={filter.typeValue}
-            onChange={(e) =>
-              setFilter({ ...filter, typeValue: e.target.value })
-            }
-            placeholder="Type"
-            required
+            value={filter.type}
+            onChange={(e) => setFilter({ ...filter, type: e.target.value })}
           >
             <option value="">Select Type</option>
             <option value="Buyer">Buyer</option>
             <option value="Supplier">Supplier</option>
           </select>
           <select
-            value={filter.categoryValue}
-            onChange={(e) =>
-              setFilter({ ...filter, categoryValue: e.target.value })
-            }
-            required
+            value={filter.category}
+            onChange={(e) => setFilter({ ...filter, category: e.target.value })}
           >
             <option value="">Select Category</option>
             <option value="fabrics">fabrics</option>
@@ -224,6 +212,7 @@ const Clients = () => {
             <option value="fabrics">fabrics</option>
             <option value="assets">assets</option>
             <option value="auxiliary">auxiliary</option>
+            <option value="services">services</option>
             <option value="manufacturing">manufacturing</option>
             <option value="delivery">delivery</option>
             <option value="banking">banking</option>

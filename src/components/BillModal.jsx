@@ -1,15 +1,18 @@
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import './styles.css'
+import "./styles.css";
 
 function BillModal({ bill, closeModal, patchBill }) {
-
   const handleSave = async (e) => {
     e.preventDefault();
     const billForm = {};
     for (let i = 0; i < e.target.children.length; i++) {
       const child = e.target.children[i];
-      if (child.type !== "submit" && child.type !== "reset" && child.value !== "") {
+      if (
+        child.type !== "submit" &&
+        child.type !== "reset" &&
+        child.value !== ""
+      ) {
         billForm[child.name] = child.value;
       }
     }
@@ -23,10 +26,7 @@ function BillModal({ bill, closeModal, patchBill }) {
         <Modal.Title>Edit Bill Information</Modal.Title>
       </Modal.Header>
       <Modal.Body>
- 
-
         <form className="filter" onSubmit={handleSave}>
-
           <input type="text" name="code" placeholder="Code" />
           {/* <input type="text" name="number" placeholder="Number" /> */}
           <input type="date" name="date" placeholder="Date" />
@@ -47,22 +47,28 @@ function BillModal({ bill, closeModal, patchBill }) {
           />
           <input type="number" name="vatRate" placeholder="VAT Rate" />
 
-            <input
-              type="number"
-              name="customDutyVAT"
-              placeholder="Custom Duty VAT"
-              required
-            />
+          <input
+            type="number"
+            name="customDutyVAT"
+            placeholder="Custom Duty VAT"
+            required
+          />
+
+          <select type="checkbox" multiple name="category">
+            <option value="fabric">Fabric</option>
+            <option value="auxiliary">auxiliary</option>
+            <option value="services">services</option>
+            <option value="others">others</option>
+          </select>
+          <input type="text" name="subcategory" placeholder="subcategoris" />
 
           <input type="submit" />
           <input type="reset" className="resetButton" />
           <Button variant="secondary" onClick={closeModal}>
-          Cancel
-        </Button>
+            Cancel
+          </Button>
         </form>
-
       </Modal.Body>
-
     </Modal>
   );
 }

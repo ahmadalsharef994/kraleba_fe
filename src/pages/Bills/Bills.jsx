@@ -7,6 +7,7 @@ import {
   fetchBillsData,
   patchBill,
   postBill,
+  handleDeleteBill,
 } from "../../components/services/billDataService";
 
 const Bills = () => {
@@ -52,7 +53,7 @@ const Bills = () => {
           .toLowerCase()
           .includes(filter.clientName.toLowerCase()) &&
         bill.type.toLowerCase().includes(filter.type.toLowerCase()) &&
-        JSON.stringify(bill.items).toLowerCase().includes(filter.category) &&
+        bill.category.includes(filter.category) &&
         JSON.stringify(bill.items).toLowerCase().includes(filter.subCategory) &&
         bill.date >= filter.startDate &&
         bill.date <= filter.endDate
@@ -310,12 +311,18 @@ const Bills = () => {
           <input type="text" name="notes" placeholder="Notes" />
           <FormLabel>Catigories: *</FormLabel>
 
-          <select type="checkbox" multiple name="category">
-            <option value="fabric">Fabric</option>
+          <select name="category" placeholder="Category" multiple>
+            <option value="fabrics">fabrics</option>
+            <option value="assets">assets</option>
             <option value="auxiliary">auxiliary</option>
             <option value="services">services</option>
+            <option value="manufacturing">manufacturing</option>
+            <option value="delivery">delivery</option>
+            <option value="banking">banking</option>
+            <option value="duties">duties</option>
             <option value="others">others</option>
           </select>
+          
           <input type="text" name="subcategory" placeholder="subcategoris" />
 
           <input
@@ -360,8 +367,6 @@ const Bills = () => {
                     newState[i] = e.target.checked;
                     return newState;
                   });
-                  console.log(isFabric);
-
                 }}
               />
 
@@ -371,37 +376,49 @@ const Bills = () => {
                     type="text"
                     name={`composition-${i}`}
                     placeholder="Composition"
+                    defaultValue={""}
                   />
                   <input
                     type="text"
                     name={`material-${i}`}
                     placeholder="Material"
+                    defaultValue={""}
                   />
                   <input
                     type="text"
                     name={`structure-${i}`}
                     placeholder="Structure"
+                    defaultValue={""}
                   />
                   <input
                     type="text"
                     name={`design-${i}`}
                     placeholder="Design"
+                    defaultValue={""}
                   />
                   <input
                     type="text"
                     name={`weaving-${i}`}
                     placeholder="Weaving"
+                    defaultValue={""}
                   />
-                  <input type="text" name={`color-${i}`} placeholder="Color" />
+                  <input
+                    type="text"
+                    name={`color-${i}`}
+                    placeholder="Color"
+                    defaultValue={""}
+                  />
                   <input
                     type="text"
                     name={`finishing-${i}`}
                     placeholder="Finishing"
+                    defaultValue={""}
                   />
                   <input
                     type="text"
                     name={`rating-${i}`}
                     placeholder="Rating"
+                    defaultValue={""}
                   />
                 </div>
               )}
@@ -439,12 +456,12 @@ const Bills = () => {
                     bill type: <b>{bill.type}</b>
                   </ListGroup.Item>
                   <ListGroup.Item>currency: {bill.currency}</ListGroup.Item>
-                </ListGroup>
-
-                <ListGroup>
                   <ListGroup.Item>
                     exchangeRate: {bill.exchangeRate}
                   </ListGroup.Item>
+                </ListGroup>
+
+                <ListGroup>
                   <ListGroup.Item>
                     customDutyVAT: {bill.customDutyVAT}
                   </ListGroup.Item>
@@ -454,9 +471,6 @@ const Bills = () => {
                   <ListGroup.Item>
                     total (euro):{bill.totalBeforeVAT.euro}
                   </ListGroup.Item>
-                </ListGroup>
-
-                <ListGroup>
                   <ListGroup.Item>
                     totalCustomDuty (lei):{" "}
                     {bill.totalCustomDuty ? bill.totalCustomDuty.lei : "none"}
@@ -465,7 +479,9 @@ const Bills = () => {
                     totalCustomDuty (euro):{" "}
                     {bill.totalCustomDuty ? bill.totalCustomDuty.euro : "none"}
                   </ListGroup.Item>
+                </ListGroup>
 
+                <ListGroup>
                   <ListGroup.Item>VAT percentage:{bill.vatRate}</ListGroup.Item>
                   <ListGroup.Item>
                     VAT (lei): {bill.totalVAT.lei}
@@ -491,13 +507,13 @@ const Bills = () => {
                   </ButtonExtend>
                 )}
 
-                {/* <ButtonExtend
+                <ButtonExtend
                   className="btn btn-danger"
                   size="sm"
                   onClick={() => handleDeleteBill(bill)}
                 >
                   Delete
-                </ButtonExtend> */}
+                </ButtonExtend>
 
                 <ButtonExtend
                   className="btn btn-secondary"
@@ -569,11 +585,11 @@ const Bills = () => {
                 <ListGroup>
                   <ListGroup.Item>
                     Category:
-                    {bill.category ? bill.category.join(", ") : "none"}
+                    {bill.category.join(", ")}
                   </ListGroup.Item>
                   <ListGroup.Item>
                     Sub Category:
-                    {bill.subCategory ? bill.subCategory.join(", ") : "none"}
+                    {bill.subCategory}
                   </ListGroup.Item>
                 </ListGroup>
               </Card.Footer>
