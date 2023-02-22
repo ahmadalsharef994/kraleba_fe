@@ -1,10 +1,12 @@
-/* service for registering a new user */
-export const register = (user) => {
-    return fetch(`${process.env.API_URL}register`, {
-        method: "POST",
-        headers: {
-        "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-    }).then((res) => res.json());
+import axios from "axios";
+
+ const register = (user) => {
+    return axios.post(`${process.env.REACT_APP_API_URL}auth/register`, {
+        name: user.name,
+        email: user.email,
+        password:user.password,
+        code:user.code
+    });
 };
+
+export default register;
