@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Card } from "react-bootstrap";
+import { Card, FormLabel } from "react-bootstrap";
 import ButtonExtend from "../../components/extends/ButtonExtend";
 import {
   fetchClientsData,
@@ -161,6 +161,7 @@ const Clients = () => {
               setFilter({ ...filter, searchValue: e.target.value })
             }
           />
+
           <select
             value={filter.typeValue}
             onChange={(e) =>
@@ -184,6 +185,7 @@ const Clients = () => {
             <option value="fabrics">fabrics</option>
             <option assets="assets">assets</option>
             <option value="auxiliary">auxiliary</option>
+            <option value="services">services</option>
             <option value="manufacturing">manufacturing</option>
             <option value="delivery">delivery</option>
             <option value="banking">banking</option>
@@ -211,11 +213,12 @@ const Clients = () => {
 
       {addClientForm && (
         <form className="filter" onSubmit={handlePostClient}>
+          <FormLabel>Type: </FormLabel>
           <select name="type" placeholder="Type">
-            <option value="">Type</option>
             <option value="buyer">Buyer</option>
             <option value="supplier">Supplier</option>
           </select>
+          <FormLabel>Category: </FormLabel>
 
           <select name="category" placeholder="Category" multiple>
             <option value="fabrics">fabrics</option>
@@ -233,8 +236,9 @@ const Clients = () => {
           <input type="text" name="address" placeholder="Address" />
           <input type="text" name="zipCode" placeholder="Zip Code" />
           <input type="text" name="city" placeholder="City *" required />
+          <FormLabel>Country: * </FormLabel>
+
           <select name="country" required>
-            <option value="">Country *</option>
             <option value="Romania">Romania</option>
             <option value="EU">EU</option>
             <option value="Non-EU">Non-EU</option>

@@ -413,18 +413,12 @@ const Prototypes = () => {
             placeholder="forming Interlining"
           />
 
-
-
           <textarea name="notes" placeholder="Notes"></textarea>
           <input type="submit" value="Submit" />
           <input type="reset" value="Reset" className="resetButton" />
         </form>
       )}
-                <UploadImage
-            images={images}
-            setImages={handleSetImages}
-            name="images"
-          />
+      <UploadImage images={images} setImages={handleSetImages} name="images" />
     </div>
   );
 };
