@@ -86,6 +86,9 @@ const NavBar = () => {
           <NavLink className="navbar-item" to="/#">
             Relations
           </NavLink>
+          <a href="/login" className="navbar-item" onClick={logOut}>
+            LogOut
+          </a>
         </div>
       ) : (
         <div>
