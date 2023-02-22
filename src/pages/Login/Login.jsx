@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from "react";
 import "./Login.css";
 import login from "../../components/services/login";
@@ -12,8 +13,10 @@ const Login = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     setMessage("");
     setLoading(true);
 
@@ -42,6 +45,7 @@ const Login = () => {
 
     form.current.classList.add("was-validated");
   };
+
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit} ref={form} noValidate>
@@ -55,7 +59,15 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
         </div>
+
         <div className="form-group">
           <ButtonExtend
             className="btn btn-primary btn-block"
@@ -81,5 +93,6 @@ const Login = () => {
     </div>
   );
 };
+
 
 export default Login;
