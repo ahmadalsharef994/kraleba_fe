@@ -7,7 +7,7 @@ import {
   fetchBillsData,
   patchBill,
   postBill,
-  handleDeleteBill,
+  deleteBill,
 } from "../../components/services/billDataService";
 
 const Bills = () => {
@@ -152,6 +152,12 @@ const Bills = () => {
     billForm["clientCountry"] = selectedClient.country;
     // console.log(billForm);
     await postBill(billForm);
+    const bills = await fetchBillsData();
+    setBills(bills);
+  };
+
+  const handleDeleteBill = async (bill) => {
+    await deleteBill(bill.id);
     const bills = await fetchBillsData();
     setBills(bills);
   };
