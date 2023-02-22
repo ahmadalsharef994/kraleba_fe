@@ -39,12 +39,15 @@ function ClientModal({ client, closeModal, patchClient, deleteClient }) {
   return (
     <Modal show={!!client}>
       <Modal.Header>
-        <h6>Type: {client.type}</h6>
-        <h6>Category:                   {Array.isArray(client.category)
-                    ? client.category.join(", ")
-                    : client.category}</h6>
-        
-        <h6>Sub-Category: {client.subCategory}</h6>
+        <h6><b>Type: </b>{client.type}</h6>
+        <h6>
+          <b>Category: </b>
+          {Array.isArray(client.category)
+            ? client.category.join(", ")
+            : client.category}
+        </h6>
+
+        <h6><b>Sub-Category: </b>{client.subCategory}</h6>
       </Modal.Header>
       <Modal.Body>
         <form className="clientModal" onSubmit={handleSave}>
@@ -59,15 +62,11 @@ function ClientModal({ client, closeModal, patchClient, deleteClient }) {
             <option value="supplier">Supplier</option>
           </select>
 
-          <select
-            name="category"
-            placeholder="Category"
-            multiple
-            
-          >
+          <select name="category" placeholder="Category" multiple  defaultValue={client.category}>
             <option value="fabrics">fabrics</option>
             <option value="assets">assets</option>
             <option value="auxiliary">auxiliary</option>
+            <option value="services">services</option>
             <option value="manufacturing">manufacturing</option>
             <option value="delivery">delivery</option>
             <option value="banking">banking</option>

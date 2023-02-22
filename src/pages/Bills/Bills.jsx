@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Card, Table, ListGroup } from "react-bootstrap";
+import { Card, Table, ListGroup, FormLabel } from "react-bootstrap";
 import "./Bills.css";
 import BillModal from "../../components/BillModal";
 import ButtonExtend from "../../components/extends/ButtonExtend";
@@ -7,7 +7,6 @@ import {
   fetchBillsData,
   patchBill,
   postBill,
-  deleteBill,
 } from "../../components/services/billDataService";
 
 const Bills = () => {
@@ -80,6 +79,8 @@ const Bills = () => {
   const [addBillForm, setAddBillForm] = useState(false);
   const [numberOfItems, setNumberOfItems] = useState(0);
 
+  const [isFabric, setIsFabric] = useState([]);
+
   const convertDate = (billDate) => {
     const date = new Date(billDate);
     return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
@@ -130,14 +131,17 @@ const Bills = () => {
         unitOfMeasurement: e.target[`unitOfMeasurement-${i}`].value,
         quantity: e.target[`quantity-${i}`].value,
         unitPrice: e.target[`unitPrice-${i}`].value,
-        // composition material structure design weaving color finishing
-        composition: e.target[`composition-${i}`].value,
-        material: e.target[`material-${i}`].value,
-        structure: e.target[`structure-${i}`].value,
-        design: e.target[`design-${i}`].value,
-        weaving: e.target[`weaving-${i}`].value,
-        color: e.target[`color-${i}`].value,
-        finishing: e.target[`finishing-${i}`].value,
+        fabrics: {
+          // composition material structure design weaving color finishing
+          composition: e.target[`composition-${i}`].value,
+          material: e.target[`material-${i}`].value,
+          structure: e.target[`structure-${i}`].value,
+          design: e.target[`design-${i}`].value,
+          weaving: e.target[`weaving-${i}`].value,
+          color: e.target[`color-${i}`].value,
+          finishing: e.target[`finishing-${i}`].value,
+          rating: e.target[`rating-${i}`].value,
+        },
       });
     }
     billForm.items = items;
@@ -145,22 +149,11 @@ const Bills = () => {
     billForm["clientName"] = selectedClient.name;
     billForm["clientCode"] = selectedClient.code;
     billForm["clientCountry"] = selectedClient.country;
-
+    // console.log(billForm);
     await postBill(billForm);
     const bills = await fetchBillsData();
     setBills(bills);
   };
-
-  // const handleDeleteBill = async (bill) => {
-  //   await deleteBill(bill._id);
-
-  //   try {
-  //     setBills(bills.filter((b) => b._id !== bill._id));
-  //     alert("bill deleted successfully");
-  //   } catch (error) {
-  //     alert("error: Could not delete bill");
-  //   }
-  // };
 
   return (
     <div>
@@ -259,9 +252,9 @@ const Bills = () => {
       )}
       {addBillForm && (
         <form className="filter" onSubmit={handlePostBill}>
-          <select name="clientDetails" required onChange={selectClient}>
-            <option value="">Select Client</option>
+          <FormLabel>Select Client: *</FormLabel>
 
+          <select name="clientDetails" required onChange={selectClient}>
             {allClients &&
               allClients.current.map((client, index) => (
                 <option
@@ -275,13 +268,15 @@ const Bills = () => {
 
           <input type="text" name="code" placeholder="Code" required />
           <input type="date" name="date" placeholder="Date" required />
+          <FormLabel>Type: *</FormLabel>
+
           <select name="type" required>
-            <option value="">Type</option>
             <option value="invoice">Invoice</option>
             <option value="offer">Offer</option>
           </select>
+          <FormLabel>Currency: *</FormLabel>
+
           <select name="currency" required>
-            <option value="">Currency</option>
             {selectedClient.country === "Romania" && (
               <option value="lei">Lei</option>
             )}
@@ -311,6 +306,17 @@ const Bills = () => {
               required
             />
           )}
+
+          <input type="text" name="notes" placeholder="Notes" />
+          <FormLabel>Catigories: *</FormLabel>
+
+          <select type="checkbox" multiple name="category">
+            <option value="fabric">Fabric</option>
+            <option value="auxiliary">auxiliary</option>
+            <option value="services">services</option>
+            <option value="others">others</option>
+          </select>
+          <input type="text" name="subcategory" placeholder="subcategoris" />
 
           <input
             type="number"
@@ -342,37 +348,66 @@ const Bills = () => {
                 name={`unitPrice-${i}`}
                 placeholder="price per unit"
               />
-              {/* composition material structure design weaving color finishing */}
+
+              <FormLabel>Is Fabric Item? </FormLabel>
+
               <input
-                type="text"
-                name={`composition-${i}`}
-                placeholder="Composition"
+                type="checkbox"
+                // on change, set isFabric array item number i to true
+                onChange={(e) => {
+                  setIsFabric((prevState) => {
+                    const newState = [...prevState];
+                    newState[i] = e.target.checked;
+                    return newState;
+                  });
+                  console.log(isFabric);
+
+                }}
               />
-              <input
-                type="text"
-                name={`material-${i}`}
-                placeholder="Material"
-              />
-              <input
-                type="text"
-                name={`structure-${i}`}
-                placeholder="Structure"
-              />
-              <input type="text" name={`design-${i}`} placeholder="Design" />
-              <input type="text" name={`weaving-${i}`} placeholder="Weaving" />
-              <input type="text" name={`color-${i}`} placeholder="Color" />
-              <input
-                type="text"
-                name={`finishing-${i}`}
-                placeholder="Finishing"
-              />
+
+              {isFabric[i] === true && (
+                <div>
+                  <input
+                    type="text"
+                    name={`composition-${i}`}
+                    placeholder="Composition"
+                  />
+                  <input
+                    type="text"
+                    name={`material-${i}`}
+                    placeholder="Material"
+                  />
+                  <input
+                    type="text"
+                    name={`structure-${i}`}
+                    placeholder="Structure"
+                  />
+                  <input
+                    type="text"
+                    name={`design-${i}`}
+                    placeholder="Design"
+                  />
+                  <input
+                    type="text"
+                    name={`weaving-${i}`}
+                    placeholder="Weaving"
+                  />
+                  <input type="text" name={`color-${i}`} placeholder="Color" />
+                  <input
+                    type="text"
+                    name={`finishing-${i}`}
+                    placeholder="Finishing"
+                  />
+                  <input
+                    type="text"
+                    name={`rating-${i}`}
+                    placeholder="Rating"
+                  />
+                </div>
+              )}
             </div>
           ))}
 
-        
-          <input type="text" name="notes" placeholder="Notes" />
-          <input type="text" name="categoris" placeholder="categoris" />
-          <input type="text" name="subcategoris" placeholder="subcategoris" />
           <input type="submit" />
           <input type="reset" className="resetButton" />
         </form>
@@ -422,8 +457,14 @@ const Bills = () => {
                 </ListGroup>
 
                 <ListGroup>
-                  {/* <ListGroup.Item>totalCustomDuty (lei): {bill.totalCustomDuty.lei}</ListGroup.Item>
-                  <ListGroup.Item>totalCustomDuty (euro): {bill.totalCustomDuty.euro}</ListGroup.Item> */}
+                  <ListGroup.Item>
+                    totalCustomDuty (lei):{" "}
+                    {bill.totalCustomDuty ? bill.totalCustomDuty.lei : "none"}
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    totalCustomDuty (euro):{" "}
+                    {bill.totalCustomDuty ? bill.totalCustomDuty.euro : "none"}
+                  </ListGroup.Item>
 
                   <ListGroup.Item>VAT percentage:{bill.vatRate}</ListGroup.Item>
                   <ListGroup.Item>
@@ -475,30 +516,30 @@ const Bills = () => {
               {expandBill[index] && (
                 <Card.Body>
                   <Table>
-                  <thead>
-  <tr>
-    <th rowspan="2">index</th>
-    <th rowspan="2">name</th>
-    <th rowspan="2">code</th>
-    <th rowspan="2">description</th>
-    <th colspan="4">buc/um</th>
-    <th colspan="2">total fara TVA</th>
-    <th colspan="2">TVA</th>
-    <th colspan="2">total incl. TVA</th>
-  </tr>
-  <tr>
-    <th>Unit</th>
-    <th>quantity</th>
-    <th>buc (lei)</th>
-    <th>buc (euro)</th>
-    <th>lei</th>
-    <th>euro</th>
-    <th>lei</th>
-    <th>euro</th>
-    <th>lei</th>
-    <th>euro</th>
-  </tr>
-</thead>
+                    <thead>
+                      <tr>
+                        <th rowspan="2">index</th>
+                        <th rowspan="2">name</th>
+                        <th rowspan="2">code</th>
+                        <th rowspan="2">description</th>
+                        <th colspan="4">buc/um</th>
+                        <th colspan="2">total fara TVA</th>
+                        <th colspan="2">TVA</th>
+                        <th colspan="2">total incl. TVA</th>
+                      </tr>
+                      <tr>
+                        <th>Unit</th>
+                        <th>quantity</th>
+                        <th>buc (lei)</th>
+                        <th>buc (euro)</th>
+                        <th>lei</th>
+                        <th>euro</th>
+                        <th>lei</th>
+                        <th>euro</th>
+                        <th>lei</th>
+                        <th>euro</th>
+                      </tr>
+                    </thead>
 
                     <tbody>
                       {bill.items &&
@@ -524,16 +565,18 @@ const Bills = () => {
                   </Table>
                 </Card.Body>
               )}
-                              <Card.Footer>
-                  <ListGroup>
-                    <ListGroup.Item>
-                      total (lei): {bill.totalBeforeVAT.lei}
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      total (euro):{bill.totalBeforeVAT.euro}
-                    </ListGroup.Item>
-                  </ListGroup>
-                </Card.Footer>
+              <Card.Footer>
+                <ListGroup>
+                  <ListGroup.Item>
+                    Category:
+                    {bill.category ? bill.category.join(", ") : "none"}
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    Sub Category:
+                    {bill.subCategory ? bill.subCategory.join(", ") : "none"}
+                  </ListGroup.Item>
+                </ListGroup>
+              </Card.Footer>
             </Card>
           ))
         )}
