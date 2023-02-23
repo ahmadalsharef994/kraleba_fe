@@ -7,7 +7,7 @@ const fetchBillsData = async () => {
         return response.data.data;
       })
       .catch((error) => {
-        console.log(error);
+        alert(error);
       });
 
     return result;
@@ -23,7 +23,7 @@ const patchBill = async (billForm, billId) => {
         return response.data.data;
       })
       .catch((error) => {
-        console.log(error);
+        alert(error);
       });
 };
 
@@ -34,7 +34,7 @@ const postBill = async (billForm) => {
         return response.data.data;
       })
       .catch((error) => {
-        console.log(error);
+        alert(error);
       });
 };
 
@@ -45,7 +45,7 @@ const deleteBill = async (billId) => {
         return response.data.data;
       })
       .catch((error) => {
-        console.log(error);
+        alert(error);
       });
 };
 

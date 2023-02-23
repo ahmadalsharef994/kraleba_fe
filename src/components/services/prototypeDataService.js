@@ -7,7 +7,7 @@ const fetchPrototypesData = async() =>{
         return response.data.data;
       })
       .catch((error) => {
-        console.log(error);
+        alert(error);
       });
 
     return result;
@@ -22,7 +22,7 @@ const patchPrototype = async(prototypeForm, prototypeId) =>{
     return response.data.data
   })
   .catch((error)=> {
-    console.log(error)
+    alert(error)
   });
 };
 
@@ -32,7 +32,7 @@ const postPrototype = async(prototypeForm) =>{
     return response.data.data
   })
   .catch((error)=> {
-    console.log(error)
+    alert(error)
   });
 }
 
@@ -42,7 +42,7 @@ const deletePrototype = async(prototypeId) =>{
     return response.data.data
   })
   .catch((error)=> {
-    console.log(error)
+    alert(error)
   });
 }
 
