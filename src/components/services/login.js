@@ -1,8 +1,8 @@
 import axios from "axios";
 
 
-const login = (email, password) => {
-    return axios
+const login = async (email, password) => {
+    return await axios
         .post(`${process.env.REACT_APP_API_URL}auth/login`, {
             email,
             password,
@@ -15,9 +15,6 @@ const login = (email, password) => {
                 role: response.data.user.role,
                 token: response.data.tokens.access.token,
             }
-
-
-
 
             if (response.data.tokens.access.token) {
                 localStorage.setItem("user", JSON.stringify(user));
