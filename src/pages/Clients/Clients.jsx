@@ -9,24 +9,20 @@ import {
 } from "../../components/services/clientDataService";
 import "./Clients.css";
 import ClientModal from "../../components/ClientModal";
+import { categoriesList } from "../../components/constants";
 
 const Clients = () => {
   const [clients, setClients] = useState([]);
   const allClients = useRef([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await fetchClientsData();
-      setClients(result);
-      allClients.current = result;
-      localStorage.setItem("clients", JSON.stringify(result));
-    };
-    try {
-      fetchData();
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
+  const [filter, setFilter] = useState({
+    name: "",
+    type: "",
+    category: "",
+  });
+  const [selectedClient, setSelectedClient] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectClientForm, setSelectClientForm] = useState(false);
+  const [addClientForm, setAddClientForm] = useState(false);
 
   const handlePatchClient = async (clientForm, clientId) => {
     await patchClient(clientForm, clientId);
@@ -74,11 +70,10 @@ const Clients = () => {
     }
   };
 
-  const [filter, setFilter] = useState({
-    name: "",
-    type: "",
-    category: "",
-  });
+
+
+  
+
   const handleFilter = (e) => {
     e.preventDefault();
     // Form submission logic here
@@ -102,10 +97,7 @@ const Clients = () => {
     setClients(allClients.current);
   };
 
-  const [selectedClient, setSelectedClient] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [selectClientForm, setSelectClientForm] = useState(false);
-  const [addClientForm, setAddClientForm] = useState(false);
+
 
   const handleEditClient = (client) => {
     setSelectedClient(client);
@@ -116,6 +108,20 @@ const Clients = () => {
     setAddClientForm(false);
     setShowEditModal(false);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetchClientsData();
+      setClients(result);
+      allClients.current = result;
+      localStorage.setItem("clients", JSON.stringify(result));
+    };
+    try {
+      fetchData();
+    } catch (err) {
+      alert(err);
+    }
+  }, []);
 
   return (
     <div className="container">
@@ -209,15 +215,11 @@ const Clients = () => {
           <FormLabel>Category: </FormLabel>
 
           <select name="category" placeholder="Category" multiple>
-            <option value="fabrics">fabrics</option>
-            <option value="assets">assets</option>
-            <option value="auxiliary">auxiliary</option>
-            <option value="services">services</option>
-            <option value="manufacturing">manufacturing</option>
-            <option value="delivery">delivery</option>
-            <option value="banking">banking</option>
-            <option value="duties">duties</option>
-            <option value="others">others</option>
+            {categoriesList.map((category, index) => (
+              <option value={category} key={index}>
+                {category}
+              </option>
+            ))}
           </select>
 
           <input type="text" name="name" placeholder="Name *" required />

@@ -9,6 +9,7 @@ import {
   postBill,
   deleteBill,
 } from "../../components/services/billDataService";
+import { categoriesList } from "../../components/constants";
 
 const Bills = () => {
   const allBills = useRef([]);
@@ -19,21 +20,18 @@ const Bills = () => {
 
   const [expandBill, setExpandBill] = useState(new Array(false));
 
+  const [selectedBill, setSelectedBill] = useState(null);
+  const [showEditModal, showSetEditModal] = useState(false);
+
+  const [addBillForm, setAddBillForm] = useState(false);
+  const [numberOfItems, setNumberOfItems] = useState(0);
+
+  const [isFabric, setIsFabric] = useState([]);
+
   const selectClient = (e) => {
     const [id, name, code, country] = e.target.value.split(",");
     setSelectedClient({ id, name, code, country });
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await fetchBillsData();
-      setBills(result);
-      allBills.current = result;
-      localStorage.setItem("bills", JSON.stringify(result));
-      allClients.current = JSON.parse(localStorage.getItem("clients"));
-    };
-    fetchData();
-  }, []);
 
   const [filter, setFilter] = useState({
     clientName: "",
@@ -74,18 +72,38 @@ const Bills = () => {
     setBills(allBills.current);
   };
 
-  const [selectedBill, setSelectedBill] = useState(null);
-  const [showEditModal, showSetEditModal] = useState(false);
-
-  const [addBillForm, setAddBillForm] = useState(false);
-  const [numberOfItems, setNumberOfItems] = useState(0);
-
-  const [isFabric, setIsFabric] = useState([]);
-
   const convertDate = (billDate) => {
     const date = new Date(billDate);
     return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
     /* Date converted to MM-DD-YYYY format */
+  };
+
+  const preProcessElement = (element) => {
+    if (element === null) {
+      return "";
+    }
+    if (element === undefined) {
+      return "";
+    }
+    // if element is array
+    if (Array.isArray(element)) {
+      return element.join(", ");
+    }
+    if (typeof element === "number") {
+      return element;
+    }
+    // if element is date
+    if (!isNaN(Date.parse(element))) {
+      return convertDate(element);
+    }
+    if (typeof element === "string") {
+      return element;
+    }
+    if (typeof element === "object") {
+      return JSON.stringify(element);
+    }
+
+    return element;
   };
 
   const handleEditBill = (bill) => {
@@ -111,8 +129,22 @@ const Bills = () => {
     for (let i = 0; i < e.target.children.length; i++) {
       const child = e.target.children[i];
 
-      if (child.name === "vatRate") billForm.vatRate = child.value;
-      if (child.name === "customDutyVAT") billForm.customDutyVAT = child.value;
+      if (child.name === "vatRate") {
+        billForm.vatRate = child.value;
+        continue;
+      }
+      if (child.name === "customDutyVAT") {
+        billForm.customDutyVAT = child.value;
+        continue;
+      }
+
+      if (child.name === "category") {
+        billForm.category = Array.from(
+          child.selectedOptions,
+          (option) => option.value
+        );
+        continue;
+      }
 
       if (
         child.type === "submit" ||
@@ -150,17 +182,27 @@ const Bills = () => {
     billForm["clientName"] = selectedClient.name;
     billForm["clientCode"] = selectedClient.code;
     billForm["clientCountry"] = selectedClient.country;
-    // console.log(billForm);
     await postBill(billForm);
     const bills = await fetchBillsData();
     setBills(bills);
   };
 
   const handleDeleteBill = async (bill) => {
-    await deleteBill(bill.id);
+    await deleteBill(bill._id);
     const bills = await fetchBillsData();
     setBills(bills);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetchBillsData();
+      setBills(result);
+      allBills.current = result;
+      localStorage.setItem("bills", JSON.stringify(result));
+      allClients.current = JSON.parse(localStorage.getItem("clients"));
+    };
+    fetchData();
+  }, []);
 
   return (
     <div>
@@ -262,6 +304,7 @@ const Bills = () => {
           <FormLabel>Select Client: *</FormLabel>
 
           <select name="clientDetails" required onChange={selectClient}>
+            <option>SELECT CLIENT</option>
             {allClients &&
               allClients.current.map((client, index) => (
                 <option
@@ -275,6 +318,7 @@ const Bills = () => {
 
           <input type="text" name="code" placeholder="Code" required />
           <input type="date" name="date" placeholder="Date" required />
+
           <FormLabel>Type: *</FormLabel>
 
           <select name="type" required>
@@ -318,18 +362,14 @@ const Bills = () => {
           <FormLabel>Catigories: *</FormLabel>
 
           <select name="category" placeholder="Category" multiple>
-            <option value="fabrics">fabrics</option>
-            <option value="assets">assets</option>
-            <option value="auxiliary">auxiliary</option>
-            <option value="services">services</option>
-            <option value="manufacturing">manufacturing</option>
-            <option value="delivery">delivery</option>
-            <option value="banking">banking</option>
-            <option value="duties">duties</option>
-            <option value="others">others</option>
+            {categoriesList.map((category, index) => (
+              <option value={category} key={index}>
+                {category}
+              </option>
+            ))}
           </select>
-          
-          <input type="text" name="subcategory" placeholder="subcategoris" />
+
+          <input type="text" name="subCategory" placeholder="subcategoris" />
 
           <input
             type="number"
@@ -450,59 +490,29 @@ const Bills = () => {
           bills.map((bill, index) => (
             <Card key={index}>
               <Card.Header style={{ display: "flex" }}>
-                <ListGroup>
-                  <ListGroup.Item>
-                    client name: {bill.clientName}
-                  </ListGroup.Item>
-                  <ListGroup.Item>bill code: {bill.code}</ListGroup.Item>
-                  <ListGroup.Item>
-                    bill date: {convertDate(bill.date)}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    bill type: <b>{bill.type}</b>
-                  </ListGroup.Item>
-                  <ListGroup.Item>currency: {bill.currency}</ListGroup.Item>
-                  <ListGroup.Item>
-                    exchangeRate: {bill.exchangeRate}
-                  </ListGroup.Item>
-                </ListGroup>
+                <div style={{ display: "flex", flexWrap: "wrap" }}>
+                  {Object.keys(bill).map((key, index) => {
+                    if (
+                      [
+                        "items",
+                        "client",
+                        "_id",
+                        "updatedAt",
+                        "__v",
+                        "createdAt",
+                        "category",
+                        "subCategory",
+                      ].includes(key)
+                    )
+                      return null;
+                    return (
+                      <ListGroup.Item key={index} style={{ width: "33%", border: "solid 1px" }}>
+                        {key}: {preProcessElement(bill[key])}
+                      </ListGroup.Item>
+                    );
+                  })}
+                </div>
 
-                <ListGroup>
-                  <ListGroup.Item>
-                    customDutyVAT: {bill.customDutyVAT}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    total (lei): {bill.totalBeforeVAT.lei}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    total (euro):{bill.totalBeforeVAT.euro}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    totalCustomDuty (lei):{" "}
-                    {bill.totalCustomDuty ? bill.totalCustomDuty.lei : "none"}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    totalCustomDuty (euro):{" "}
-                    {bill.totalCustomDuty ? bill.totalCustomDuty.euro : "none"}
-                  </ListGroup.Item>
-                </ListGroup>
-
-                <ListGroup>
-                  <ListGroup.Item>VAT percentage:{bill.vatRate}</ListGroup.Item>
-                  <ListGroup.Item>
-                    VAT (lei): {bill.totalVAT.lei}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    VAT (euro): {bill.totalVAT.euro}
-                  </ListGroup.Item>
-
-                  <ListGroup.Item>
-                    total + VAT (lei):{bill.totalAfterVAT.lei}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    total + VAT (euro): {bill.totalAfterVAT.euro}
-                  </ListGroup.Item>
-                </ListGroup>
                 {bill.type === "offer" && (
                   <ButtonExtend
                     className="btn btn-secondary"

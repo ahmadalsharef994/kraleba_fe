@@ -7,7 +7,7 @@ const fetchClientsData = async () => {
         return response.data.data;
       })
       .catch((error) => {
-        console.log(error);
+        alert(error);
       });
 
     return result;
@@ -23,7 +23,7 @@ const patchClient = async (clientForm, clientId) => {
         return response.data.data;
       })
       .catch((error) => {
-        console.log(error);
+        alert(error);
       });
 };
 
@@ -34,7 +34,7 @@ const postClient = async (clientForm) => {
         return response.data.data;
       })
       .catch((error) => {
-        console.log(error);
+        alert(error);
       });
 };
 
@@ -45,7 +45,7 @@ const deleteClient = async (clientId) => {
         return response.data.data;
       })
       .catch((error) => {
-        console.log(error);
+        alert(error);
       });
 };
 

@@ -2,6 +2,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import "./styles.css";
 import ButtonExtend from "./extends/ButtonExtend";
+import {categoriesList} from "./constants"
 
 function ClientModal({ client, closeModal, patchClient, deleteClient }) {
   const handleSave = async (e) => {
@@ -63,15 +64,11 @@ function ClientModal({ client, closeModal, patchClient, deleteClient }) {
           </select>
 
           <select name="category" placeholder="Category" multiple  defaultValue={client.category}>
-            <option value="fabrics">fabrics</option>
-            <option value="assets">assets</option>
-            <option value="auxiliary">auxiliary</option>
-            <option value="services">services</option>
-            <option value="manufacturing">manufacturing</option>
-            <option value="delivery">delivery</option>
-            <option value="banking">banking</option>
-            <option value="duties">duties</option>
-            <option value="others">others</option>
+            {categoriesList.map((category, index) => (
+              <option value={category} key={index}>
+                {category}
+              </option>
+            ))}
           </select>
           <input
             type="text"
