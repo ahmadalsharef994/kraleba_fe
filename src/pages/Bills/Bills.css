@@ -36,11 +36,6 @@ table, th, td, tr, thead, tbody {
 
   }
 
-  tbody, td, tfoot, th, thead, tr {
-    /* border-color: inherit; */
-    /* border-style: solid; */
-    /* border-width: 0; */
-}
 
   @media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
     /* Force table to not be like tables anymore */
@@ -138,9 +133,11 @@ table, th, td, tr, thead, tbody {
       top: 0;
     }
 
-    .btn-secondary, .btn-danger {
+    .btn-secondary, .btn-danger, .pdfButton {
       display: none;
     }
+
+  
 
   }
 
@@ -151,3 +148,5 @@ table, th, td, tr, thead, tbody {
 
   }
 
+
+  

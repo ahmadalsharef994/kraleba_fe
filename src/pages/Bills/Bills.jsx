@@ -10,6 +10,7 @@ import {
   deleteBill,
 } from "../../components/services/billDataService";
 import { categoriesList } from "../../components/constants";
+import preProcessElement from "./billUtils";
 
 const Bills = () => {
   const allBills = useRef([]);
@@ -27,6 +28,8 @@ const Bills = () => {
   const [numberOfItems, setNumberOfItems] = useState(0);
 
   const [isFabric, setIsFabric] = useState([]);
+
+  const [singleBillPage, setSingleBillPage] = useState(false);
 
   const selectClient = (e) => {
     const [id, name, code, country] = e.target.value.split(",");
@@ -70,40 +73,6 @@ const Bills = () => {
       endDate: "",
     });
     setBills(allBills.current);
-  };
-
-  const convertDate = (billDate) => {
-    const date = new Date(billDate);
-    return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-    /* Date converted to MM-DD-YYYY format */
-  };
-
-  const preProcessElement = (element) => {
-    if (element === null) {
-      return "";
-    }
-    if (element === undefined) {
-      return "";
-    }
-    // if element is array
-    if (Array.isArray(element)) {
-      return element.join(", ");
-    }
-    if (typeof element === "number") {
-      return element;
-    }
-    // if element is date
-    if (!isNaN(Date.parse(element))) {
-      return convertDate(element);
-    }
-    if (typeof element === "string") {
-      return element;
-    }
-    if (typeof element === "object") {
-      return JSON.stringify(element);
-    }
-
-    return element;
   };
 
   const handleEditBill = (bill) => {
@@ -164,17 +133,19 @@ const Bills = () => {
         unitOfMeasurement: e.target[`unitOfMeasurement-${i}`].value,
         quantity: e.target[`quantity-${i}`].value,
         unitPrice: e.target[`unitPrice-${i}`].value,
-        fabrics: {
-          // composition material structure design weaving color finishing
-          composition: e.target[`composition-${i}`].value,
-          material: e.target[`material-${i}`].value,
-          structure: e.target[`structure-${i}`].value,
-          design: e.target[`design-${i}`].value,
-          weaving: e.target[`weaving-${i}`].value,
-          color: e.target[`color-${i}`].value,
-          finishing: e.target[`finishing-${i}`].value,
-          rating: e.target[`rating-${i}`].value,
-        },
+        fabrics: isFabric[i]
+          ? {
+              // composition material structure design weaving color finishing
+              composition: e.target[`composition-${i}`].value,
+              material: e.target[`material-${i}`].value,
+              structure: e.target[`structure-${i}`].value,
+              design: e.target[`design-${i}`].value,
+              weaving: e.target[`weaving-${i}`].value,
+              color: e.target[`color-${i}`].value,
+              finishing: e.target[`finishing-${i}`].value,
+              rating: e.target[`rating-${i}`].value,
+            }
+          : null,
       });
     }
     billForm.items = items;
@@ -251,7 +222,6 @@ const Bills = () => {
             <option value="">Select Type</option>
             <option value="Offer">Offer</option>
             <option value="Invoice">Invoice</option>
-            <option value="Items">Items</option>
           </select>
 
           <input
@@ -422,19 +392,16 @@ const Bills = () => {
                     type="text"
                     name={`composition-${i}`}
                     placeholder="Composition"
-                    defaultValue={""}
                   />
                   <input
                     type="text"
                     name={`material-${i}`}
                     placeholder="Material"
-                    defaultValue={""}
                   />
                   <input
                     type="text"
                     name={`structure-${i}`}
                     placeholder="Structure"
-                    defaultValue={""}
                   />
                   <input
                     type="text"
@@ -506,7 +473,10 @@ const Bills = () => {
                     )
                       return null;
                     return (
-                      <ListGroup.Item key={index} style={{ width: "33%", border: "solid 1px" }}>
+                      <ListGroup.Item
+                        key={index}
+                        style={{ width: "33%", border: "solid 1px" }}
+                      >
                         {key}: {preProcessElement(bill[key])}
                       </ListGroup.Item>
                     );
@@ -541,8 +511,23 @@ const Bills = () => {
                     })
                   }
                 >
-                  {/* {expandBill[index] ? "Hide" : "Show"} items */}
                   ...
+                </ButtonExtend>
+
+                <ButtonExtend
+                  className="pdfButton"
+                  onClick={() => {
+                    if (singleBillPage) {
+                      setBills(allBills.current);
+                      setSingleBillPage(false);
+                    } else {
+                      setBills(bills.filter((b) => b._id === bill._id));
+                      setSingleBillPage(true);
+                    }
+                  }}
+                  size="sm"
+                >
+                  focus this bill
                 </ButtonExtend>
               </Card.Header>
               {expandBill[index] && (
@@ -550,14 +535,14 @@ const Bills = () => {
                   <Table>
                     <thead>
                       <tr>
-                        <th rowspan="2">index</th>
-                        <th rowspan="2">name</th>
-                        <th rowspan="2">code</th>
-                        <th rowspan="2">description</th>
-                        <th colspan="4">buc/um</th>
-                        <th colspan="2">total fara TVA</th>
-                        <th colspan="2">TVA</th>
-                        <th colspan="2">total incl. TVA</th>
+                        <th rowSpan="2">index</th>
+                        <th rowSpan="2">name</th>
+                        <th rowSpan="2">code</th>
+                        <th rowSpan="2">description</th>
+                        <th colSpan="4">buc/um</th>
+                        <th colSpan="2">total fara TVA</th>
+                        <th colSpan="2">TVA</th>
+                        <th colSpan="2">total incl. TVA</th>
                       </tr>
                       <tr>
                         <th>Unit</th>

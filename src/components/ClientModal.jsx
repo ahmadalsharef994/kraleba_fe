@@ -2,7 +2,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import "./styles.css";
 import ButtonExtend from "./extends/ButtonExtend";
-import {categoriesList} from "./constants"
+import { categoriesList } from "./constants";
 
 function ClientModal({ client, closeModal, patchClient, deleteClient }) {
   const handleSave = async (e) => {
@@ -33,14 +33,22 @@ function ClientModal({ client, closeModal, patchClient, deleteClient }) {
   };
 
   const handleDelete = async (e) => {
+    if (client.hasBill) {
+      alert("Client has bills and can't be deleted");
+      return;
+    }
+
     await deleteClient();
     closeModal();
   };
 
   return (
     <Modal show={!!client}>
-      <Modal.Header>
-        <h6><b>Type: </b>{client.type}</h6>
+      <Modal.Header style={{ display: "block" }}>
+        <h6>
+          <b>Type: </b>
+          {client.type}
+        </h6>
         <h6>
           <b>Category: </b>
           {Array.isArray(client.category)
@@ -48,11 +56,14 @@ function ClientModal({ client, closeModal, patchClient, deleteClient }) {
             : client.category}
         </h6>
 
-        <h6><b>Sub-Category: </b>{client.subCategory}</h6>
+        <h6>
+          <b>Sub-Category: </b>
+          {client.subCategory}
+        </h6>
       </Modal.Header>
       <Modal.Body>
         <form className="clientModal" onSubmit={handleSave}>
-          <select
+          {/* <select
             name="type"
             placeholder="Type"
             defaultValue={client.type}
@@ -61,15 +72,27 @@ function ClientModal({ client, closeModal, patchClient, deleteClient }) {
             <option value="">Type</option>
             <option value="buyer">Buyer</option>
             <option value="supplier">Supplier</option>
-          </select>
+          </select> */}
 
-          <select name="category" placeholder="Category" multiple  defaultValue={client.category}>
+          <select
+            name="category"
+            placeholder="Category"
+            multiple
+            defaultValue={client.category}
+          >
             {categoriesList.map((category, index) => (
               <option value={category} key={index}>
                 {category}
               </option>
             ))}
           </select>
+          <input
+            type="text"
+            name="subCategory"
+            placeholder="Sub-Category"
+            defaultValue={client.subCategory}
+          />
+
           <input
             type="text"
             name="name"
@@ -86,25 +109,7 @@ function ClientModal({ client, closeModal, patchClient, deleteClient }) {
             readOnly
             style={{ backgroundColor: "lightgrey" }}
           />
-          <input
-            type="text"
-            name="subCategory"
-            placeholder="Sub-Category"
-            defaultValue={client.subCategory}
-          />
 
-          <input
-            type="text"
-            name="address"
-            placeholder="Address"
-            defaultValue={client.address}
-          />
-          <input
-            type="text"
-            name="zipCode"
-            placeholder="Zip Code"
-            defaultValue={client.zipCode}
-          />
           <input
             type="text"
             name="city"
@@ -124,6 +129,19 @@ function ClientModal({ client, closeModal, patchClient, deleteClient }) {
             <option value="EU">EU</option>
             <option value="Non-EU">Non-EU</option>
           </select>
+          <input
+            type="text"
+            name="address"
+            placeholder="Address"
+            defaultValue={client.address}
+          />
+          <input
+            type="text"
+            name="zipCode"
+            placeholder="Zip Code"
+            defaultValue={client.zipCode}
+          />
+
           <input
             type="text"
             name="cif"
@@ -194,14 +212,17 @@ function ClientModal({ client, closeModal, patchClient, deleteClient }) {
           <Button variant="secondary" onClick={closeModal}>
             Cancel
           </Button>
-
-          <ButtonExtend
-            className="btn btn-danger"
-            size="sm"
-            onClick={() => handleDelete()}
-          >
-            Delete
-          </ButtonExtend>
+          {client.hasBill ? 
+            <h5>Client has bills and can't be deleted</h5>
+          :
+            <ButtonExtend
+              className="btn btn-danger"
+              size="sm"
+              onClick={() => handleDelete()}
+            >
+              Delete
+            </ButtonExtend>
+          }
         </form>
       </Modal.Body>
     </Modal>

@@ -1,5 +1,24 @@
 .card-body {
   justify-content: center;
+  margin: 0;
+}
+.container {
+  width: 100vw;
+  margin-left: 0;
+  padding: 0;
+  margin: 20px 0;
+  box-sizing: border-box;
+  max-width: 1500px;
+}
+
+.container, .container-lg, .container-md, .container-sm, .container-xl {
+    max-width: 1340px !important;
+}
+
+.form-label {
+  margin-top: 20px;
+  color: white;
+  font-weight: bolder;
 }
 
 .clients {
@@ -18,11 +37,15 @@
   flex-wrap: wrap;
   flex-direction: row !important;
   justify-content: center;
+  margin: 0;
+  
 }
 .client-group div {
   width: calc(16% - 1px);
   border-style: dotted;
   border-width: 1px;
+
+
 }
 
 .decorated-text2 {
