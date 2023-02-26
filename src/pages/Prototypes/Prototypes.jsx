@@ -297,6 +297,9 @@ const Prototypes = () => {
             <option value="abelard">abelard</option>
             <option value="heloise">heloise</option>
           </select>
+          <input type="text" name="name" placeholder="Name" />
+          <input type="text" name="collectionName" placeholder="Collection Name" />
+
 
           <select name="fabrics-billCode" placeholder="Fabrics BillCode">
             <option value="">Fabrics BillCode</option>
@@ -414,11 +417,12 @@ const Prototypes = () => {
           />
 
           <textarea name="notes" placeholder="Notes"></textarea>
+          <UploadImage images={images} setImages={handleSetImages} name="images" />
+
           <input type="submit" value="Submit" />
           <input type="reset" value="Reset" className="resetButton" />
         </form>
       )}
-      <UploadImage images={images} setImages={handleSetImages} name="images" />
     </div>
   );
 };

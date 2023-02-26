@@ -7,7 +7,8 @@ const NavBar = () => {
     fontWeight: "bold",
     // highlight with bright color
     // highlight with underline
-    textDecorationColor: "white",
+    // important to have this property
+    textDecorationColor: "black",
     textDecorationThickness: "2px",
     textDecorationStyle: "double",
   };
@@ -17,7 +18,7 @@ const NavBar = () => {
       <NavLink
         className="navbar-item"
         to="/clients"
-        style={({ isActive }) => (isActive ? activeLinkStyle : null)}
+        style={({ isActive }) => (isActive ? activeLinkStyle : null) }
       >
         Clients
       </NavLink>
