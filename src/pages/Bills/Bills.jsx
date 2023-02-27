@@ -129,6 +129,8 @@ const Bills = () => {
       items.push({
         name: e.target[`name-${i}`].value,
         code: e.target[`code-${i}`].value,
+        category: e.target[`category-${i}`].value,
+        subCategory: e.target[`subCategory-${i}`].value,
         description: e.target[`description-${i}`].value,
         unitOfMeasurement: e.target[`unitOfMeasurement-${i}`].value,
         quantity: e.target[`quantity-${i}`].value,
@@ -353,6 +355,19 @@ const Bills = () => {
               <input type="text" name={`name-${i}`} placeholder="Name" />
               <input
                 type="text"
+                name={`category-${i}`}
+                placeholder="Category"
+                defaultValue={""}
+              />
+              <input
+                type="text"
+                name={`subCategory-${i}`}
+                placeholder="Sub Category"
+                defaultValue={""}
+              />
+
+              <input
+                type="text"
                 name={`description-${i}`}
                 placeholder="Description"
               />
@@ -372,7 +387,9 @@ const Bills = () => {
                 placeholder="price per unit"
               />
 
-              <FormLabel>Is Fabric Item? </FormLabel>
+              <label style={{ display: "block", color: "white" }}>
+                Is Fabric Item?
+              </label>
 
               <input
                 type="checkbox"
