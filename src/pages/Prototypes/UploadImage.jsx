@@ -1,11 +1,12 @@
 import React from "react";
 
-const UploadImage = ({ images, setImages }) => {
+const UploadImage = ({ images, handleSetImages }) => {
 //   const [images, setImages] = React.useState([]);
 
   const handleRemoveImage = (imgObj) => {};
 
-  const handleOpenWidget = () => {
+  const handleOpenWidget = (event) => {
+    event.preventDefault();
     var myWidget = window.cloudinary.createUploadWidget(
       {
         cloudName: "dzmgrrcsd",
@@ -15,7 +16,7 @@ const UploadImage = ({ images, setImages }) => {
       (error, result) => {
         if (!error && result && result.event === "success") {
         //   console.log("Done! Here is the image info: ", result.info);
-          setImages([...images, result.info.secure_url]);
+        handleSetImages(event, [...images, result.info.secure_url]);
         }
       }
     );
