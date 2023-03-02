@@ -16,7 +16,7 @@ const Login = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    
     setMessage("");
     setLoading(true);
 
@@ -48,7 +48,7 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <form onSubmit={handleSubmit} ref={form} noValidate>
+      <form onSubmit={handleSubmit} ref={form} >
         <h2 className="form-title">Login</h2>
         <div className="input-container">
           <input
