@@ -1,47 +1,67 @@
 @media print {
-    body * {
-      visibility: hidden;
-    }
-    #prototypes * {
-      visibility: visible;
-    }
-    #prototypes {
-      position: absolute;
-      left: 0;
-      top: 0;
-    }
-    .btn-secondary, .btn-danger {
-      display: none;
-    }
+  body * {
+    visibility: hidden;
   }
-  
-
-  @media only screen and (max-width: 767px) {
-    .card-header {
-      flex-direction: column;
-      text-align: center;
-    }
-    .card-header h5 {
-      margin-bottom: 0.5rem;
-    }
-    .card-header button {
-      width: 100%;
-      margin-top: 0.5rem;
-    }
+  #prototypes * {
+    visibility: visible;
   }
-
-
-  .image-container {
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding-bottom: 100%;
-  }
-  .image-container img {
+  #prototypes {
     position: absolute;
-    top: 0;
     left: 0;
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
+    top: 0;
   }
+  .btn-secondary,
+  .btn-danger {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .card-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  .card-header h5 {
+    margin-bottom: 0.5rem;
+  }
+  .card-header button {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
+.image-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  padding-bottom: 100%;
+}
+.image-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.prototypes {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.prototype-card {
+  display: flex;
+  flex-wrap: wrap;
+  
+}
+
+.prototype-card * {
+  width: 50%;
+  margin-top: 20px;
+}

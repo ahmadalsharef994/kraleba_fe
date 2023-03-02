@@ -8,20 +8,33 @@ import {
   patchPrototype,
   postPrototype,
   deletePrototype,
+  fetchItemsData,
 } from "../../components/services/prototypeDataService";
 import "./Prototypes.css";
 
 import PrototypeModal from "../../components/PrototypeModal";
 import UploadImage from "./UploadImage";
+import { FormLabel } from "react-bootstrap";
 
 const Prototypes = () => {
   const [prototypes, setPrototypes] = useState([]);
   const allPrototypes = useRef([]);
   const allBills = useRef([]);
   const allClients = useRef([]);
+  const allItems = useRef([]);
+
+  const [searchValue, setSearchValue] = useState("");
+  const [typeValue, setTypeValue] = useState("");
+
+  const [selectedPrototype, setSelectedPrototype] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const [addPrototypeForm, setAddPrototypeForm] = useState(false);
+  const [selectPrototypeForm, setSelectPrototypeForm] = useState(false);
 
   const [images, setImages] = useState([]);
-  const handleSetImages = (images) => {
+  const handleSetImages = (e, images) => {
+    e.preventDefault();
     setImages(images);
   };
 
@@ -33,13 +46,22 @@ const Prototypes = () => {
       localStorage.setItem("prototypes", JSON.stringify(result));
       allClients.current = JSON.parse(localStorage.getItem("clients"));
       allBills.current = JSON.parse(localStorage.getItem("bills"));
+      const items = await fetchItemsData();
+      localStorage.setItem("items", JSON.stringify(items));
+      allItems.current = items;
     };
     try {
       fetchData();
     } catch (err) {
-      console.log(err);
+      alert(err);
     }
   }, []);
+
+  const [itemCount, setItemCount] = useState(1);
+
+  function handleAddItem() {
+    setItemCount(itemCount + 1);
+  }
 
   const handlePatchPrototype = async (prototypeForm, prototypeId) => {
     await patchPrototype(prototypeForm, prototypeId);
@@ -52,8 +74,7 @@ const Prototypes = () => {
     e.preventDefault();
 
     const prototypeForm = {};
-    prototypeForm.fabrics = {};
-    prototypeForm.assets = {};
+    prototypeForm.items = [];
     prototypeForm.marketing = {};
     prototypeForm.forming = {};
 
@@ -63,14 +84,16 @@ const Prototypes = () => {
       if (
         child.type === "submit" ||
         child.type === "reset" ||
-        child.value === ""
+        child.value === "" ||
+        !child.name
       ) {
         continue;
       }
 
-      if (child.name.includes("fabrics") || child.name.includes("assets")) {
-        const names = child.name.split("-");
-        prototypeForm[names[0]][names[1]] = child.value;
+      if (child.name.includes("item")) {
+        prototypeForm.items.push(child.value);
+        console.log(child.value);
+        console.log(prototypeForm.items);
         continue;
       }
 
@@ -94,9 +117,6 @@ const Prototypes = () => {
     setPrototypes(prototypes);
   };
 
-  const [searchValue, setSearchValue] = useState("");
-  const [typeValue, setTypeValue] = useState("");
-
   const handleFilter = (e) => {
     e.preventDefault();
     // Form submission logic here
@@ -117,11 +137,6 @@ const Prototypes = () => {
     setPrototypes(allPrototypes.current);
   };
 
-  const [selectedPrototype, setSelectedPrototype] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
-
-  const [addPrototypeForm, setAddPrototypeForm] = useState(false);
-
   const handleEditPrototype = (prototype) => {
     setSelectedPrototype(prototype);
     setShowEditModal(true);
@@ -134,49 +149,70 @@ const Prototypes = () => {
 
   return (
     <div className="container">
-      {/* <UploadImage /> */}
-      <form className="filter" onSubmit={handleFilter}>
-        <input
-          type="text"
-          value={searchValue}
-          placeholder="Search By Name"
-          onChange={(e) => setSearchValue(e.target.value)}
-        />
-        <select
-          value={typeValue}
-          onChange={(e) => setTypeValue(e.target.value)}
-          placeholder="Type"
-        >
-          <option value="">Select Type</option>
-          <option value="abelard">abelard</option>
-          <option value="heloise">heloise</option>
-        </select>
+      <ButtonExtend
+        className="addButton"
+        onClick={() => {
+          setAddPrototypeForm(!addPrototypeForm);
+          setSelectPrototypeForm(false);
+        }}
+      >
+        ADD PROTOTYPE
+      </ButtonExtend>
 
-        <div>
-          <ButtonExtend
-            className="filterButton"
-            type="submit"
-            onClick={handleFilter}
-          >
-            Filter
-          </ButtonExtend>
-          <ButtonExtend
-            className="resetButton"
-            type="reset"
-            onClick={resetFilter}
-          >
-            Remove Filter
-          </ButtonExtend>
-        </div>
+      <ButtonExtend
+        className="addButton"
+        onClick={() => {
+          setSelectPrototypeForm(!selectPrototypeForm);
+          setAddPrototypeForm(false);
+        }}
+      >
+        SELECT PROTOTYPE
+      </ButtonExtend>
 
-        <ButtonExtend
-          type="button"
-          className="pdfButton"
-          onClick={() => window.print()}
-        >
-          Print as PDF
-        </ButtonExtend>
-      </form>
+      <ButtonExtend
+        type="button"
+        className="pdfButton"
+        onClick={() => window.print()}
+      >
+        Print as PDF
+      </ButtonExtend>
+
+      {selectPrototypeForm && (
+        <form className="filter" onSubmit={handleFilter}>
+          <input
+            type="text"
+            value={searchValue}
+            placeholder="Search By Name"
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
+          <select
+            value={typeValue}
+            onChange={(e) => setTypeValue(e.target.value)}
+            placeholder="Type"
+          >
+            <option value="">Select Type</option>
+            <option value="abelard">abelard</option>
+            <option value="heloise">heloise</option>
+          </select>
+
+          <div>
+            <ButtonExtend
+              className="filterButton"
+              type="submit"
+              onClick={handleFilter}
+            >
+              Filter
+            </ButtonExtend>
+            <ButtonExtend
+              className="resetButton"
+              type="reset"
+              onClick={resetFilter}
+            >
+              Remove Filter
+            </ButtonExtend>
+          </div>
+        </form>
+      )}
 
       <div className="prototypes" id="prototypes">
         {!prototypes || !prototypes.length ? (
@@ -201,35 +237,17 @@ const Prototypes = () => {
                 </ButtonExtend>
               </Card.Header>
               <Card.Body>
-                <ListGroup>
+                <div className="prototype-card">
                   <ListGroup.Item>Type: {prototype.type}</ListGroup.Item>
-                  <ListGroup.Item>Bill: {prototype.bill}</ListGroup.Item>
-                  <ListGroup.Item>
-                    Bill Code: {prototype.billCode}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    Fabrics:
-                    <ul>
-                      <li>Supplier: {prototype.fabrics.supplier}</li>
-                      <li>Product Name: {prototype.fabrics.productName}</li>
-                      <li>Supplier Code: {prototype.fabrics.supplierCode}</li>
-                      <li>
-                        Date of Invoice: {prototype.fabrics.dateOfInvoice}
-                      </li>
-                      <li>Invoice Number: {prototype.fabrics.invoiceNumber}</li>
-                    </ul>
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    Assets:
-                    <ul>
-                      <li>Supplier: {prototype.assets.supplier}</li>
-                      <li>Product Name: {prototype.assets.productName}</li>
-                      <li>Supplier Code: {prototype.assets.supplierCode}</li>
-                      <li>Date of Invoice: {prototype.assets.dateOfInvoice}</li>
-                      <li>Invoice Number: {prototype.assets.invoiceNumber}</li>
-                    </ul>
-                  </ListGroup.Item>
                   <ListGroup.Item>Code: {prototype.code}</ListGroup.Item>
+                  <ListGroup.Item>
+                    Items:
+                    <ul>
+                      {prototype.items.map((item, index) => (
+                        <li key={index}>{item}</li>
+                      ))}
+                    </ul>
+                  </ListGroup.Item>
                   <ListGroup.Item>
                     Tailoring: {prototype.tailoring}
                   </ListGroup.Item>
@@ -238,13 +256,18 @@ const Prototypes = () => {
                     <ul>
                       <li>Category: {prototype.marketing.category}</li>
                       <li>Theme: {prototype.marketing.theme}</li>
+
                       <li>Styles: {prototype.marketing.styles}</li>
+
                       <li>Occasion: {prototype.marketing.occasion}</li>
+
                       <li>Seasonality: {prototype.marketing.seasonality}</li>
+
                       <li>Author: {prototype.marketing.author}</li>
                       <li>Collection: {prototype.marketing.collection}</li>
                     </ul>
                   </ListGroup.Item>
+
                   <ListGroup.Item>
                     Forming:
                     <ul>
@@ -258,18 +281,34 @@ const Prototypes = () => {
                       <li>Interlining: {prototype.forming.interlining}</li>
                     </ul>
                   </ListGroup.Item>
-                  <ListGroup.Item>
+
+                </div>
+              </Card.Body>
+              <Card.Footer>
                     <strong>Images:</strong>
-                    <ul>
+                    <ul
+                      style={{
+                        listStyle: "none",
+                        padding: 0,
+                        margin: 0,
+                        display: "flex",
+                        flexWrap: "nowrap",
+                        overflowX: "auto",
+                      }}
+                    >
                       {prototype.images.map((image, index) => (
-                        <li key={index}>
-                          {<img src={image} alt="prototype" />}
+                        <li key={index} style={{ marginRight: "10px" }}>
+                          {
+                            <img
+                              src={image}
+                              alt="prototype"
+                              style={{ maxWidth: "100%", height: "auto" }}
+                            />
+                          }
                         </li>
                       ))}
                     </ul>
-                  </ListGroup.Item>
-                </ListGroup>
-              </Card.Body>
+                  </Card.Footer>
             </Card>
           ))
         )}
@@ -284,12 +323,6 @@ const Prototypes = () => {
         )}
       </div>
 
-      <ButtonExtend
-        className="addButton"
-        onClick={() => setAddPrototypeForm(!addPrototypeForm)}
-      >
-        ADD PROTOTYPE
-      </ButtonExtend>
       {addPrototypeForm && (
         <form className="filter" onSubmit={handlePostPrototype}>
           <select name="type" placeholder="Type">
@@ -297,39 +330,36 @@ const Prototypes = () => {
             <option value="abelard">abelard</option>
             <option value="heloise">heloise</option>
           </select>
+          <input type="text" name="name" placeholder="Name" />
+          <input
+            type="text"
+            name="collectionName"
+            placeholder="Collection Name"
+          />
+          <FormLabel>Items: </FormLabel>
 
-          <select name="fabrics-billCode" placeholder="Fabrics BillCode">
-            <option value="">Fabrics BillCode</option>
-            {allBills &&
-              allBills.current.map((bill) => (
-                <option value={bill.code}>{bill.code}</option>
-              ))}
-          </select>
-          <select
-            name="fabrics-supplierCode"
-            placeholder="Fabrics Supplier Name"
-          >
-            <option value="">Fabrics Supplier Name</option>
-            {allClients &&
-              allClients.current.map((client) => (
-                <option value={client.code}>{client.name}</option>
-              ))}
-          </select>
+          <button onClick={handleAddItem}>Add Item</button>
+          {Array.from({ length: itemCount }).map((_, index) => (
+            <select key={index} name={`item-${index}`}>
+              <option value="">Select Item</option>
+              {allItems &&
+                allItems.current.map((item) => (
+                  <option
+                    value={[
+                      item.code,
+                      item.name,
+                      item.unitPrice,
+                      item.quantity,
+                      item.fabrics,
+                    ]}
+                  >
+                    {item.name}/{item.code}/{item.unitPrice}
+                  </option>
+                ))}
+            </select>
+          ))}
 
-          <select name="assets-billCode" placeholder="Assets BillCode">
-            <option value="">Assets BillCode</option>
-            {allBills &&
-              allBills.current.map((bill) => (
-                <option value={bill.code}>{bill.code}</option>
-              ))}
-          </select>
-          <select name="assets-supplierCode" placeholder="Assets Supplier Name">
-            <option value="">Assets Supplier Name</option>
-            {allClients &&
-              allClients.current.map((client) => (
-                <option value={client.code}>{client.name}</option>
-              ))}
-          </select>
+          <FormLabel>Prototype: </FormLabel>
 
           <input type="text" name="code" placeholder="Code" required />
 
@@ -414,11 +444,18 @@ const Prototypes = () => {
           />
 
           <textarea name="notes" placeholder="Notes"></textarea>
+          <FormLabel>Images: </FormLabel>
+
+          <UploadImage
+            images={images}
+            handleSetImages={handleSetImages}
+            name="images"
+          />
+
           <input type="submit" value="Submit" />
           <input type="reset" value="Reset" className="resetButton" />
         </form>
       )}
-      <UploadImage images={images} setImages={handleSetImages} name="images" />
     </div>
   );
 };

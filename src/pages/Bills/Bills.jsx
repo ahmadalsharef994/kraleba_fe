@@ -9,6 +9,8 @@ import {
   postBill,
   deleteBill,
 } from "../../components/services/billDataService";
+import { categoriesList } from "../../components/constants";
+import preProcessElement from "./billUtils";
 
 const Bills = () => {
   const allBills = useRef([]);
@@ -19,21 +21,20 @@ const Bills = () => {
 
   const [expandBill, setExpandBill] = useState(new Array(false));
 
+  const [selectedBill, setSelectedBill] = useState(null);
+  const [showEditModal, showSetEditModal] = useState(false);
+
+  const [addBillForm, setAddBillForm] = useState(false);
+  const [numberOfItems, setNumberOfItems] = useState(0);
+
+  const [isFabric, setIsFabric] = useState([]);
+
+  const [singleBillPage, setSingleBillPage] = useState(false);
+
   const selectClient = (e) => {
     const [id, name, code, country] = e.target.value.split(",");
     setSelectedClient({ id, name, code, country });
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await fetchBillsData();
-      setBills(result);
-      allBills.current = result;
-      localStorage.setItem("bills", JSON.stringify(result));
-      allClients.current = JSON.parse(localStorage.getItem("clients"));
-    };
-    fetchData();
-  }, []);
 
   const [filter, setFilter] = useState({
     clientName: "",
@@ -74,20 +75,6 @@ const Bills = () => {
     setBills(allBills.current);
   };
 
-  const [selectedBill, setSelectedBill] = useState(null);
-  const [showEditModal, showSetEditModal] = useState(false);
-
-  const [addBillForm, setAddBillForm] = useState(false);
-  const [numberOfItems, setNumberOfItems] = useState(0);
-
-  const [isFabric, setIsFabric] = useState([]);
-
-  const convertDate = (billDate) => {
-    const date = new Date(billDate);
-    return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-    /* Date converted to MM-DD-YYYY format */
-  };
-
   const handleEditBill = (bill) => {
     setSelectedBill(bill);
     showSetEditModal(true);
@@ -111,8 +98,22 @@ const Bills = () => {
     for (let i = 0; i < e.target.children.length; i++) {
       const child = e.target.children[i];
 
-      if (child.name === "vatRate") billForm.vatRate = child.value;
-      if (child.name === "customDutyVAT") billForm.customDutyVAT = child.value;
+      if (child.name === "vatRate") {
+        billForm.vatRate = child.value;
+        continue;
+      }
+      if (child.name === "customDutyVAT") {
+        billForm.customDutyVAT = child.value;
+        continue;
+      }
+
+      if (child.name === "category") {
+        billForm.category = Array.from(
+          child.selectedOptions,
+          (option) => option.value
+        );
+        continue;
+      }
 
       if (
         child.type === "submit" ||
@@ -128,21 +129,25 @@ const Bills = () => {
       items.push({
         name: e.target[`name-${i}`].value,
         code: e.target[`code-${i}`].value,
+        category: e.target[`category-${i}`].value,
+        subCategory: e.target[`subCategory-${i}`].value,
         description: e.target[`description-${i}`].value,
         unitOfMeasurement: e.target[`unitOfMeasurement-${i}`].value,
         quantity: e.target[`quantity-${i}`].value,
         unitPrice: e.target[`unitPrice-${i}`].value,
-        fabrics: {
-          // composition material structure design weaving color finishing
-          composition: e.target[`composition-${i}`].value,
-          material: e.target[`material-${i}`].value,
-          structure: e.target[`structure-${i}`].value,
-          design: e.target[`design-${i}`].value,
-          weaving: e.target[`weaving-${i}`].value,
-          color: e.target[`color-${i}`].value,
-          finishing: e.target[`finishing-${i}`].value,
-          rating: e.target[`rating-${i}`].value,
-        },
+        fabrics: isFabric[i]
+          ? {
+              // composition material structure design weaving color finishing
+              composition: e.target[`composition-${i}`].value,
+              material: e.target[`material-${i}`].value,
+              structure: e.target[`structure-${i}`].value,
+              design: e.target[`design-${i}`].value,
+              weaving: e.target[`weaving-${i}`].value,
+              color: e.target[`color-${i}`].value,
+              finishing: e.target[`finishing-${i}`].value,
+              rating: e.target[`rating-${i}`].value,
+            }
+          : null,
       });
     }
     billForm.items = items;
@@ -150,17 +155,27 @@ const Bills = () => {
     billForm["clientName"] = selectedClient.name;
     billForm["clientCode"] = selectedClient.code;
     billForm["clientCountry"] = selectedClient.country;
-    // console.log(billForm);
     await postBill(billForm);
     const bills = await fetchBillsData();
     setBills(bills);
   };
 
   const handleDeleteBill = async (bill) => {
-    await deleteBill(bill.id);
+    await deleteBill(bill._id);
     const bills = await fetchBillsData();
     setBills(bills);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetchBillsData();
+      setBills(result);
+      allBills.current = result;
+      localStorage.setItem("bills", JSON.stringify(result));
+      allClients.current = JSON.parse(localStorage.getItem("clients"));
+    };
+    fetchData();
+  }, []);
 
   return (
     <div>
@@ -209,7 +224,6 @@ const Bills = () => {
             <option value="">Select Type</option>
             <option value="Offer">Offer</option>
             <option value="Invoice">Invoice</option>
-            <option value="Items">Items</option>
           </select>
 
           <input
@@ -262,6 +276,7 @@ const Bills = () => {
           <FormLabel>Select Client: *</FormLabel>
 
           <select name="clientDetails" required onChange={selectClient}>
+            <option>SELECT CLIENT</option>
             {allClients &&
               allClients.current.map((client, index) => (
                 <option
@@ -275,6 +290,7 @@ const Bills = () => {
 
           <input type="text" name="code" placeholder="Code" required />
           <input type="date" name="date" placeholder="Date" required />
+
           <FormLabel>Type: *</FormLabel>
 
           <select name="type" required>
@@ -318,18 +334,14 @@ const Bills = () => {
           <FormLabel>Catigories: *</FormLabel>
 
           <select name="category" placeholder="Category" multiple>
-            <option value="fabrics">fabrics</option>
-            <option value="assets">assets</option>
-            <option value="auxiliary">auxiliary</option>
-            <option value="services">services</option>
-            <option value="manufacturing">manufacturing</option>
-            <option value="delivery">delivery</option>
-            <option value="banking">banking</option>
-            <option value="duties">duties</option>
-            <option value="others">others</option>
+            {categoriesList.map((category, index) => (
+              <option value={category} key={index}>
+                {category}
+              </option>
+            ))}
           </select>
-          
-          <input type="text" name="subcategory" placeholder="subcategoris" />
+
+          <input type="text" name="subCategory" placeholder="subcategoris" />
 
           <input
             type="number"
@@ -341,6 +353,19 @@ const Bills = () => {
             <div key={i} className="item-input">
               <input type="text" name={`code-${i}`} placeholder="Code" />
               <input type="text" name={`name-${i}`} placeholder="Name" />
+              <input
+                type="text"
+                name={`category-${i}`}
+                placeholder="Category"
+                defaultValue={""}
+              />
+              <input
+                type="text"
+                name={`subCategory-${i}`}
+                placeholder="Sub Category"
+                defaultValue={""}
+              />
+
               <input
                 type="text"
                 name={`description-${i}`}
@@ -362,7 +387,9 @@ const Bills = () => {
                 placeholder="price per unit"
               />
 
-              <FormLabel>Is Fabric Item? </FormLabel>
+              <label style={{ display: "block", color: "white" }}>
+                Is Fabric Item?
+              </label>
 
               <input
                 type="checkbox"
@@ -382,19 +409,16 @@ const Bills = () => {
                     type="text"
                     name={`composition-${i}`}
                     placeholder="Composition"
-                    defaultValue={""}
                   />
                   <input
                     type="text"
                     name={`material-${i}`}
                     placeholder="Material"
-                    defaultValue={""}
                   />
                   <input
                     type="text"
                     name={`structure-${i}`}
                     placeholder="Structure"
-                    defaultValue={""}
                   />
                   <input
                     type="text"
@@ -450,59 +474,32 @@ const Bills = () => {
           bills.map((bill, index) => (
             <Card key={index}>
               <Card.Header style={{ display: "flex" }}>
-                <ListGroup>
-                  <ListGroup.Item>
-                    client name: {bill.clientName}
-                  </ListGroup.Item>
-                  <ListGroup.Item>bill code: {bill.code}</ListGroup.Item>
-                  <ListGroup.Item>
-                    bill date: {convertDate(bill.date)}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    bill type: <b>{bill.type}</b>
-                  </ListGroup.Item>
-                  <ListGroup.Item>currency: {bill.currency}</ListGroup.Item>
-                  <ListGroup.Item>
-                    exchangeRate: {bill.exchangeRate}
-                  </ListGroup.Item>
-                </ListGroup>
+                <div style={{ display: "flex", flexWrap: "wrap" }}>
+                  {Object.keys(bill).map((key, index) => {
+                    if (
+                      [
+                        "items",
+                        "client",
+                        "_id",
+                        "updatedAt",
+                        "__v",
+                        "createdAt",
+                        "category",
+                        "subCategory",
+                      ].includes(key)
+                    )
+                      return null;
+                    return (
+                      <ListGroup.Item
+                        key={index}
+                        style={{ width: "33%", border: "solid 1px" }}
+                      >
+                        {key}: {preProcessElement(bill[key])}
+                      </ListGroup.Item>
+                    );
+                  })}
+                </div>
 
-                <ListGroup>
-                  <ListGroup.Item>
-                    customDutyVAT: {bill.customDutyVAT}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    total (lei): {bill.totalBeforeVAT.lei}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    total (euro):{bill.totalBeforeVAT.euro}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    totalCustomDuty (lei):{" "}
-                    {bill.totalCustomDuty ? bill.totalCustomDuty.lei : "none"}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    totalCustomDuty (euro):{" "}
-                    {bill.totalCustomDuty ? bill.totalCustomDuty.euro : "none"}
-                  </ListGroup.Item>
-                </ListGroup>
-
-                <ListGroup>
-                  <ListGroup.Item>VAT percentage:{bill.vatRate}</ListGroup.Item>
-                  <ListGroup.Item>
-                    VAT (lei): {bill.totalVAT.lei}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    VAT (euro): {bill.totalVAT.euro}
-                  </ListGroup.Item>
-
-                  <ListGroup.Item>
-                    total + VAT (lei):{bill.totalAfterVAT.lei}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    total + VAT (euro): {bill.totalAfterVAT.euro}
-                  </ListGroup.Item>
-                </ListGroup>
                 {bill.type === "offer" && (
                   <ButtonExtend
                     className="btn btn-secondary"
@@ -531,8 +528,23 @@ const Bills = () => {
                     })
                   }
                 >
-                  {/* {expandBill[index] ? "Hide" : "Show"} items */}
                   ...
+                </ButtonExtend>
+
+                <ButtonExtend
+                  className="pdfButton"
+                  onClick={() => {
+                    if (singleBillPage) {
+                      setBills(allBills.current);
+                      setSingleBillPage(false);
+                    } else {
+                      setBills(bills.filter((b) => b._id === bill._id));
+                      setSingleBillPage(true);
+                    }
+                  }}
+                  size="sm"
+                >
+                  focus this bill
                 </ButtonExtend>
               </Card.Header>
               {expandBill[index] && (
@@ -540,14 +552,14 @@ const Bills = () => {
                   <Table>
                     <thead>
                       <tr>
-                        <th rowspan="2">index</th>
-                        <th rowspan="2">name</th>
-                        <th rowspan="2">code</th>
-                        <th rowspan="2">description</th>
-                        <th colspan="4">buc/um</th>
-                        <th colspan="2">total fara TVA</th>
-                        <th colspan="2">TVA</th>
-                        <th colspan="2">total incl. TVA</th>
+                        <th rowSpan="2">index</th>
+                        <th rowSpan="2">name</th>
+                        <th rowSpan="2">code</th>
+                        <th rowSpan="2">description</th>
+                        <th colSpan="4">buc/um</th>
+                        <th colSpan="2">total fara TVA</th>
+                        <th colSpan="2">TVA</th>
+                        <th colSpan="2">total incl. TVA</th>
                       </tr>
                       <tr>
                         <th>Unit</th>

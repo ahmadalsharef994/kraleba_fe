@@ -41,7 +41,7 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background-color: #2196f3;
+  background-color: #8a8888	;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
   color: white;
   margin-bottom: 10px;
@@ -54,6 +54,7 @@
   text-decoration: none;
   padding: 10px;
   transition: all 0.2s ease-in-out;
+  font-weight: bolder;
 }
 
 /* Change color on hover */

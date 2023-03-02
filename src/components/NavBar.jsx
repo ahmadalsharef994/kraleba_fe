@@ -34,7 +34,8 @@ const NavBar = () => {
     fontWeight: "bold",
     // highlight with bright color
     // highlight with underline
-    textDecorationColor: "white",
+    // important to have this property
+    textDecorationColor: "black",
     textDecorationThickness: "2px",
     textDecorationStyle: "double",
   };
