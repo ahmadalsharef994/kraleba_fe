@@ -108,7 +108,7 @@ const Clients = () => {
   useEffect(() => {
     const fetchData = async () => {
       const result = await fetchClientsData();
-      setClients(result);
+      setClients(result.sort((a, b) => a.name.localeCompare(b.name)));
       allClients.current = result;
       localStorage.setItem("clients", JSON.stringify(result));
     };

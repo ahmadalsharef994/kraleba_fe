@@ -34,6 +34,7 @@ const Register = () => {
                     setSuccessful(true);
                     setLoading(false);
                     navigate('/login');
+                    
                 })
                 .catch((error) => {
                     const resMessage =
@@ -47,6 +48,11 @@ const Register = () => {
                     setSuccessful(false);
                     setLoading(false);
                 });
+        }
+        console.log(message)
+        if (!successful) {
+            console.log("not successful");
+            
         }
     };
 

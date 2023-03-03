@@ -53,11 +53,15 @@ const Bills = () => {
         bill.clientName
           .toLowerCase()
           .includes(filter.clientName.toLowerCase()) &&
-        bill.type.toLowerCase().includes(filter.type.toLowerCase()) &&
-        bill.category.includes(filter.category) &&
-        JSON.stringify(bill.items).toLowerCase().includes(filter.subCategory) &&
-        bill.date >= filter.startDate &&
-        bill.date <= filter.endDate
+        bill.type.toLowerCase().includes(filter.type.toLowerCase()) 
+        // &&
+        // (bill.category.indexOf(filter.category) !== -1 || !bill.category)
+
+        &&
+        JSON.stringify(bill.items).toLowerCase().includes(filter.subCategory) 
+        // &&
+        // bill.date >= new Date(filter.startDate) && bill.date <= new Date(filter.endDate)
+
       );
     });
     setBills(temp);
@@ -226,11 +230,11 @@ const Bills = () => {
             <option value="Invoice">Invoice</option>
           </select>
 
-          <input
+          {/* <input
             value={filter.category}
             onChange={(e) => setFilter({ ...filter, category: e.target.value })}
             placeholder="Category"
-          />
+          /> */}
 
           <input
             value={filter.subCategory}
@@ -240,7 +244,7 @@ const Bills = () => {
             placeholder="Sub Category"
           />
 
-          <input
+          {/* <input
             type="date"
             value={filter.startDate}
             onChange={(e) =>
@@ -251,7 +255,7 @@ const Bills = () => {
             type="date"
             value={filter.endDate}
             onChange={(e) => setFilter({ ...filter, endDate: e.target.value })}
-          />
+          /> */}
 
           <div>
             <ButtonExtend
@@ -312,6 +316,8 @@ const Bills = () => {
             name="exchangeRate"
             placeholder="Exchange Rate"
             required
+            step="0.01"
+            max="99"
           />
           {selectedClient.country !== "EU" && (
             <input
@@ -319,6 +325,8 @@ const Bills = () => {
               name="vatRate"
               placeholder="VAT Rate"
               required
+              step="0.01"
+              max="99"
             />
           )}
           {selectedClient.country === "Non-EU" && (
@@ -327,6 +335,8 @@ const Bills = () => {
               name="customDutyVAT"
               placeholder="Custom Duty VAT"
               required
+              step="0.01"
+              max="99"
             />
           )}
 
@@ -348,6 +358,8 @@ const Bills = () => {
             placeholder="number of items"
             onChange={(e) => setNumberOfItems(e.target.value)}
             name="numberOfItems"
+            max="99"
+            step="1"
           />
           {Array.from({ length: numberOfItems }, (_, i) => (
             <div key={i} className="item-input">
@@ -380,11 +392,14 @@ const Bills = () => {
                 type="number"
                 name={`quantity-${i}`}
                 placeholder="Quantity"
+                step="1"
+                max="999"
               />
               <input
                 type="number"
                 name={`unitPrice-${i}`}
                 placeholder="price per unit"
+                max="99"
               />
 
               <label style={{ display: "block", color: "white" }}>

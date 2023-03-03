@@ -47,6 +47,7 @@ function App() {
           ) : (
             <Route>
               <Route path="/" exact element={<Login />} />
+              <Route path="/login" exact element={<Login />} />
               <Route path="/register" exact element={<Register />} />
             </Route>
           )}

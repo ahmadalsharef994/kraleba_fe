@@ -19,6 +19,7 @@ function BillModal({ bill, closeModal, patchBill }) {
     await patchBill(billForm);
     closeModal();
   };
+  const billDate = new Date(bill.date).toISOString().slice(0, 10);
 
   return (
     <Modal show={!!bill}>
@@ -27,15 +28,15 @@ function BillModal({ bill, closeModal, patchBill }) {
       </Modal.Header>
       <Modal.Body>
         <form className="filter" onSubmit={handleSave}>
-          <input type="text" name="code" placeholder="Code" />
+          <input type="text" name="code" placeholder="Code" defaultValue={bill.code}/>
           {/* <input type="text" name="number" placeholder="Number" /> */}
-          <input type="date" name="date" placeholder="Date" />
-          <select name="type">
+          <input type="date" name="date" placeholder="Date" defaultValue={billDate}/>
+          <select name="type" defaultValue={bill.type}>
             <option value="">Type</option>
             <option value="invoice">Invoice</option>
             <option value="offer">Offer</option>
           </select>
-          <select name="currency">
+          <select name="currency" defaultValue={bill.currency}>
             <option value="">Currency</option>
             <option value="lei">Lei</option>
             <option value="euro">Euro</option>
@@ -44,8 +45,9 @@ function BillModal({ bill, closeModal, patchBill }) {
             type="number"
             name="exchangeRate"
             placeholder="Exchange Rate"
+            defaultValue={bill.exchangeRate}
           />
-          <input type="number" name="vatRate" placeholder="VAT Rate" />
+          <input type="number" name="vatRate" placeholder="VAT Rate" defaultValue={bill.vatRate}/>
 
           <input
             type="number"
@@ -54,7 +56,7 @@ function BillModal({ bill, closeModal, patchBill }) {
             required
           />
 
-          <select type="checkbox" multiple name="category">
+          <select type="checkbox" multiple name="category" defaultValue={bill.category}>
             <option value="fabric">Fabric</option>
             <option value="auxiliary">auxiliary</option>
             <option value="services">services</option>
