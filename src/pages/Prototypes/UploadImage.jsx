@@ -1,9 +1,16 @@
 import React from "react";
 
 const UploadImage = ({ images, handleSetImages }) => {
-//   const [images, setImages] = React.useState([]);
+  const [newImages, setNewImages] = React.useState([]);
 
-  const handleRemoveImage = (imgObj) => {};
+  const handleRemoveImage = (event, index) => {
+    const updatedImages = [...newImages];
+    updatedImages.splice(index, 1);
+    setNewImages(updatedImages);
+    handleSetImages(event, updatedImages);
+    console.log("newImages", newImages);
+    console.log("updatedImages", updatedImages);
+  };
 
   const handleOpenWidget = (event) => {
     event.preventDefault();
@@ -11,12 +18,21 @@ const UploadImage = ({ images, handleSetImages }) => {
       {
         cloudName: "dzmgrrcsd",
         uploadPreset: "n8gnsfgx",
-        sources: ["local", "url", "facebook", "dropbox", "instagram","google_drive"],
+        sources: [
+          "local",
+          "url",
+          "facebook",
+          "dropbox",
+          "instagram",
+          "google_drive",
+        ],
+        multiple: true,
       },
       (error, result) => {
         if (!error && result && result.event === "success") {
-        //   console.log("Done! Here is the image info: ", result.info);
-        handleSetImages(event, [...images, result.info.secure_url]);
+          //   console.log("Done! Here is the image info: ", result.info);
+          handleSetImages(event, [...images, result.info.secure_url]);
+          setNewImages([...images, result.info.secure_url]);
         }
       }
     );
@@ -25,6 +41,18 @@ const UploadImage = ({ images, handleSetImages }) => {
 
   return (
     <div>
+      <p
+        style={{
+          textAlign: "center",
+          fontWeight: "bold",
+          textDecoration: "underline",
+          color: "whitesmoke",
+        }}
+      >
+        Click on Upload Image to upload new images.
+        <br />
+        Click on the image to remove.
+      </p>
       <button
         onClick={handleOpenWidget}
         id="upload-widget"
@@ -32,9 +60,14 @@ const UploadImage = ({ images, handleSetImages }) => {
       >
         Upload Image
       </button>
+
       <div className="image-container">
-        {images.map((imgObj) => (
-          <img src={imgObj} alt="no preview" />
+        {newImages.map((imgObj, index) => (
+          <img
+            src={imgObj}
+            alt="no preview"
+            onClick={() => handleRemoveImage(index)}
+          />
         ))}
       </div>
     </div>
