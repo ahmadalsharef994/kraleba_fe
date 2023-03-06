@@ -10,9 +10,8 @@ import {
   deleteBill,
 } from "../../components/services/billDataService";
 import { categoriesList } from "../../components/constants";
-import preProcessElement from "./billUtils";
+// import preProcessElement from "./billUtils";
 import ReactJsonView from "react-json-view";
-import JSONViewer from "react-json-viewer";
 
 const Bills = () => {
   const allBills = useRef([]);
@@ -528,6 +527,7 @@ const Bills = () => {
                       currency: bill.currency,
                       exchangeRate: bill.exchangeRate,
                       vatRate: bill.vatRate,
+                      customDutyVAT: bill.customDutyVAT,
                       clientCountry: bill.clientCountry,
                       numberOfItems: bill.numberOfItems,
                       notes: bill.notes,
@@ -535,7 +535,6 @@ const Bills = () => {
                       totalVAT: bill.totalVAT,
                       totalCustomDuty: bill.totalCustomDuty,
                       totalAfterVAT: bill.totalAfterVAT,
-                      customDutyVAT: bill.customDutyVAT,
 
                     }}
                   />
