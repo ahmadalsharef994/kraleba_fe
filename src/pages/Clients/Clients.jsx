@@ -10,8 +10,121 @@ import {
 import "./Clients.css";
 import ClientModal from "../../components/ClientModal";
 import { categoriesList } from "../../components/constants";
+// // import Form from "react-jsonschema-form";
+// import validator from "@rjsf/validator-ajv8";
+// import { withTheme} from '@rjsf/core';
+// import Form from '@rjsf/core';
+
+// import { RJSFSchema } from "@rjsf/utils";
+
 
 const Clients = () => {
+  // const Form2 = withTheme(Form);
+
+  // const schema = {
+  //   title: 'Client',
+  //   type: 'object',
+  //   required: ['type', 'name'],
+  //   properties: {
+  //     type: {
+  //       type: 'string',
+  //       title: 'Type',
+  //       enum: ['supplier', 'buyer'],
+  //       enumNames: ['Supplier', 'Buyer'],
+  //     },
+  //     category: {
+  //       type: 'array',
+  //       title: 'Category',
+  //       items: {
+  //         type: 'string',
+  //         // enum: ['fabrics', 'auxiliary', 'assets', 'services', 'manufacturing', 'delivery', 'banking', 'others'],
+  //       },
+  //     },
+  //     subCategory: {
+  //       type: 'string',
+  //       title: 'Sub Category',
+  //       default: '',
+  //       // enum: ['buttons', 'boxes', 'services', 'others'],
+  //     },
+  //     name: {
+  //       type: 'string',
+  //       title: 'Name',
+  //     },
+  //     code: {
+  //       type: 'string',
+  //       title: 'Code',
+  //     },
+  //     cif: {
+  //       type: 'string',
+  //       title: 'CIF',
+  //     },
+  //     ocr: {
+  //       type: 'string',
+  //       title: 'OCR',
+  //     },
+  //     iban: {
+  //       type: 'string',
+  //       title: 'IBAN',
+  //     },
+  //     swift: {
+  //       type: 'string',
+  //       title: 'SWIFT',
+  //     },
+  //     bank: {
+  //       type: 'string',
+  //       title: 'Bank',
+  //     },
+  //     address: {
+  //       type: 'string',
+  //       title: 'Address',
+  //     },
+  //     zipCode: {
+  //       type: 'string',
+  //       title: 'Zip Code',
+  //     },
+  //     city: {
+  //       type: 'string',
+  //       title: 'City',
+  //     },
+  //     country: {
+  //       type: 'string',
+  //       title: 'Country',
+  //       enum: ['Romania', 'EU', 'Non-EU'],
+  //       enumNames: ['Romania', 'EU', 'Non-EU'],
+  //     },
+  //     contact: {
+  //       type: 'string',
+  //       title: 'Contact',
+  //     },
+  //     phone1: {
+  //       type: 'string',
+  //       title: 'Phone 1',
+  //     },
+  //     phone2: {
+  //       type: 'string',
+  //       title: 'Phone 2',
+  //     },
+  //     email: {
+  //       type: 'string',
+  //       title: 'Email',
+  //     },
+  //     website: {
+  //       type: 'string',
+  //       title: 'Website',
+  //     },
+  //     notes: {
+  //       type: 'string',
+  //       title: 'Notes',
+  //     },
+  //     hasBill: {
+  //       type: 'boolean',
+  //       title: 'Has Bill',
+  //       default: false,
+  //     },
+  //   },
+  // }
+
+
   const [clients, setClients] = useState([]);
   const allClients = useRef([]);
   const [filter, setFilter] = useState({
@@ -286,7 +399,12 @@ const Clients = () => {
           <input type="reset" value="Reset" className="resetButton" />
         </form>
       )}
+      {/* <Form2
+        schema={schema}
+        validator={validator}
+        onSubmit={handlePostClient}
 
+      /> */}
       <div className="clients" id="clients">
         <h5
           className="decorated-text2"

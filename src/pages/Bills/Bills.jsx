@@ -11,6 +11,8 @@ import {
 } from "../../components/services/billDataService";
 import { categoriesList } from "../../components/constants";
 import preProcessElement from "./billUtils";
+import ReactJsonView from "react-json-view";
+import JSONViewer from "react-json-viewer";
 
 const Bills = () => {
   const allBills = useRef([]);
@@ -53,15 +55,13 @@ const Bills = () => {
         bill.clientName
           .toLowerCase()
           .includes(filter.clientName.toLowerCase()) &&
-        bill.type.toLowerCase().includes(filter.type.toLowerCase()) 
+        bill.type.toLowerCase().includes(filter.type.toLowerCase()) &&
         // &&
         // (bill.category.indexOf(filter.category) !== -1 || !bill.category)
 
-        &&
-        JSON.stringify(bill.items).toLowerCase().includes(filter.subCategory) 
+        JSON.stringify(bill.items).toLowerCase().includes(filter.subCategory)
         // &&
         // bill.date >= new Date(filter.startDate) && bill.date <= new Date(filter.endDate)
-
       );
     });
     setBills(temp);
@@ -490,7 +490,7 @@ const Bills = () => {
             <Card key={index}>
               <Card.Header style={{ display: "flex" }}>
                 <div style={{ display: "flex", flexWrap: "wrap" }}>
-                  {Object.keys(bill).map((key, index) => {
+                  {/* {Object.keys(bill).map((key, index) => {
                     if (
                       [
                         "items",
@@ -505,14 +505,40 @@ const Bills = () => {
                     )
                       return null;
                     return (
-                      <ListGroup.Item
-                        key={index}
-                        style={{ width: "33%", border: "solid 1px" }}
-                      >
-                        {key}: {preProcessElement(bill[key])}
-                      </ListGroup.Item>
+                      // <ListGroup.Item
+                      //   key={index}
+                      //   style={{ width: "33%", border: "solid 1px" }}
+                      // >
+                      //   {key}: {preProcessElement(bill[key])}
+                      // </ListGroup.Item>
+                      <ReactJsonView src={bill[key]} />
+
                     );
-                  })}
+                  })} */}
+                  <ReactJsonView
+                    name="Bill Details"
+                    quotesOnKeys={false}
+                    displayDataTypes={false}
+                    displayObjectSize={false}
+                    src={{
+                      code: bill.code,
+                      type: bill.type,
+                      date: bill.date,
+                      clientName: bill.clientName,
+                      currency: bill.currency,
+                      exchangeRate: bill.exchangeRate,
+                      vatRate: bill.vatRate,
+                      clientCountry: bill.clientCountry,
+                      numberOfItems: bill.numberOfItems,
+                      notes: bill.notes,
+                      totalBeforeVAT: bill.totalBeforeVAT,
+                      totalVAT: bill.totalVAT,
+                      totalCustomDuty: bill.totalCustomDuty,
+                      totalAfterVAT: bill.totalAfterVAT,
+                      customDutyVAT: bill.customDutyVAT,
+
+                    }}
+                  />
                 </div>
 
                 {bill.type === "offer" && (
@@ -562,6 +588,8 @@ const Bills = () => {
                   focus this bill
                 </ButtonExtend>
               </Card.Header>
+
+
               {expandBill[index] && (
                 <Card.Body>
                   <Table>
@@ -613,6 +641,7 @@ const Bills = () => {
                     </tbody>
                   </Table>
                 </Card.Body>
+
               )}
               <Card.Footer>
                 <ListGroup>

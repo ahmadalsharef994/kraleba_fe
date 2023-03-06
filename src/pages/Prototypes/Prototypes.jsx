@@ -15,6 +15,7 @@ import "./Prototypes.css";
 import PrototypeModal from "../../components/PrototypeModal";
 import UploadImage from "./UploadImage";
 import { FormLabel } from "react-bootstrap";
+import ReactJsonView from "react-json-view";
 
 const Prototypes = () => {
   const [prototypes, setPrototypes] = useState([]);
@@ -231,10 +232,7 @@ const Prototypes = () => {
           <FormLabel>Items: </FormLabel>
 
           <button onClick={handleAddItem}>Add Item</button>
-          <span>
-            {" "}
-            item.name/item.code/item.unitPrice/item.billCode
-          </span>
+          <span> item.name/item.code/item.unitPrice/item.billCode</span>
           {Array.from({ length: itemCount }).map((_, index) => (
             <select key={index} name={`item-${index}`}>
               <option value="">Select Item</option>
@@ -250,7 +248,9 @@ const Prototypes = () => {
                       item.billCode,
                     ]}
                   >
-                    {item.name || "no name"}/{item.code || "no code"}/{item.unitPrice || "no bill code"}/{item.billCode || "no bill code"}
+                    {item.name || "no name"}/{item.code || "no code"}/
+                    {item.unitPrice || "no bill code"}/
+                    {item.billCode || "no bill code"}
                   </option>
                 ))}
             </select>
@@ -379,7 +379,25 @@ const Prototypes = () => {
                 </ButtonExtend>
               </Card.Header>
               <Card.Body>
-                <table className="table">
+                <ReactJsonView
+                className="object-content-prototype"
+                  src={{
+                    name: prototype.name,
+                    type: prototype.type,
+                    code: prototype.code,
+                    version: prototype.version,
+                    tailoring: prototype.tailoring,
+                    items: prototype.items,
+                    marketing: prototype.marketing,
+                    forming: prototype.forming,
+                    notes: prototype.notes,
+                  }}
+                  name="prototype details"
+                  quotesOnKeys={false}
+                  displayDataTypes={false}
+                  displayObjectSize={false}
+                />
+                {/* <table className="table">
                   <tbody>
                     <tr>
                       <td>Name</td>
@@ -452,7 +470,7 @@ const Prototypes = () => {
                       </td>
                     </tr>
                   </tbody>
-                </table>
+                </table> */}
               </Card.Body>
 
               <Card.Footer>
