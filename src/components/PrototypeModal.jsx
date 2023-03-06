@@ -1,8 +1,17 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import './styles.css'
+import UploadImage from "../pages/Prototypes/UploadImage";
+import { FormLabel } from "react-bootstrap";
+import { useState } from "react";
 
 function PrototypeModal({ prototype, closeModal, patchClient }) {
+  const [images, setImages] = useState([]);
+  const handleSetImages = (e, newImages) => {
+    // e.preventDefault();
+
+    setImages(newImages);
+  };
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -24,45 +33,103 @@ function PrototypeModal({ prototype, closeModal, patchClient }) {
       </Modal.Header>
       <Modal.Body>
         <form className="clientModal" onSubmit={handleSave}>
-          <select name="type" placeholder="Type" defaultValue={prototype.type}>
+        <select name="type" placeholder="Type">
             <option value="">Type</option>
-            <option value="buyer">Buyer</option>
-            <option value="supplier">Supplier</option>
+            <option value="abelard">abelard</option>
+            <option value="heloise">heloise</option>
+          </select>
+          <input type="text" name="name" placeholder="Name" />
+          <input
+            type="text"
+            name="collectionName"
+            placeholder="Collection Name"
+          />
+          <input type="text" name="version" placeholder="Version" />
+       
+
+          <select name="tailoring" placeholder="Tailoring">
+            <option value="">Tailoring</option>
+            <option value="extra slim fit">extra slim fit</option>
+            <option value="slim fit">slim fit</option>
+            <option value="regular 1">regular 1</option>
+            <option value="regular 2">regular 2</option>
+            <option value="large">large</option>
+            <option value="extra large">extra large</option>
+            <option value="no category">no category</option>
           </select>
 
-          <select name="category" placeholder="Category" defaultValue={prototype.category}>
-            <option value="">Category</option>
-            <option value="fabrics">fabrics</option>
-            <option value="assets">assets</option>
-            <option value="auxiliary">auxiliary</option>
-            <option value="manufacturing">manufacturing</option>
-            <option value="delivery">delivery</option>
-            <option value="banking">banking</option>
-            <option value="duties">duties</option>
-            <option value="others">others</option>
-          </select>
-          <input type="text" name="name" placeholder="Name" defaultValue={prototype.name} readOnly/>
-          <input type="text" name="code" placeholder="Code" defaultValue={prototype.code} readOnly/>
-          <input type="text" name="address" placeholder="Address" defaultValue={prototype.address}/>
-          <input type="text" name="zipCode" placeholder="Zip Code" defaultValue={prototype.zipCode}/>
-          <input type="text" name="city" placeholder="City" readOnly defaultValue={prototype.city}/>
-          <select name="country" readOnly defaultValue={prototype.country}>
-            <option value="">Country</option>
-            <option value="Romania">Romania</option>
-            <option value="EU">EU</option>
-            <option value="Non-EU">Non-EU</option>
-          </select>
-          <input type="text" name="cif" placeholder="CIF" defaultValue={prototype.cif}/>
-          <input type="text" name="ocr" placeholder="OCR"  defaultValue={prototype.ocr}/>
-          <input type="text" name="iban" placeholder="IBAN" defaultValue={prototype.iban}/>
-          <input type="text" name="swift" placeholder="SWIFT" defaultValue={prototype.swift}/>
-          <input type="text" name="bank" placeholder="BANK" defaultValue={prototype.bank}/>
-          <input type="text" name="phone1" placeholder="Phone 1" defaultValue={prototype.phone1}/>
-          <input type="text" name="phone2" placeholder="Phone 2" defaultValue={prototype.phone2}/>
-          <input type="text" name="email" placeholder="E-mail" defaultValue={prototype.email}/>
-          <input type="text" name="email" placeholder="E-mail" defaultValue={prototype.email}/>
-          <input type="text" name="www" placeholder="WWW" defaultValue={prototype.website}/>
-          <textarea name="notes" placeholder="Notes" defaultValue={prototype.notes}/>
+          <input
+            type="text"
+            name="marketing-category"
+            placeholder="marketing Category"
+          />
+          <input
+            type="text"
+            name="marketing-theme"
+            placeholder="marketing Theme"
+          />
+          <input
+            type="text"
+            name="marketing-styles"
+            placeholder="marketing Styles"
+          />
+          <input
+            type="text"
+            name="marketing-occasion"
+            placeholder="marketing Occasion"
+          />
+          <input
+            type="text"
+            name="marketing-seasonality"
+            placeholder="marketing Seasonality"
+          />
+
+          <input
+            type="text"
+            name="marketing-collection"
+            placeholder="marketing Collection"
+          />
+
+          <input type="text" name="forming-cuffs" placeholder="forming Cuffs" />
+          <input type="text" name="forming-slits" placeholder="forming Slits" />
+          <input
+            type="text"
+            name="forming-pockets"
+            placeholder="forming Pockets"
+          />
+          <input
+            type="text"
+            name="forming-stitching"
+            placeholder="forming Stitching"
+          />
+          <input
+            type="text"
+            name="forming-seamsColor"
+            placeholder="forming Seams Color"
+          />
+          <input
+            type="text"
+            name="forming-buttons"
+            placeholder="forming Buttons"
+          />
+          <input
+            type="text"
+            name="forming-sleeves"
+            placeholder="forming Sleeves"
+          />
+          <input
+            type="text"
+            name="forming-interlining"
+            placeholder="forming Interlining"
+          />
+
+          <textarea name="notes" placeholder="Notes"></textarea>
+
+          {/* <UploadImage
+            images={images}
+            handleSetImages={handleSetImages}
+            name="images"
+          /> */}
           <input type="submit" value="Submit" />
         <Button variant="secondary" onClick={closeModal}>
           Cancel

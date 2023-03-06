@@ -149,4 +149,10 @@ table, th, td, tr, thead, tbody {
   }
 
 
+  .object-content {
+    display: flex !important;
+    flex-wrap: wrap;
+  }
+  
+
   

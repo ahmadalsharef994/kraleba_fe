@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useState, useEffect } from "react";
-import { Card, ListGroup } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import ButtonExtend from "../../components/extends/ButtonExtend";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
@@ -15,6 +15,7 @@ import "./Prototypes.css";
 import PrototypeModal from "../../components/PrototypeModal";
 import UploadImage from "./UploadImage";
 import { FormLabel } from "react-bootstrap";
+import ReactJsonView from "react-json-view";
 
 const Prototypes = () => {
   const [prototypes, setPrototypes] = useState([]);
@@ -33,9 +34,10 @@ const Prototypes = () => {
   const [selectPrototypeForm, setSelectPrototypeForm] = useState(false);
 
   const [images, setImages] = useState([]);
-  const handleSetImages = (e, images) => {
-    e.preventDefault();
-    setImages(images);
+  const handleSetImages = (e, newImages) => {
+    // e.preventDefault();
+
+    setImages(newImages);
   };
 
   useEffect(() => {
@@ -92,8 +94,7 @@ const Prototypes = () => {
 
       if (child.name.includes("item")) {
         prototypeForm.items.push(child.value);
-        console.log(child.value);
-        console.log(prototypeForm.items);
+
         continue;
       }
 
@@ -105,10 +106,10 @@ const Prototypes = () => {
       prototypeForm[child.name] = child.value;
     }
     prototypeForm["images"] = images;
-    console.log(prototypeForm);
     await postPrototype(prototypeForm);
     const temp = await fetchPrototypesData();
     setPrototypes(temp);
+    alert("Prototype Added Successfully");
   };
 
   const handleDeletePrototype = async (prototype) => {
@@ -214,115 +215,6 @@ const Prototypes = () => {
         </form>
       )}
 
-      <div className="prototypes" id="prototypes">
-        {!prototypes || !prototypes.length ? (
-          <p>No prototypes found</p>
-        ) : (
-          prototypes.map((prototype, index) => (
-            <Card key={index}>
-              <Card.Header>
-                <ButtonExtend
-                  className="btn btn-secondary"
-                  size="sm"
-                  onClick={() => handleEditPrototype(prototype)}
-                >
-                  Edit
-                </ButtonExtend>
-                <ButtonExtend
-                  className="btn btn-danger"
-                  size="sm"
-                  onClick={() => handleDeletePrototype(prototype)}
-                >
-                  Delete
-                </ButtonExtend>
-              </Card.Header>
-              <Card.Body>
-                <div className="prototype-card">
-                  <ListGroup.Item>Type: {prototype.type}</ListGroup.Item>
-                  <ListGroup.Item>Code: {prototype.code}</ListGroup.Item>
-                  <ListGroup.Item>
-                    Items:
-                    <ul>
-                      {prototype.items.map((item, index) => (
-                        <li key={index}>{item}</li>
-                      ))}
-                    </ul>
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    Tailoring: {prototype.tailoring}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    Marketing:
-                    <ul>
-                      <li>Category: {prototype.marketing.category}</li>
-                      <li>Theme: {prototype.marketing.theme}</li>
-
-                      <li>Styles: {prototype.marketing.styles}</li>
-
-                      <li>Occasion: {prototype.marketing.occasion}</li>
-
-                      <li>Seasonality: {prototype.marketing.seasonality}</li>
-
-                      <li>Author: {prototype.marketing.author}</li>
-                      <li>Collection: {prototype.marketing.collection}</li>
-                    </ul>
-                  </ListGroup.Item>
-
-                  <ListGroup.Item>
-                    Forming:
-                    <ul>
-                      <li>Cuffs: {prototype.forming.cuffs}</li>
-                      <li>Slits: {prototype.forming.slits}</li>
-                      <li>Pockets: {prototype.forming.pockets}</li>
-                      <li>Stitching: {prototype.forming.stitching}</li>
-                      <li>Seams Color: {prototype.forming.seamsColor}</li>
-                      <li>Buttons: {prototype.forming.buttons}</li>
-                      <li>Sleeves: {prototype.forming.sleeves}</li>
-                      <li>Interlining: {prototype.forming.interlining}</li>
-                    </ul>
-                  </ListGroup.Item>
-
-                </div>
-              </Card.Body>
-              <Card.Footer>
-                    <strong>Images:</strong>
-                    <ul
-                      style={{
-                        listStyle: "none",
-                        padding: 0,
-                        margin: 0,
-                        display: "flex",
-                        flexWrap: "nowrap",
-                        overflowX: "auto",
-                      }}
-                    >
-                      {prototype.images.map((image, index) => (
-                        <li key={index} style={{ marginRight: "10px" }}>
-                          {
-                            <img
-                              src={image}
-                              alt="prototype"
-                              style={{ maxWidth: "100%", height: "auto" }}
-                            />
-                          }
-                        </li>
-                      ))}
-                    </ul>
-                  </Card.Footer>
-            </Card>
-          ))
-        )}
-        {showEditModal && (
-          <PrototypeModal
-            prototype={selectedPrototype}
-            closeModal={closeModal}
-            patchPrototype={(form) =>
-              handlePatchPrototype(form, selectedPrototype._id)
-            }
-          />
-        )}
-      </div>
-
       {addPrototypeForm && (
         <form className="filter" onSubmit={handlePostPrototype}>
           <select name="type" placeholder="Type">
@@ -336,9 +228,11 @@ const Prototypes = () => {
             name="collectionName"
             placeholder="Collection Name"
           />
+          <input type="text" name="version" placeholder="Version" />
           <FormLabel>Items: </FormLabel>
 
           <button onClick={handleAddItem}>Add Item</button>
+          <span> item.name/item.code/item.unitPrice/item.billCode</span>
           {Array.from({ length: itemCount }).map((_, index) => (
             <select key={index} name={`item-${index}`}>
               <option value="">Select Item</option>
@@ -351,9 +245,12 @@ const Prototypes = () => {
                       item.unitPrice,
                       item.quantity,
                       item.fabrics,
+                      item.billCode,
                     ]}
                   >
-                    {item.name}/{item.code}/{item.unitPrice}
+                    {item.name || "no name"}/{item.code || "no code"}/
+                    {item.unitPrice || "no bill code"}/
+                    {item.billCode || "no bill code"}
                   </option>
                 ))}
             </select>
@@ -403,6 +300,8 @@ const Prototypes = () => {
             type="text"
             name="marketing-author"
             placeholder="marketing Author"
+            style={{ backgroundColor: "#99ccff" }}
+            defaultValue="no author"
           />
           <input
             type="text"
@@ -456,6 +355,145 @@ const Prototypes = () => {
           <input type="reset" value="Reset" className="resetButton" />
         </form>
       )}
+
+      <div className="prototypes" id="prototypes">
+        {!prototypes || !prototypes.length ? (
+          <p>No prototypes found</p>
+        ) : (
+          prototypes.map((prototype, index) => (
+            <Card key={index}>
+              <Card.Header>
+                <ButtonExtend
+                  className="btn btn-secondary"
+                  size="sm"
+                  onClick={() => handleEditPrototype(prototype)}
+                >
+                  Edit
+                </ButtonExtend>
+                <ButtonExtend
+                  className="btn btn-danger"
+                  size="sm"
+                  onClick={() => handleDeletePrototype(prototype)}
+                >
+                  Delete
+                </ButtonExtend>
+              </Card.Header>
+              <Card.Body>
+                <ReactJsonView
+                className="object-content-prototype"
+                  src={{
+                    name: prototype.name,
+                    type: prototype.type,
+                    code: prototype.code,
+                    version: prototype.version,
+                    tailoring: prototype.tailoring,
+                    items: prototype.items,
+                    marketing: prototype.marketing,
+                    forming: prototype.forming,
+                    notes: prototype.notes,
+                  }}
+                  name="prototype details"
+                  quotesOnKeys={false}
+                  displayDataTypes={false}
+                  displayObjectSize={false}
+                />
+                {/* <table className="table">
+                  <tbody>
+                    <tr>
+                      <td>Name</td>
+                      <td>{prototype.name}</td>
+                    </tr>
+                    <tr>
+                      <td>Type</td>
+                      <td>{prototype.type}</td>
+                    </tr>
+                    <tr>
+                      <td>Code</td>
+                      <td>{prototype.code}</td>
+                    </tr>
+                    <tr>
+                      <td>Version</td>
+                      <td>{prototype.version}</td>
+                    </tr>
+                    <tr>
+                      <td>Items</td>
+                      <td>
+                        <ul>
+                          {prototype.items.map((item, index) => (
+                            <li key={index}>{item}</li>
+                          ))}
+                        </ul>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>Version</td>
+                      <td>{prototype.version}</td>
+                    </tr>
+                    <tr>
+                      <td>Tailoring</td>
+                      <td>{prototype.tailoring}</td>
+                    </tr>
+                    <tr>
+                      <td>Marketing</td>
+                      <td>
+                        <ul>
+                          <li>Category: {prototype.marketing.category}</li>
+                          <li>Theme: {prototype.marketing.theme}</li>
+                          <li>Styles: {prototype.marketing.styles}</li>
+                          <li>Occasion: {prototype.marketing.occasion}</li>
+                          <li>
+                            Seasonality: {prototype.marketing.seasonality}
+                          </li>
+                          <li>Author: {prototype.marketing.author}</li>
+                          <li>Collection: {prototype.marketing.collection}</li>
+                        </ul>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Forming</td>
+                      <td>
+                        {prototype.forming && (
+                          <ul>
+                            <li>Cuffs: {prototype.forming.cuffs}</li>
+                            <li>Slits: {prototype.forming.slits}</li>
+                            <li>Pockets: {prototype.forming.pockets}</li>
+                            <li>Stitching: {prototype.forming.stitching}</li>
+                            <li>Seams Color: {prototype.forming.seamsColor}</li>
+                            <li>Buttons: {prototype.forming.buttons}</li>
+                            <li>Sleeves: {prototype.forming.sleeves}</li>
+                            <li>
+                              Interlining: {prototype.forming.interlining}
+                            </li>
+                          </ul>
+                        )}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table> */}
+              </Card.Body>
+
+              <Card.Footer>
+                <strong>Images:</strong>
+                <div className="image-container">
+                  {prototype.images.map((imgObj, index) => (
+                    <img src={imgObj} alt="no preview" />
+                  ))}
+                </div>
+              </Card.Footer>
+            </Card>
+          ))
+        )}
+        {showEditModal && (
+          <PrototypeModal
+            prototype={selectedPrototype}
+            closeModal={closeModal}
+            patchPrototype={(form) =>
+              handlePatchPrototype(form, selectedPrototype._id)
+            }
+          />
+        )}
+      </div>
     </div>
   );
 };
