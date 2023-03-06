@@ -535,7 +535,6 @@ const Bills = () => {
                       totalVAT: bill.totalVAT,
                       totalCustomDuty: bill.totalCustomDuty,
                       totalAfterVAT: bill.totalAfterVAT,
-
                     }}
                   />
                 </div>
@@ -588,7 +587,6 @@ const Bills = () => {
                 </ButtonExtend>
               </Card.Header>
 
-
               {expandBill[index] && (
                 <Card.Body>
                   <Table>
@@ -640,7 +638,6 @@ const Bills = () => {
                     </tbody>
                   </Table>
                 </Card.Body>
-
               )}
               <Card.Footer>
                 <ListGroup>
