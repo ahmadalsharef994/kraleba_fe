@@ -35,8 +35,6 @@ const Prototypes = () => {
 
   const [images, setImages] = useState([]);
   const handleSetImages = (e, newImages) => {
-    // e.preventDefault();
-
     setImages(newImages);
   };
 
@@ -240,8 +238,8 @@ const Prototypes = () => {
                 allItems.current.map((item) => (
                   <option
                     value={[
-                      item.code,
                       item.name,
+                      item.code,
                       item.unitPrice,
                       item.quantity,
                       item.fabrics,
@@ -397,80 +395,7 @@ const Prototypes = () => {
                   displayDataTypes={false}
                   displayObjectSize={false}
                 />
-                {/* <table className="table">
-                  <tbody>
-                    <tr>
-                      <td>Name</td>
-                      <td>{prototype.name}</td>
-                    </tr>
-                    <tr>
-                      <td>Type</td>
-                      <td>{prototype.type}</td>
-                    </tr>
-                    <tr>
-                      <td>Code</td>
-                      <td>{prototype.code}</td>
-                    </tr>
-                    <tr>
-                      <td>Version</td>
-                      <td>{prototype.version}</td>
-                    </tr>
-                    <tr>
-                      <td>Items</td>
-                      <td>
-                        <ul>
-                          {prototype.items.map((item, index) => (
-                            <li key={index}>{item}</li>
-                          ))}
-                        </ul>
-                      </td>
-                    </tr>
 
-                    <tr>
-                      <td>Version</td>
-                      <td>{prototype.version}</td>
-                    </tr>
-                    <tr>
-                      <td>Tailoring</td>
-                      <td>{prototype.tailoring}</td>
-                    </tr>
-                    <tr>
-                      <td>Marketing</td>
-                      <td>
-                        <ul>
-                          <li>Category: {prototype.marketing.category}</li>
-                          <li>Theme: {prototype.marketing.theme}</li>
-                          <li>Styles: {prototype.marketing.styles}</li>
-                          <li>Occasion: {prototype.marketing.occasion}</li>
-                          <li>
-                            Seasonality: {prototype.marketing.seasonality}
-                          </li>
-                          <li>Author: {prototype.marketing.author}</li>
-                          <li>Collection: {prototype.marketing.collection}</li>
-                        </ul>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Forming</td>
-                      <td>
-                        {prototype.forming && (
-                          <ul>
-                            <li>Cuffs: {prototype.forming.cuffs}</li>
-                            <li>Slits: {prototype.forming.slits}</li>
-                            <li>Pockets: {prototype.forming.pockets}</li>
-                            <li>Stitching: {prototype.forming.stitching}</li>
-                            <li>Seams Color: {prototype.forming.seamsColor}</li>
-                            <li>Buttons: {prototype.forming.buttons}</li>
-                            <li>Sleeves: {prototype.forming.sleeves}</li>
-                            <li>
-                              Interlining: {prototype.forming.interlining}
-                            </li>
-                          </ul>
-                        )}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table> */}
               </Card.Body>
 
               <Card.Footer>
