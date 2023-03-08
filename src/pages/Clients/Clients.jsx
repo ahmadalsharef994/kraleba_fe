@@ -11,66 +11,6 @@ import "./Clients.css";
 import ClientModal from "../../components/ClientModal";
 import { categoriesList } from "../../components/constants";
 const Clients = () => {
-  // const Form2 = withTheme(Form);
-
-  const schema = {
-    type: "object",
-    properties: {
-      type: {
-        type: "string",
-        enum: ["supplier", "buyer"],
-        enumNames: ["Supplier", "Buyer"],
-      },
-      name: {
-        type: "string",
-        title: "Client",
-        minLength: 1,
-        maxLength: 50,
-      },
-      code: {
-        type: "string",
-        minLength: 1,
-        maxLength: 20,
-      },
-      address: {
-        type: "string",
-        maxLength: 200,
-      },
-      zipCode: {
-        type: "string",
-        maxLength: 20,
-      },
-      city: {
-        type: "string",
-        minLength: 1,
-        maxLength: 50,
-      },
-      country: {
-        type: "string",
-        enum: ["Romania", "EU", "Non-EU"],
-        enumNames: ["Romania", "EU", "Non-EU"],
-      }
-    },
-    required: ["type", "name", "code", "city", "country"],
-  };
-  
-  const uiSchema = {
-    type: {
-      "ui:widget": "radio",
-    },
-    name: {
-      "ui:placeholder": "Name *",
-    },
-    code: {
-      "ui:placeholder": "Code *",
-    },
-    city: {
-      "ui:placeholder": "City *",
-    },
-    country: {
-      "ui:placeholder": "Country *",
-    },
-  };
 
   const [clients, setClients] = useState([]);
   const allClients = useRef([]);

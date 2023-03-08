@@ -489,31 +489,7 @@ const Bills = () => {
             <Card key={index}>
               <Card.Header style={{ display: "flex" }}>
                 <div style={{ display: "flex", flexWrap: "wrap" }}>
-                  {/* {Object.keys(bill).map((key, index) => {
-                    if (
-                      [
-                        "items",
-                        "client",
-                        "_id",
-                        "updatedAt",
-                        "__v",
-                        "createdAt",
-                        "category",
-                        "subCategory",
-                      ].includes(key)
-                    )
-                      return null;
-                    return (
-                      // <ListGroup.Item
-                      //   key={index}
-                      //   style={{ width: "33%", border: "solid 1px" }}
-                      // >
-                      //   {key}: {preProcessElement(bill[key])}
-                      // </ListGroup.Item>
-                      <ReactJsonView src={bill[key]} />
 
-                    );
-                  })} */}
                   <ReactJsonView
                     name="Bill Details"
                     quotesOnKeys={false}
