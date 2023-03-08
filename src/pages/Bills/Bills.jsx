@@ -12,7 +12,6 @@ import {
 import { categoriesList } from "../../components/constants";
 // import preProcessElement from "./billUtils";
 import ReactJsonView from "react-json-view";
-import BillSchema from "./BillSchema";
 
 const Bills = () => {
   const allBills = useRef([]);
@@ -183,7 +182,6 @@ const Bills = () => {
 
   return (
     <div>
-      <BillSchema />
       <ButtonExtend
         className="addButton"
         onClick={() => {
