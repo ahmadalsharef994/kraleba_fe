@@ -235,22 +235,26 @@ const Prototypes = () => {
             <select key={index} name={`item-${index}`}>
               <option value="">Select Item</option>
               {allItems &&
-                allItems.current.map((item) => (
-                  <option
-                    value={[
-                      item.name,
-                      item.code,
-                      item.unitPrice,
-                      item.quantity,
-                      item.fabrics,
-                      item.billCode,
-                    ]}
-                  >
-                    {item.name || "no name"}/{item.code || "no code"}/
-                    {item.unitPrice || "no bill code"}/
-                    {item.billCode || "no bill code"}
-                  </option>
-                ))}
+                allItems.current.map(
+                  (item, index) =>
+                    item.billType === "offer" && (
+                      <option
+                        key={index}
+                        value={[
+                          item.name,
+                          item.code,
+                          item.unitPrice,
+                          item.quantity,
+                          item.fabrics,
+                          item.billCode,
+                        ]}
+                      >
+                        {item.name || "no name"}/{item.code || "no code"}/
+                        {item.unitPrice || "no unit price"}/
+                        {item.billCode || "no bill code"}
+                      </option>
+                    )
+                )}
             </select>
           ))}
 
@@ -378,7 +382,7 @@ const Prototypes = () => {
               </Card.Header>
               <Card.Body>
                 <ReactJsonView
-                className="object-content-prototype"
+                  className="object-content-prototype"
                   src={{
                     name: prototype.name,
                     type: prototype.type,
@@ -395,7 +399,6 @@ const Prototypes = () => {
                   displayDataTypes={false}
                   displayObjectSize={false}
                 />
-
               </Card.Body>
 
               <Card.Footer>
