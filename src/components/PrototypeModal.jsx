@@ -1,17 +1,9 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import './styles.css'
-import UploadImage from "../pages/Prototypes/UploadImage";
-import { FormLabel } from "react-bootstrap";
-import { useState } from "react";
+
 
 function PrototypeModal({ prototype, closeModal, patchClient }) {
-  const [images, setImages] = useState([]);
-  const handleSetImages = (e, newImages) => {
-    // e.preventDefault();
-
-    setImages(newImages);
-  };
 
   const handleSave = async (e) => {
     e.preventDefault();
