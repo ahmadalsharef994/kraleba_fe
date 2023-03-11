@@ -3,7 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import './styles.css'
 
 
-function PrototypeModal({ prototype, closeModal, patchClient }) {
+function ProductModal({ product, closeModal, patchClient }) {
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -19,7 +19,7 @@ function PrototypeModal({ prototype, closeModal, patchClient }) {
   };
 
   return (
-    <Modal show={!!prototype}>
+    <Modal show={!!product}>
       <Modal.Header>
         <Modal.Title>Edit Client Information</Modal.Title>
       </Modal.Header>
@@ -133,4 +133,4 @@ function PrototypeModal({ prototype, closeModal, patchClient }) {
   );
 }
 
-export default PrototypeModal;
+export default ProductModal;

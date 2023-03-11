@@ -10,7 +10,6 @@ import {
   deleteBill,
 } from "../../components/services/billDataService";
 import { categoriesList } from "../../components/constants";
-// import preProcessElement from "./billUtils";
 import ReactJsonView from "react-json-view";
 
 const Bills = () => {
@@ -40,12 +39,12 @@ const Bills = () => {
   const [filter, setFilter] = useState({
     clientName: "",
     type: "",
-    category: "",
+    // category: "",
     subCategory: "",
-    startDate: "",
-    endDate: "",
+    // startDate: "",
+    // endDate: "",
   });
-
+  
   const handleFilter = (e) => {
     e.preventDefault();
     let temp = [...allBills.current];
@@ -55,12 +54,7 @@ const Bills = () => {
           .toLowerCase()
           .includes(filter.clientName.toLowerCase()) &&
         bill.type.toLowerCase().includes(filter.type.toLowerCase()) &&
-        // &&
-        // (bill.category.indexOf(filter.category) !== -1 || !bill.category)
-
         JSON.stringify(bill.items).toLowerCase().includes(filter.subCategory)
-        // &&
-        // bill.date >= new Date(filter.startDate) && bill.date <= new Date(filter.endDate)
       );
     });
     setBills(temp);
@@ -70,10 +64,10 @@ const Bills = () => {
     setFilter({
       clientName: "",
       type: "",
-      category: "",
+      // category: "",
       subCategory: "",
-      startDate: "",
-      endDate: "",
+      // startDate: "",
+      // endDate: "",
     });
     setBills(allBills.current);
   };
@@ -161,12 +155,14 @@ const Bills = () => {
     await postBill(billForm);
     const bills = await fetchBillsData();
     setBills(bills);
+    alert("Bill Added Successfully");
   };
 
   const handleDeleteBill = async (bill) => {
     await deleteBill(bill._id);
     const bills = await fetchBillsData();
     setBills(bills);
+    alert("Bill Deleted Successfully");
   };
 
   useEffect(() => {
@@ -286,7 +282,7 @@ const Bills = () => {
                   value={[client._id, client.name, client.code, client.country]}
                   key={index}
                 >
-                  {client.name}
+                  {client.code} - {client.name} - {client.country}
                 </option>
               ))}
           </select>
@@ -300,6 +296,7 @@ const Bills = () => {
             <option value="invoice">Invoice</option>
             <option value="offer">Offer</option>
           </select>
+
           <FormLabel>Currency: *</FormLabel>
 
           <select name="currency" required>
@@ -322,9 +319,8 @@ const Bills = () => {
             <input
               type="number"
               name="vatRate"
-              placeholder="VAT Rate"
+              placeholder="VAT Rate (%)"
               required
-              step="0.01"
               max="99"
             />
           )}
@@ -332,9 +328,8 @@ const Bills = () => {
             <input
               type="number"
               name="customDutyVAT"
-              placeholder="Custom Duty VAT"
+              placeholder="Custom Duty VAT Rate (%)"
               required
-              step="0.01"
               max="99"
             />
           )}
@@ -350,7 +345,7 @@ const Bills = () => {
             ))}
           </select>
 
-          <input type="text" name="subCategory" placeholder="subcategoris" />
+          <input type="text" name="subCategory" placeholder="subcategoris (seperated by ,)" />
 
           <input
             type="number"
@@ -392,13 +387,11 @@ const Bills = () => {
                 name={`quantity-${i}`}
                 placeholder="Quantity"
                 step="1"
-                max="999"
               />
               <input
                 type="number"
                 name={`unitPrice-${i}`}
                 placeholder="price per unit"
-                max="99"
               />
 
               <label style={{ display: "block", color: "white" }}>
@@ -478,7 +471,7 @@ const Bills = () => {
         className="decorated-text2"
         style={{ backgroundColor: "rgba(0, 0, 0, 0)", padding: "10px" }}
       >
-        {Object.values(filter).join("/")}
+        {Object.values(filter).join(" / ")}
       </h5>
 
       <div className="bills" id="bills">
@@ -489,7 +482,6 @@ const Bills = () => {
             <Card key={index}>
               <Card.Header style={{ display: "flex" }}>
                 <div style={{ display: "flex", flexWrap: "wrap" }}>
-
                   <ReactJsonView
                     name="Bill Details"
                     quotesOnKeys={false}
@@ -559,7 +551,7 @@ const Bills = () => {
                   }}
                   size="sm"
                 >
-                  focus this bill
+                  highlight
                 </ButtonExtend>
               </Card.Header>
 
@@ -619,7 +611,7 @@ const Bills = () => {
                 <ListGroup>
                   <ListGroup.Item>
                     Category:
-                    {bill.category.join(", ")}
+                    {bill.category.join(" , ")}
                   </ListGroup.Item>
                   <ListGroup.Item>
                     Sub Category:
