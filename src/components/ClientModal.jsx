@@ -212,9 +212,9 @@ function ClientModal({ client, closeModal, patchClient, deleteClient }) {
           <Button variant="secondary" onClick={closeModal}>
             Cancel
           </Button>
-          {client.hasBill ? 
+          {/* {client.hasBill ? 
             <h5>Client has bills and can't be deleted</h5>
-          :
+          : */}
             <ButtonExtend
               className="btn btn-danger"
               size="sm"
@@ -222,7 +222,7 @@ function ClientModal({ client, closeModal, patchClient, deleteClient }) {
             >
               Delete
             </ButtonExtend>
-          }
+          {/* } */}
         </form>
       </Modal.Body>
     </Modal>
