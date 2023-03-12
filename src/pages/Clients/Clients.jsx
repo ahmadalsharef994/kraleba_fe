@@ -11,7 +11,6 @@ import "./Clients.css";
 import ClientModal from "../../components/ClientModal";
 import { categoriesList } from "../../components/constants";
 const Clients = () => {
-
   const [clients, setClients] = useState([]);
   const allClients = useRef([]);
   const [filter, setFilter] = useState({
@@ -60,6 +59,7 @@ const Clients = () => {
     await postClient(clientForm);
     const temp = await fetchClientsData();
     setClients(temp);
+    alert("Client Added Succesfully");
   };
 
   const handleDeleteClient = async (client) => {
@@ -79,7 +79,7 @@ const Clients = () => {
     temp = temp.filter((client) => {
       return (
         client.type.toLowerCase().includes(filter.type.toLowerCase()) &&
-        client.category.includes(filter.category.toLowerCase()) &&
+        // client.category.includes(filter.category.toLowerCase()) &&
         client.name.toLowerCase().includes(filter.name.toLowerCase())
       );
     });
@@ -160,7 +160,7 @@ const Clients = () => {
             <option value="Buyer">Buyer</option>
             <option value="Supplier">Supplier</option>
           </select>
-          <select
+          {/* <select
             value={filter.category}
             onChange={(e) => setFilter({ ...filter, category: e.target.value })}
           >
@@ -171,7 +171,7 @@ const Clients = () => {
                 {category}
               </option>
             ))}
-          </select>
+          </select> */}
 
           <input
             type="text"
@@ -276,7 +276,7 @@ const Clients = () => {
           <input type="text" name="website" placeholder="WWW" />
           <FormLabel>Notes</FormLabel>
 
-          <textarea name="notes" placeholder="Notes"></textarea>
+          <textarea name="notes" placeholder="Notes" maxlength="100"></textarea>
           <input
             type="submit"
             value="Submit"

@@ -423,7 +423,6 @@ const Products = () => {
           />
         )}
       </div>
-      <ClientForm />
     </div>
   );
 };

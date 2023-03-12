@@ -54,7 +54,7 @@ const Bills = () => {
           .toLowerCase()
           .includes(filter.clientName.toLowerCase()) &&
         bill.type.toLowerCase().includes(filter.type.toLowerCase()) &&
-        JSON.stringify(bill.items).toLowerCase().includes(filter.subCategory)
+        JSON.stringify(bill.items).toLowerCase().includes(filter.subCategory.toLowerCase())
       );
     });
     setBills(temp);
@@ -345,7 +345,7 @@ const Bills = () => {
             ))}
           </select>
 
-          <input type="text" name="subCategory" placeholder="subcategoris (seperated by ,)" />
+          <input type="text" name="subCategory" placeholder="subcategoris (seperated by SPACE)" />
 
           <input
             type="number"

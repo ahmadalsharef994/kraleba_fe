@@ -1,6 +1,9 @@
 .card-body {
   justify-content: center;
   margin: 0;
+  margin: 0;
+background-color: #fff;
+box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 .container {
   width: 100vw;
@@ -11,8 +14,12 @@
   max-width: 1500px;
 }
 
-.container, .container-lg, .container-md, .container-sm, .container-xl {
-    max-width: 1340px !important;
+.container,
+.container-lg,
+.container-md,
+.container-sm,
+.container-xl {
+  max-width: 1340px !important;
 }
 
 .form-label {
@@ -38,14 +45,20 @@
   flex-direction: row !important;
   justify-content: center;
   margin: 0;
-  
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
 }
 .client-group div {
   width: calc(16% - 1px);
   border-style: dotted;
   border-width: 1px;
-
-
+  text-align: center;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
 }
 
 .decorated-text2 {
@@ -59,6 +72,10 @@
 .card-header {
   align-items: center;
   justify-content: space-evenly;
+  transform: rotate(-1deg);
+background-color: #f5f5f5;
+padding: 10px 20px;
+box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .list-group {
@@ -100,4 +117,24 @@
     width: 100%;
     margin-top: 0.5rem;
   }
+}
+
+.search-filter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 10px;
+  flex-direction: column;
+}
+
+.search-filter input,
+.search-filter select,
+.search-filter textarea {
+  padding: 5px;
+  border-radius: 5px;
+  border: none;
+  width: calc(33.33% - 20px);
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
